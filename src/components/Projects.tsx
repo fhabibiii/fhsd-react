@@ -14,33 +14,11 @@ const Projects = () => {
 
   const ProjectCard = ({ project, index }: { project: any; index: number }) => {
     const [cardRef, cardVisible] = useScrollAnimation();
-    
-    // Color variations for cards
-    const colorVariants = [
-      'from-blue-500/10 to-cyan-500/10 border-blue-500/20',
-      'from-purple-500/10 to-pink-500/10 border-purple-500/20',
-      'from-green-500/10 to-emerald-500/10 border-green-500/20',
-      'from-orange-500/10 to-red-500/10 border-orange-500/20',
-      'from-indigo-500/10 to-blue-500/10 border-indigo-500/20',
-      'from-pink-500/10 to-rose-500/10 border-pink-500/20',
-    ];
-    
-    const buttonVariants = [
-      'from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 shadow-blue-500/25',
-      'from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 shadow-purple-500/25',
-      'from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-green-500/25',
-      'from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-orange-500/25',
-      'from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 shadow-indigo-500/25',
-      'from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 shadow-pink-500/25',
-    ];
-    
-    const cardColor = colorVariants[index % colorVariants.length];
-    const buttonColor = buttonVariants[index % buttonVariants.length];
 
     return (
       <div
         ref={cardRef}
-        className={`group bg-gradient-to-br ${cardColor} backdrop-blur-sm rounded-2xl border overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-3 relative transform ${
+        className={`group bg-card/80 dark:bg-card/60 backdrop-blur-sm rounded-2xl border border-border/50 dark:border-border/30 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-3 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30 relative transform ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'
@@ -89,7 +67,7 @@ const Projects = () => {
           <div className="flex gap-3">
             <button
               onClick={() => setSelectedProject(project.id)}
-              className={`flex-1 bg-gradient-to-r ${buttonColor} text-white px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm font-medium hover:shadow-lg transform hover:scale-105`}
+              className="flex-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm font-medium hover:shadow-lg hover:shadow-primary/25 transform hover:scale-105"
             >
               <ExternalLink className="w-4 h-4" />
               Lihat Detail
@@ -99,7 +77,7 @@ const Projects = () => {
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-card/80 border border-border rounded-xl hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 hover:scale-110 hover:rotate-3"
+                className="p-3 bg-card/80 dark:bg-card/60 border border-border rounded-xl hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 hover:scale-110 hover:rotate-3"
               >
                 <Github className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
               </a>
@@ -114,9 +92,8 @@ const Projects = () => {
     <section id="projects" className="py-32 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
       {/* Enhanced background decoration */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-green-500/10 to-cyan-500/10 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2 animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/10 to-primary/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-primary/8 to-primary/4 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2 animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -129,10 +106,10 @@ const Projects = () => {
           <div className="inline-block">
             <h2 className="text-4xl md:text-5xl font-light text-foreground mb-6 relative">
               Featured
-              <span className="font-bold block bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+              <span className="font-bold block bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
                 Projects
               </span>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full"></div>
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60 rounded-full"></div>
             </h2>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -151,7 +128,7 @@ const Projects = () => {
       <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
         <DialogContent className="max-w-2xl bg-card/95 backdrop-blur-md border border-border/50">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text">
+            <DialogTitle className="text-2xl font-bold text-foreground">
               {selectedProjectData?.title}
             </DialogTitle>
           </DialogHeader>

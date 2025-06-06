@@ -14,7 +14,7 @@ const Education = () => {
     return (
       <div
         ref={cardRef}
-        className={`group p-6 rounded-xl border border-border/50 bg-card/60 backdrop-blur-sm hover:bg-card/80 hover:border-primary/30 hover:shadow-lg transition-all duration-500 hover:scale-105 hover:-translate-y-2 transform ${
+        className={`group p-6 rounded-xl border border-border/50 dark:border-border/30 bg-card/80 dark:bg-card/60 backdrop-blur-sm hover:bg-card/90 dark:hover:bg-card/80 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10 transition-all duration-500 hover:scale-105 hover:-translate-y-2 transform ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'
