@@ -86,7 +86,7 @@ const EducationManager = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Manage Education</h2>
+        <h2 className="text-2xl font-bold text-foreground">Manage Education</h2>
         <Button onClick={() => handleOpenModal()} className="flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Add Education
@@ -97,13 +97,13 @@ const EducationManager = () => {
         {data.education.map((education) => (
           <div
             key={education.id}
-            className="bg-gray-50 rounded-lg p-4 border hover:shadow-lg transition-shadow"
+            className="bg-card text-card-foreground rounded-lg p-4 border border-border hover:shadow-lg transition-shadow"
           >
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">{education.institution}</h3>
-                <p className="text-gray-700 mb-1">{education.degree} - {education.field}</p>
-                <p className="text-blue-600 font-medium">{education.year}</p>
+                <h3 className="font-semibold text-foreground mb-1">{education.institution}</h3>
+                <p className="text-muted-foreground mb-1">{education.degree} - {education.field}</p>
+                <p className="text-primary font-medium">{education.year}</p>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -140,7 +140,7 @@ const EducationManager = () => {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Institution</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Institution</label>
               <Input
                 value={formData.institution}
                 onChange={(e) => setFormData(prev => ({ ...prev, institution: e.target.value }))}
@@ -149,7 +149,7 @@ const EducationManager = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Degree</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Degree</label>
               <Input
                 value={formData.degree}
                 onChange={(e) => setFormData(prev => ({ ...prev, degree: e.target.value }))}
@@ -159,7 +159,7 @@ const EducationManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Field of Study</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Field of Study</label>
               <Input
                 value={formData.field}
                 onChange={(e) => setFormData(prev => ({ ...prev, field: e.target.value }))}
@@ -169,7 +169,7 @@ const EducationManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Year/Period</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Year/Period</label>
               <Input
                 value={formData.year}
                 onChange={(e) => setFormData(prev => ({ ...prev, year: e.target.value }))}

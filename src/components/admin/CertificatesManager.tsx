@@ -82,7 +82,7 @@ const CertificatesManager = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Manage Certificates</h2>
+        <h2 className="text-2xl font-bold text-foreground">Manage Certificates</h2>
         <Button onClick={() => handleOpenModal()} className="flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Add Certificate
@@ -93,13 +93,13 @@ const CertificatesManager = () => {
         {data.certificates.map((certificate) => (
           <div
             key={certificate.id}
-            className="bg-gray-50 rounded-lg p-4 border hover:shadow-lg transition-shadow"
+            className="bg-card text-card-foreground rounded-lg p-4 border border-border hover:shadow-lg transition-shadow"
           >
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">{certificate.name}</h3>
-                <p className="text-gray-600 mb-1">{certificate.institution}</p>
-                <p className="text-blue-600 font-medium">{certificate.year}</p>
+                <h3 className="font-semibold text-foreground mb-1">{certificate.name}</h3>
+                <p className="text-muted-foreground mb-1">{certificate.institution}</p>
+                <p className="text-primary font-medium">{certificate.year}</p>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -136,7 +136,7 @@ const CertificatesManager = () => {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Certificate Name</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Certificate Name</label>
               <Input
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -145,7 +145,7 @@ const CertificatesManager = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Institution</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Institution</label>
               <Input
                 value={formData.institution}
                 onChange={(e) => setFormData(prev => ({ ...prev, institution: e.target.value }))}
@@ -154,7 +154,7 @@ const CertificatesManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Year</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Year</label>
               <Input
                 value={formData.year}
                 onChange={(e) => setFormData(prev => ({ ...prev, year: e.target.value }))}

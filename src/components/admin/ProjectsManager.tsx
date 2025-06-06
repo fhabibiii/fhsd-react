@@ -95,7 +95,7 @@ const ProjectsManager = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Manage Projects</h2>
+        <h2 className="text-2xl font-bold text-foreground">Manage Projects</h2>
         <Button onClick={() => handleOpenModal()} className="flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Add Project
@@ -106,27 +106,27 @@ const ProjectsManager = () => {
         {data.projects.map((project) => (
           <div
             key={project.id}
-            className="bg-gray-50 rounded-lg p-4 border hover:shadow-lg transition-shadow"
+            className="bg-card text-card-foreground rounded-lg p-4 border border-border hover:shadow-lg transition-shadow"
           >
             <img
               src={project.image}
               alt={project.title}
               className="w-full h-32 object-cover rounded-lg mb-4"
             />
-            <h3 className="font-semibold text-gray-900 mb-2">{project.title}</h3>
-            <p className="text-gray-600 text-sm mb-4 line-clamp-2">{project.description}</p>
+            <h3 className="font-semibold text-foreground mb-2">{project.title}</h3>
+            <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{project.description}</p>
             
             <div className="flex flex-wrap gap-1 mb-4">
               {project.technologies.slice(0, 3).map((tech, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
+                  className="px-2 py-1 bg-primary/10 text-primary text-xs rounded border border-primary/20"
                 >
                   {tech}
                 </span>
               ))}
               {project.technologies.length > 3 && (
-                <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded">
                   +{project.technologies.length - 3}
                 </span>
               )}
@@ -166,7 +166,7 @@ const ProjectsManager = () => {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Title</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Title</label>
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
@@ -175,7 +175,7 @@ const ProjectsManager = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Description</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Description</label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
@@ -185,7 +185,7 @@ const ProjectsManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Details</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Details</label>
               <Textarea
                 value={formData.details}
                 onChange={(e) => setFormData(prev => ({ ...prev, details: e.target.value }))}
@@ -195,7 +195,7 @@ const ProjectsManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Image URL</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Image URL</label>
               <Input
                 value={formData.image}
                 onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
@@ -205,7 +205,7 @@ const ProjectsManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Technologies (comma separated)</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Technologies (comma separated)</label>
               <Input
                 value={formData.technologies}
                 onChange={(e) => setFormData(prev => ({ ...prev, technologies: e.target.value }))}
@@ -215,7 +215,7 @@ const ProjectsManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Project Link (optional)</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Project Link (optional)</label>
               <Input
                 value={formData.link}
                 onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}

@@ -87,7 +87,7 @@ const ExperienceManager = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Manage Experience</h2>
+        <h2 className="text-2xl font-bold text-foreground">Manage Experience</h2>
         <Button onClick={() => handleOpenModal()} className="flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Add Experience
@@ -98,14 +98,14 @@ const ExperienceManager = () => {
         {data.experience.map((experience) => (
           <div
             key={experience.id}
-            className="bg-gray-50 rounded-lg p-4 border hover:shadow-lg transition-shadow"
+            className="bg-card text-card-foreground rounded-lg p-4 border border-border hover:shadow-lg transition-shadow"
           >
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">{experience.position}</h3>
-                <p className="text-gray-700 mb-1">{experience.company}</p>
-                <p className="text-blue-600 font-medium mb-2">{experience.period}</p>
-                <p className="text-gray-600 text-sm">{experience.description}</p>
+                <h3 className="font-semibold text-foreground mb-1">{experience.position}</h3>
+                <p className="text-muted-foreground mb-1">{experience.company}</p>
+                <p className="text-primary font-medium mb-2">{experience.period}</p>
+                <p className="text-muted-foreground text-sm">{experience.description}</p>
               </div>
               <div className="flex gap-2 ml-4">
                 <Button
@@ -142,7 +142,7 @@ const ExperienceManager = () => {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Position</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Position</label>
               <Input
                 value={formData.position}
                 onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
@@ -151,7 +151,7 @@ const ExperienceManager = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Company</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Company</label>
               <Input
                 value={formData.company}
                 onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
@@ -160,7 +160,7 @@ const ExperienceManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Period</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Period</label>
               <Input
                 value={formData.period}
                 onChange={(e) => setFormData(prev => ({ ...prev, period: e.target.value }))}
@@ -170,7 +170,7 @@ const ExperienceManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Description</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Description</label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
