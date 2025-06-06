@@ -78,7 +78,7 @@ const SkillsManager = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Manage Skills</h2>
+        <h2 className="text-2xl font-bold text-foreground">Manage Skills</h2>
         <Button onClick={() => handleOpenModal()} className="flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Add Skill Category
@@ -89,10 +89,10 @@ const SkillsManager = () => {
         {data.skills.map((skill) => (
           <div
             key={skill.id}
-            className="bg-gray-50 rounded-lg p-4 border hover:shadow-lg transition-shadow"
+            className="bg-card rounded-lg p-4 border border-border hover:shadow-lg transition-shadow"
           >
             <div className="flex justify-between items-start mb-4">
-              <h3 className="font-semibold text-gray-900">{skill.category}</h3>
+              <h3 className="font-semibold text-foreground">{skill.category}</h3>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -119,7 +119,7 @@ const SkillsManager = () => {
               {skill.technologies.map((tech, index) => (
                 <span
                   key={index}
-                  className="px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded"
+                  className="px-2 py-1 bg-primary/10 text-primary text-sm rounded border border-primary/20"
                 >
                   {tech}
                 </span>
@@ -139,7 +139,7 @@ const SkillsManager = () => {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Category Name</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Category Name</label>
               <Input
                 value={formData.category}
                 onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
@@ -149,7 +149,7 @@ const SkillsManager = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2">Technologies (comma separated)</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Technologies (comma separated)</label>
               <Input
                 value={formData.technologies}
                 onChange={(e) => setFormData(prev => ({ ...prev, technologies: e.target.value }))}

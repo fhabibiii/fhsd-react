@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Github, Linkedin, Mail, Heart } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 const Footer = () => {
@@ -56,15 +56,6 @@ const Footer = () => {
                 <Icon className="w-6 h-6 transition-all duration-300" />
               </a>
             ))}
-          </div>
-
-          <div className="border-t border-border/30 pt-8 space-y-4">
-            <p className="text-muted-foreground flex items-center justify-center gap-2">
-              Made with <Heart className="w-4 h-4 text-red-500 animate-pulse" /> by Faqihuddin Habibi
-            </p>
-            <p className="text-muted-foreground/60 text-sm">
-              © 2024 All rights reserved.
-            </p>
           </div>
         </div>
       </div>
