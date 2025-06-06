@@ -8,6 +8,7 @@ import CertificatesManager from '../components/admin/CertificatesManager';
 import EducationManager from '../components/admin/EducationManager';
 import ExperienceManager from '../components/admin/ExperienceManager';
 import SkillsManager from '../components/admin/SkillsManager';
+import ThemeToggle from '../components/admin/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
@@ -28,11 +29,11 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
-    { id: 'projects', label: 'Projects', icon: FileText },
-    { id: 'certificates', label: 'Certificates', icon: Award },
-    { id: 'education', label: 'Education', icon: GraduationCap },
-    { id: 'experience', label: 'Experience', icon: Briefcase },
-    { id: 'skills', label: 'Skills', icon: Code },
+    { id: 'projects', label: 'Projects', icon: FileText, color: 'bg-blue-500' },
+    { id: 'certificates', label: 'Certificates', icon: Award, color: 'bg-yellow-500' },
+    { id: 'education', label: 'Education', icon: GraduationCap, color: 'bg-green-500' },
+    { id: 'experience', label: 'Experience', icon: Briefcase, color: 'bg-purple-500' },
+    { id: 'skills', label: 'Skills', icon: Code, color: 'bg-pink-500' },
   ];
 
   const renderContent = () => {
@@ -53,19 +54,20 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
-              <LayoutDashboard className="w-8 h-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+              <LayoutDashboard className="w-8 h-8 text-primary" />
+              <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
             </div>
             <div className="flex items-center gap-4">
+              <ThemeToggle />
               <a
                 href="/"
-                className="text-gray-600 hover:text-blue-600 transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors"
               >
                 View Portfolio
               </a>
@@ -85,7 +87,7 @@ const AdminDashboard = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <div className="lg:w-64 flex-shrink-0">
-            <nav className="bg-white rounded-lg shadow-sm p-4">
+            <nav className="bg-card rounded-lg shadow-sm p-4 border border-border">
               <div className="space-y-2">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
@@ -93,14 +95,14 @@ const AdminDashboard = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 relative overflow-hidden ${
                         activeTab === tab.id
-                          ? 'bg-blue-600 text-white shadow-lg'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? `${tab.color} text-white shadow-lg`
+                          : 'text-foreground hover:bg-accent'
                       }`}
                     >
-                      <Icon className="w-5 h-5" />
-                      {tab.label}
+                      <Icon className="w-5 h-5 relative z-10" />
+                      <span className="relative z-10">{tab.label}</span>
                     </button>
                   );
                 })}
@@ -110,7 +112,7 @@ const AdminDashboard = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 animate-fade-in">
+            <div className="bg-card rounded-lg shadow-sm p-6 animate-fade-in border border-border">
               {renderContent()}
             </div>
           </div>
