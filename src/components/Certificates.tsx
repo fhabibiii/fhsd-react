@@ -7,12 +7,15 @@ const Certificates = () => {
   const { data } = usePortfolio();
 
   return (
-    <section id="certificates" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="certificates" className="py-24 bg-muted/30">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Certificates</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Professional certifications and achievements
+          <h2 className="text-3xl md:text-4xl font-light text-foreground mb-4">
+            Certificates &
+            <span className="font-bold"> Achievements</span>
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Professional certifications and recognitions
           </p>
         </div>
 
@@ -20,17 +23,19 @@ const Certificates = () => {
           {data.certificates.map((cert, index) => (
             <div
               key={cert.id}
-              className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-l-4 border-blue-600 animate-fade-in"
-              style={{ animationDelay: `${index * 150}ms` }}
+              className="group p-6 rounded-xl bg-card border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-300 animate-fade-in"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                  <Award className="w-6 h-6 text-white" />
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <Award className="w-5 h-5 text-primary" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{cert.name}</h3>
-                  <p className="text-gray-600 mb-1">{cert.institution}</p>
-                  <p className="text-blue-600 font-medium">{cert.year}</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base font-medium text-foreground mb-1 group-hover:text-primary transition-colors">
+                    {cert.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-1">{cert.institution}</p>
+                  <p className="text-xs text-primary font-medium">{cert.year}</p>
                 </div>
               </div>
             </div>
