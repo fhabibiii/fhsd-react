@@ -29,11 +29,11 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
-    { id: 'projects', label: 'Projects', icon: FileText, color: 'bg-blue-500' },
-    { id: 'certificates', label: 'Certificates', icon: Award, color: 'bg-yellow-500' },
-    { id: 'education', label: 'Education', icon: GraduationCap, color: 'bg-green-500' },
-    { id: 'experience', label: 'Experience', icon: Briefcase, color: 'bg-purple-500' },
-    { id: 'skills', label: 'Skills', icon: Code, color: 'bg-pink-500' },
+    { id: 'projects', label: 'Projects', icon: FileText, color: 'bg-blue-500 dark:bg-blue-600' },
+    { id: 'certificates', label: 'Certificates', icon: Award, color: 'bg-yellow-500 dark:bg-yellow-600' },
+    { id: 'education', label: 'Education', icon: GraduationCap, color: 'bg-green-500 dark:bg-green-600' },
+    { id: 'experience', label: 'Experience', icon: Briefcase, color: 'bg-purple-500 dark:bg-purple-600' },
+    { id: 'skills', label: 'Skills', icon: Code, color: 'bg-pink-500 dark:bg-pink-600' },
   ];
 
   const renderContent = () => {
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card shadow-sm border-b border-border">
+      <header className="bg-card border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
@@ -67,13 +67,13 @@ const AdminDashboard = () => {
               <ThemeToggle />
               <a
                 href="/"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 View Portfolio
               </a>
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 Logout
@@ -98,11 +98,11 @@ const AdminDashboard = () => {
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 relative overflow-hidden ${
                         activeTab === tab.id
                           ? `${tab.color} text-white shadow-lg`
-                          : 'text-foreground hover:bg-accent'
+                          : 'text-foreground hover:bg-accent hover:text-accent-foreground'
                       }`}
                     >
                       <Icon className="w-5 h-5 relative z-10" />
-                      <span className="relative z-10">{tab.label}</span>
+                      <span className="relative z-10 font-medium">{tab.label}</span>
                     </button>
                   );
                 })}

@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { Github, Linkedin, Mail, ArrowDown } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 relative overflow-hidden">
+    <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20 relative overflow-hidden">
       {/* Enhanced background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-primary/15 to-primary/5 rounded-full blur-3xl animate-pulse"></div>
@@ -12,11 +12,11 @@ const Hero = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-r from-primary/8 to-transparent rounded-full blur-3xl"></div>
       </div>
 
-      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto pt-16">
+      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto pt-32">
         <div className="space-y-12 animate-fade-in">
           <div className="space-y-8">
             <div className="relative">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-foreground tracking-tight leading-tight">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-light text-foreground tracking-tight leading-tight">
                 Faqihuddin
                 <span className="block font-bold bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent relative mt-2">
                   Habibi
@@ -25,7 +25,7 @@ const Hero = () => {
             </div>
             
             <div className="space-y-6">
-              <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-4xl mx-auto font-light leading-relaxed">
+              <p className="text-xl md:text-2xl lg:text-3xl text-muted-foreground max-w-4xl mx-auto font-light leading-relaxed">
                 Senior Software Engineer crafting digital experiences with modern technologies
               </p>
               <div className="flex flex-wrap justify-center gap-8 text-base">
@@ -59,15 +59,6 @@ const Hero = () => {
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </a>
             ))}
-          </div>
-
-          {/* Scroll indicator */}
-          <div className="flex flex-col items-center gap-4 mt-16">
-            <p className="text-sm text-muted-foreground/60 font-light">Discover my work</p>
-            <div className="flex flex-col items-center gap-2 animate-bounce">
-              <ArrowDown className="w-5 h-5 text-primary/60" />
-              <div className="w-px h-8 bg-gradient-to-b from-primary/60 to-transparent"></div>
-            </div>
           </div>
         </div>
       </div>
