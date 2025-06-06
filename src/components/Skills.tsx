@@ -2,19 +2,21 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
-import { Code, Database, Globe, Palette, Server, Smartphone } from 'lucide-react';
+import { Code, Globe, Server } from 'lucide-react';
 
 const Skills = () => {
   const { data } = usePortfolio();
   const [titleRef, titleVisible] = useScrollAnimation();
 
+  // Filter out database skills and limit to 3 categories
+  const filteredSkills = data.skills
+    .filter(skillCategory => !skillCategory.category.toLowerCase().includes('database') && !skillCategory.category.toLowerCase().includes('db'))
+    .slice(0, 3);
+
   const getIconForCategory = (category: string) => {
     const lowerCategory = category.toLowerCase();
     if (lowerCategory.includes('frontend') || lowerCategory.includes('front')) return Globe;
     if (lowerCategory.includes('backend') || lowerCategory.includes('back')) return Server;
-    if (lowerCategory.includes('database') || lowerCategory.includes('db')) return Database;
-    if (lowerCategory.includes('mobile')) return Smartphone;
-    if (lowerCategory.includes('design') || lowerCategory.includes('ui')) return Palette;
     return Code;
   };
 
@@ -25,7 +27,7 @@ const Skills = () => {
     return (
       <div
         ref={cardRef}
-        className={`group relative p-8 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 transition-all duration-700 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20 transform ${
+        className={`group relative p-8 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/50 transition-all duration-700 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30 transform ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'
@@ -36,7 +38,7 @@ const Skills = () => {
         }}
       >
         {/* Gradient background overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/3 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         
         {/* Icon and title */}
         <div className="relative z-10 mb-6 flex items-center gap-4">
@@ -76,8 +78,8 @@ const Skills = () => {
     <section id="skills" className="py-24 bg-background relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-pink-500/10 to-orange-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-primary/8 to-primary/4 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-tr from-primary/6 to-primary/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -89,16 +91,16 @@ const Skills = () => {
         >
           <h2 className="text-4xl md:text-5xl font-light text-foreground mb-6">
             Technical
-            <span className="font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"> Expertise</span>
+            <span className="font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent"> Expertise</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full mx-auto mb-6"></div>
+          <div className="w-20 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60 rounded-full mx-auto mb-6"></div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Crafting digital experiences with cutting-edge technologies and modern development practices
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {data.skills.map((skillCategory, index) => (
+          {filteredSkills.map((skillCategory, index) => (
             <SkillCard key={skillCategory.id} skillCategory={skillCategory} index={index} />
           ))}
         </div>
