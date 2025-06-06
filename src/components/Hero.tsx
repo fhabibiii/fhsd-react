@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { Github, Linkedin, Mail, ArrowDown } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 const Hero = () => {
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/20 relative">
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/20 relative pt-24">
       {/* Minimal background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
@@ -13,7 +13,7 @@ const Hero = () => {
 
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <div className="space-y-8 animate-fade-in">
-          <div className="space-y-4">
+          <div className="space-y-6">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-foreground tracking-tight">
               Faqihuddin
               <span className="block font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
@@ -59,13 +59,6 @@ const Hero = () => {
             >
               <Mail className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
             </a>
-          </div>
-
-          <div className="pt-16">
-            <div className="flex flex-col items-center gap-2 text-muted-foreground animate-bounce">
-              <span className="text-xs font-medium">Scroll to explore</span>
-              <ArrowDown className="w-4 h-4" />
-            </div>
           </div>
         </div>
       </div>

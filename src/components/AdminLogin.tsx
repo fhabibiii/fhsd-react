@@ -40,28 +40,28 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center px-4">
-      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md border border-white/20 animate-scale-in">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center px-4">
+      <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md border border-border animate-scale-in shadow-xl">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-8 h-8 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Admin Login</h2>
-          <p className="text-gray-300">Masuk ke dashboard admin</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Admin Login</h2>
+          <p className="text-muted-foreground">Masuk ke dashboard admin</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Username
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
                 value={credentials.username}
                 onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
-                className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan username"
                 required
               />
@@ -69,23 +69,23 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={credentials.password}
                 onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                className="w-full pl-10 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full pl-10 pr-12 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan password"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -95,10 +95,10 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 disabled:scale-100"
+            className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-primary-foreground font-medium py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 disabled:scale-100"
           >
             {isLoading ? (
-              <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-primary-foreground/20 border-t-primary-foreground rounded-full animate-spin"></div>
             ) : (
               'Masuk'
             )}
@@ -106,8 +106,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-400 text-sm">
-            Demo: username: <span className="text-blue-400">admin</span>, password: <span className="text-blue-400">admin123</span>
+          <p className="text-muted-foreground text-sm">
+            Demo: username: <span className="text-primary">admin</span>, password: <span className="text-primary">admin123</span>
           </p>
         </div>
       </div>
