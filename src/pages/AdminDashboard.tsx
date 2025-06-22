@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, FileText, LogOut, Home, Mail, Menu, User, Code } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import AdminLogin from '../components/AdminLogin';
@@ -8,13 +8,44 @@ import ThemeToggle from '../components/admin/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
-  const { isAdmin, logout } = usePortfolio();
+  const { isAdmin, logout, login } = usePortfolio();
   const [activeTab, setActiveTab] = useState('projects');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const { toast } = useToast();
 
-  if (!isAdmin) {
-    return <AdminLogin onLogin={() => setActiveTab('projects')} />;
+  // Session management
+  useEffect(() => {
+    if (isAdmin) {
+      // Set session timeout for 24 hours
+      const sessionTimeout = setTimeout(() => {
+        setSessionExpired(true);
+        logout();
+        toast({
+          title: "Session expired",
+          description: "Your session has expired. Please login again.",
+          variant: "destructive",
+        });
+      }, 24 * 60 * 60 * 1000); // 24 hours
+
+      // Refresh token every hour
+      const refreshInterval = setInterval(() => {
+        // Simulate token refresh
+        console.log('Refreshing session token...');
+      }, 60 * 60 * 1000); // 1 hour
+
+      return () => {
+        clearTimeout(sessionTimeout);
+        clearInterval(refreshInterval);
+      };
+    }
+  }, [isAdmin, logout, toast]);
+
+  if (!isAdmin || sessionExpired) {
+    return <AdminLogin onLogin={() => {
+      setActiveTab('projects');
+      setSessionExpired(false);
+    }} />;
   }
 
   const handleLogout = () => {
@@ -105,9 +136,9 @@ const AdminDashboard = () => {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-3 rounded-lg text-left transition-all duration-200 ${
+                  className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'gap-3 px-3'} py-3 rounded-lg text-left transition-all duration-200 ${
                     activeTab === item.id
-                      ? 'bg-primary text-white shadow-lg'
+                      ? 'bg-primary text-white dark:text-gray-900 shadow-lg'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                   title={sidebarCollapsed ? item.label : undefined}
@@ -126,7 +157,7 @@ const AdminDashboard = () => {
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
           <button
             onClick={handleLogout}
-            className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200`}
+            className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'gap-3 px-3'} py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200`}
             title={sidebarCollapsed ? 'Logout' : undefined}
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
@@ -140,7 +171,7 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className={`flex-1 flex flex-col ${sidebarCollapsed ? 'ml-16' : 'ml-64'} transition-all duration-300`}>
         {/* Navbar */}
-        <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6 fixed right-0 left-0 z-20" style={{ left: sidebarCollapsed ? '64px' : '256px' }}>
+        <header className={`h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6 fixed right-0 z-20 ${sidebarCollapsed ? 'left-16' : 'left-64'} transition-all duration-300`}>
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -159,7 +190,7 @@ const AdminDashboard = () => {
             {/* Admin Greeting */}
             <div className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-white" />
+                <User className="w-4 h-4 text-white dark:text-gray-900" />
               </div>
               <div>
                 <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>

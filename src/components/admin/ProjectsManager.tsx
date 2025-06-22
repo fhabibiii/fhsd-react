@@ -17,7 +17,6 @@ const ProjectsManager = () => {
     description: '',
     details: '',
     image: '',
-    technologies: '',
     link: '',
   });
   const { toast } = useToast();
@@ -30,7 +29,6 @@ const ProjectsManager = () => {
         description: project.description,
         details: project.details,
         image: project.image,
-        technologies: project.technologies.join(', '),
         link: project.link || '',
       });
     } else {
@@ -40,7 +38,6 @@ const ProjectsManager = () => {
         description: '',
         details: '',
         image: '',
-        technologies: '',
         link: '',
       });
     }
@@ -56,7 +53,7 @@ const ProjectsManager = () => {
       description: formData.description,
       details: formData.details,
       image: formData.image,
-      technologies: formData.technologies.split(',').map(tech => tech.trim()),
+      technologies: [], // Remove technologies field
       link: formData.link || undefined,
     };
 
@@ -93,7 +90,7 @@ const ProjectsManager = () => {
   };
 
   return (
-    <div>
+    <div className="p-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-foreground">Manage Projects</h2>
         <Button onClick={() => handleOpenModal()} className="flex items-center gap-2">
@@ -115,22 +112,6 @@ const ProjectsManager = () => {
             />
             <h3 className="font-semibold text-foreground mb-2">{project.title}</h3>
             <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{project.description}</p>
-            
-            <div className="flex flex-wrap gap-1 mb-4">
-              {project.technologies.slice(0, 3).map((tech, index) => (
-                <span
-                  key={index}
-                  className="px-2 py-1 bg-primary/10 text-primary text-xs rounded border border-primary/20"
-                >
-                  {tech}
-                </span>
-              ))}
-              {project.technologies.length > 3 && (
-                <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded">
-                  +{project.technologies.length - 3}
-                </span>
-              )}
-            </div>
 
             <div className="flex gap-2">
               <Button
@@ -200,16 +181,6 @@ const ProjectsManager = () => {
                 value={formData.image}
                 onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
                 placeholder="https://example.com/image.jpg"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2 text-foreground">Technologies (comma separated)</label>
-              <Input
-                value={formData.technologies}
-                onChange={(e) => setFormData(prev => ({ ...prev, technologies: e.target.value }))}
-                placeholder="React, Node.js, MongoDB"
                 required
               />
             </div>

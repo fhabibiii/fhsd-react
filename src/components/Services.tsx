@@ -65,7 +65,7 @@ const Services = () => {
     return (
       <div
         ref={cardRef}
-        className={`group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-black/20 transform ${
+        className={`group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-black/20 transform flex flex-col ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'
@@ -75,7 +75,7 @@ const Services = () => {
           animationFillMode: 'both'
         }}
       >
-        <div className="p-6">
+        <div className="p-6 flex flex-col flex-1">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-primary/10">
               <service.icon className="w-5 h-5 text-primary" />
@@ -95,7 +95,7 @@ const Services = () => {
             {service.description}
           </p>
 
-          <div className="space-y-2 mb-6">
+          <div className="space-y-2 mb-6 flex-1">
             {service.features.map((feature: string, featureIndex: number) => (
               <div key={featureIndex} className="flex items-center gap-2">
                 <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
@@ -106,7 +106,7 @@ const Services = () => {
 
           <button 
             onClick={() => handlePackageClick(service.title)}
-            className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-3 rounded-lg transition-all duration-300 font-semibold text-sm hover:scale-[1.02] flex flex-col items-center gap-1"
+            className="w-full bg-primary hover:bg-primary/90 text-white dark:text-gray-900 px-4 py-3 rounded-lg transition-all duration-300 font-semibold text-sm hover:scale-[1.02] flex flex-col items-center gap-1 mt-auto"
           >
             <span className="text-lg font-bold">{service.price}</span>
             <span>Pilih Paket Ini</span>
@@ -139,7 +139,7 @@ const Services = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
           {services.map((service, index) => (
             <ServiceCard key={service.id} service={service} index={index} />
           ))}
@@ -157,7 +157,7 @@ const Services = () => {
             </p>
             <button 
               onClick={handleConsultationClick}
-              className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold"
+              className="bg-primary hover:bg-primary/90 text-white dark:text-gray-900 px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold"
             >
               💬 Konsultasi Gratis Sekarang
             </button>

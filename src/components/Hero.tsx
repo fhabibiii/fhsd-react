@@ -58,7 +58,7 @@ const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={scrollToServices}
-                className="group px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold flex items-center justify-center gap-2"
+                className="group px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white dark:text-gray-900 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold flex items-center justify-center gap-2"
               >
                 🚀 Lihat Paket Layanan
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
