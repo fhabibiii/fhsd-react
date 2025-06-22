@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { LayoutDashboard, FileText, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, LogOut, Users, Award, GraduationCap, Code, Home, Mail } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import AdminLogin from '../components/AdminLogin';
 import ProjectsManager from '../components/admin/ProjectsManager';
@@ -25,13 +25,49 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
-    { id: 'projects', label: 'Website Portfolio', icon: FileText, color: 'bg-blue-500 dark:bg-blue-600' }
+    { id: 'projects', label: 'Portfolio', icon: FileText, color: 'bg-blue-500 dark:bg-blue-600' },
+    { id: 'hero', label: 'Hero Section', icon: Home, color: 'bg-green-500 dark:bg-green-600' },
+    { id: 'services', label: 'Services', icon: Code, color: 'bg-purple-500 dark:bg-purple-600' },
+    { id: 'contact', label: 'Contact', icon: Mail, color: 'bg-orange-500 dark:bg-orange-600' }
   ];
 
   const renderContent = () => {
     switch (activeTab) {
       case 'projects':
         return <ProjectsManager />;
+      case 'hero':
+        return (
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Hero Section Management</h2>
+            <div className="bg-muted/20 rounded-xl p-6 border border-border/30">
+              <p className="text-muted-foreground text-center">
+                🚧 Hero section management akan segera tersedia
+              </p>
+            </div>
+          </div>
+        );
+      case 'services':
+        return (
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Services Management</h2>
+            <div className="bg-muted/20 rounded-xl p-6 border border-border/30">
+              <p className="text-muted-foreground text-center">
+                🚧 Services management akan segera tersedia
+              </p>
+            </div>
+          </div>
+        );
+      case 'contact':
+        return (
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-foreground mb-4">Contact Management</h2>
+            <div className="bg-muted/20 rounded-xl p-6 border border-border/30">
+              <p className="text-muted-foreground text-center">
+                🚧 Contact management akan segera tersedia
+              </p>
+            </div>
+          </div>
+        );
       default:
         return <ProjectsManager />;
     }
@@ -96,7 +132,7 @@ const AdminDashboard = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 animate-fade-in border border-gray-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm animate-fade-in border border-gray-200 dark:border-gray-700">
               {renderContent()}
             </div>
           </div>

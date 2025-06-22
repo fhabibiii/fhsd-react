@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { ExternalLink, Globe } from 'lucide-react';
+import { ExternalLink, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -8,7 +7,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 const Projects = () => {
   const { data } = usePortfolio();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
   const [titleRef, titleVisible] = useScrollAnimation();
+  
+  const itemsPerPage = 6;
   
   const selectedProjectData = data.projects.find(p => p.id === selectedProject);
 
@@ -71,6 +73,20 @@ const Projects = () => {
   ];
 
   const allProjects = [...data.projects, ...additionalProjects];
+  const totalPages = Math.ceil(allProjects.length / itemsPerPage);
+  const currentProjects = allProjects.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const ProjectCard = ({ project, index }: { project: any; index: number }) => {
     const [cardRef, cardVisible] = useScrollAnimation();
@@ -96,7 +112,6 @@ const Projects = () => {
           animationFillMode: 'both'
         }}
       >
-        {/* Animated gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-2xl"></div>
         
         <div className="relative overflow-hidden rounded-t-2xl">
@@ -185,11 +200,50 @@ const Projects = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {allProjects.map((project, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {currentProjects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 0}
+              className="flex items-center gap-2 px-6 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="w-5 h-5" />
+              <span className="font-medium">Previous</span>
+            </button>
+            
+            <div className="flex items-center gap-2">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i)}
+                  className={`w-10 h-10 rounded-full transition-all duration-300 font-medium ${
+                    currentPage === i
+                      ? 'bg-primary text-primary-foreground shadow-lg'
+                      : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-primary/10 hover:border-primary/30'
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+            
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages - 1}
+              className="flex items-center gap-2 px-6 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span className="font-medium">Next</span>
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Project Detail Modal */}

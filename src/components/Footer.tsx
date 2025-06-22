@@ -9,7 +9,7 @@ const Footer = () => {
   const services = [
     'Website Statis',
     'Aplikasi Web',
-    'E-Commerce',
+    'E-Commerce', 
     'Mobile App (PWA)',
     'UI/UX Design',
     'Maintenance & Support'
@@ -64,11 +64,11 @@ const Footer = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <MapPin className="w-4 h-4 text-primary" />
-                  <span className="text-sm">Jakarta Selatan, DKI Jakarta</span>
+                  <span className="text-sm">ANSAC (Anagata Sasmitaloka Consulting) Karangmiri, UH 7 Gg. Cinde Amoh No.317C, Giwangan, Kec. Umbulharjo, Kota Yogyakarta, DIY 55163</span>
                 </div>
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <Phone className="w-4 h-4 text-primary" />
-                  <span className="text-sm">+62 812-3456-7890</span>
+                  <span className="text-sm">+62 851-5632-1198 / +62 812-2551-0099</span>
                 </div>
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <Mail className="w-4 h-4 text-primary" />
