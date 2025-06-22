@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink, Globe } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -12,8 +12,76 @@ const Projects = () => {
   
   const selectedProjectData = data.projects.find(p => p.id === selectedProject);
 
+  // Sample additional projects for demo
+  const additionalProjects = [
+    {
+      id: 'demo-1',
+      title: 'E-Commerce Fashion',
+      description: 'Platform jual beli fashion online dengan sistem pembayaran terintegrasi dan manajemen inventory.',
+      details: 'Website e-commerce lengkap dengan fitur keranjang belanja, checkout, payment gateway, dan admin dashboard untuk mengelola produk dan pesanan.',
+      image: '/placeholder.svg',
+      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
+      link: ''
+    },
+    {
+      id: 'demo-2',
+      title: 'Company Profile Tech',
+      description: 'Website company profile untuk perusahaan teknologi dengan desain modern dan responsif.',
+      details: 'Website corporate yang menampilkan profil perusahaan, layanan, tim, dan portofolio dengan design yang clean dan professional.',
+      image: '/placeholder.svg',
+      technologies: ['React', 'Tailwind CSS', 'Framer Motion'],
+      link: ''
+    },
+    {
+      id: 'demo-3',
+      title: 'Restaurant App',
+      description: 'Aplikasi pemesanan makanan online dengan fitur real-time tracking dan notifikasi.',
+      details: 'Aplikasi web untuk restoran dengan sistem pemesanan online, tracking pesanan real-time, dan integrasi dengan sistem POS.',
+      image: '/placeholder.svg',
+      technologies: ['React', 'Socket.io', 'Express', 'PostgreSQL'],
+      link: ''
+    },
+    {
+      id: 'demo-4',
+      title: 'Learning Management System',
+      description: 'Platform pembelajaran online dengan video streaming dan sistem quiz interaktif.',
+      details: 'LMS lengkap dengan fitur course management, video player, quiz system, progress tracking, dan sertifikat.',
+      image: '/placeholder.svg',
+      technologies: ['React', 'Node.js', 'MySQL', 'AWS'],
+      link: ''
+    },
+    {
+      id: 'demo-5',
+      title: 'Real Estate Portal',
+      description: 'Platform properti dengan pencarian advanced dan virtual tour 360 derajat.',
+      details: 'Website properti dengan fitur pencarian berdasarkan lokasi, harga, tipe, virtual tour, dan sistem CRM untuk agent.',
+      image: '/placeholder.svg',
+      technologies: ['React', 'Google Maps API', 'Firebase'],
+      link: ''
+    },
+    {
+      id: 'demo-6',
+      title: 'Healthcare Dashboard',
+      description: 'Sistem manajemen pasien dan jadwal dokter untuk klinik dan rumah sakit.',
+      details: 'Aplikasi manajemen rumah sakit dengan fitur registrasi pasien, jadwal dokter, rekam medis, dan sistem pembayaran.',
+      image: '/placeholder.svg',
+      technologies: ['React', 'Node.js', 'MongoDB', 'Chart.js'],
+      link: ''
+    }
+  ];
+
+  const allProjects = [...data.projects, ...additionalProjects];
+
   const ProjectCard = ({ project, index }: { project: any; index: number }) => {
     const [cardRef, cardVisible] = useScrollAnimation();
+
+    const handleViewProject = () => {
+      if (project.link && project.link.trim() !== '') {
+        window.open(project.link, '_blank', 'noopener,noreferrer');
+      } else {
+        setSelectedProject(project.id);
+      }
+    };
 
     return (
       <div
@@ -66,22 +134,21 @@ const Projects = () => {
 
           <div className="flex gap-3">
             <button
-              onClick={() => setSelectedProject(project.id)}
+              onClick={handleViewProject}
               className="flex-1 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm font-medium hover:shadow-lg hover:shadow-primary/25 transform hover:scale-105"
             >
-              <ExternalLink className="w-4 h-4" />
-              Lihat Detail
+              {project.link && project.link.trim() !== '' ? (
+                <>
+                  <Globe className="w-4 h-4" />
+                  Kunjungi Website
+                </>
+              ) : (
+                <>
+                  <ExternalLink className="w-4 h-4" />
+                  Lihat Detail
+                </>
+              )}
             </button>
-            {project.link && (
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 bg-card/80 dark:bg-card/60 border border-border rounded-xl hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 hover:scale-110 hover:rotate-3"
-              >
-                <Github className="w-5 h-5 text-muted-foreground hover:text-primary transition-colors" />
-              </a>
-            )}
           </div>
         </div>
       </div>
@@ -105,20 +172,21 @@ const Projects = () => {
         >
           <div className="inline-block">
             <h2 className="text-4xl md:text-5xl font-light text-foreground mb-6 relative">
-              Featured
+              Portfolio
               <span className="font-bold block bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-                Projects
+                Website Kami
               </span>
               <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60 rounded-full"></div>
             </h2>
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            A collection of projects that showcase my skills and experience in software development
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Koleksi website dan aplikasi web yang telah kami kembangkan untuk berbagai klien dari berbagai industri. 
+            Setiap project dibuat dengan teknologi terdepan dan desain yang user-friendly.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {data.projects.map((project, index) => (
+          {allProjects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
@@ -154,17 +222,11 @@ const Projects = () => {
                 </span>
               ))}
             </div>
-            {selectedProjectData?.link && (
-              <a
-                href={selectedProjectData.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-6 py-3 rounded-xl hover:from-primary/90 hover:to-primary/70 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
-              >
-                <Github className="w-5 h-5" />
-                View on GitHub
-              </a>
-            )}
+            <div className="bg-muted/20 rounded-xl p-4 border border-border/30">
+              <p className="text-sm text-muted-foreground text-center">
+                🚧 Website ini sedang dalam tahap development dan akan segera dapat diakses
+              </p>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

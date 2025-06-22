@@ -6,23 +6,38 @@ import { useTheme } from './ThemeProvider';
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+      
+      // Update active section based on scroll position
+      const sections = ['home', 'projects', 'services', 'contact'];
+      const currentSection = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
+      
+      if (currentSection) {
+        setActiveSection(currentSection);
+      }
     };
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navItems = [
-    { href: '#home', label: 'Home' },
-    { href: '#projects', label: 'Projects' },
-    { href: '#skills', label: 'Skills' },
-    { href: '#experience', label: 'Experience' },
-    { href: '#education', label: 'Education' },
-    { href: '#certificates', label: 'Certificates' },
+    { href: '#home', label: 'Beranda' },
+    { href: '#projects', label: 'Portfolio' },
+    { href: '#services', label: 'Layanan' },
+    { href: '#contact', label: 'Kontak' },
   ];
 
   const scrollToSection = (href: string) => {
@@ -43,7 +58,7 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <span className="text-xl font-bold text-foreground">FH</span>
+            <span className="text-xl font-bold text-foreground">FH Digital</span>
           </div>
 
           {/* Desktop Navigation */}
@@ -52,7 +67,11 @@ const Navigation = () => {
               <button
                 key={item.href}
                 onClick={() => scrollToSection(item.href)}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium"
+                className={`transition-all duration-200 text-sm font-medium ${
+                  activeSection === item.href.substring(1)
+                    ? 'text-primary font-bold'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
               >
                 {item.label}
               </button>
@@ -88,7 +107,11 @@ const Navigation = () => {
                 <button
                   key={item.href}
                   onClick={() => scrollToSection(item.href)}
-                  className="block w-full text-left px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors duration-200"
+                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors duration-200 ${
+                    activeSection === item.href.substring(1)
+                      ? 'text-primary font-bold bg-primary/10'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                  }`}
                 >
                   {item.label}
                 </button>
