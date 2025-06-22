@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Globe, Smartphone, ShoppingCart, Zap, Code, Palette, ArrowRight } from 'lucide-react';
+import { Globe, Code, Zap, Rocket, ArrowRight, Clock, CheckCircle } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 const Services = () => {
@@ -8,64 +8,52 @@ const Services = () => {
 
   const services = [
     {
-      id: 'static-website',
+      id: 'basic-website',
       icon: Globe,
-      title: 'Website Statis',
-      description: 'Website company profile, landing page, dan portofolio dengan performa tinggi dan SEO optimal.',
-      features: ['Responsive Design', 'SEO Friendly', 'Loading Cepat', 'Mobile Optimized'],
+      title: 'Basic Website',
+      duration: '5–7 hari',
+      description: 'Landing page interaktif dengan kontak dan animasi ringan yang sempurna untuk memperkenalkan bisnis Anda.',
+      features: ['Landing page interaktif', 'Form kontak terintegrasi', 'Animasi ringan & smooth', 'Responsive design', 'SEO friendly'],
       price: 'Mulai dari Rp 2.500.000',
       popular: false,
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-blue-500 to-cyan-500',
+      bgColor: 'bg-blue-50 dark:bg-blue-950/20'
     },
     {
-      id: 'web-app',
+      id: 'web-app-basic',
       icon: Code,
-      title: 'Aplikasi Web',
-      description: 'Sistem manajemen, dashboard admin, dan aplikasi bisnis dengan fitur lengkap dan database terintegrasi.',
-      features: ['Database Integration', 'User Management', 'Real-time Updates', 'Admin Dashboard'],
-      price: 'Mulai dari Rp 8.000.000',
+      title: 'Web App Dasar',
+      duration: '10–15 hari',
+      description: 'Aplikasi web dengan fitur login, dashboard user, dan manajemen data dasar untuk kebutuhan bisnis kecil.',
+      features: ['Sistem login & registrasi', 'Dashboard user', 'Input data (CRUD)', 'Validasi form', 'Pagination data'],
+      price: 'Mulai dari Rp 7.000.000',
       popular: true,
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: 'from-green-500 to-emerald-500',
+      bgColor: 'bg-green-50 dark:bg-green-950/20'
     },
     {
-      id: 'ecommerce',
-      icon: ShoppingCart,
-      title: 'E-Commerce',
-      description: 'Toko online lengkap dengan sistem pembayaran, manajemen produk, dan laporan penjualan.',
-      features: ['Payment Gateway', 'Inventory System', 'Order Management', 'Analytics'],
-      price: 'Mulai dari Rp 12.000.000',
-      popular: false,
-      gradient: 'from-green-500 to-emerald-500'
-    },
-    {
-      id: 'mobile-app',
-      icon: Smartphone,
-      title: 'Mobile App (PWA)',
-      description: 'Aplikasi mobile yang dapat diinstall di smartphone dengan performa seperti native app.',
-      features: ['Offline Support', 'Push Notifications', 'App Install', 'Cross Platform'],
+      id: 'web-app-medium',
+      icon: Zap,
+      title: 'Web App Menengah',
+      duration: '20–30 hari',
+      description: 'Solusi lengkap dengan admin panel, multi-role user, dan fitur advanced untuk bisnis yang berkembang.',
+      features: ['Admin panel lengkap', 'Multi-role management', 'Upload & manajemen file', 'Grafik & analisis data', 'Notifikasi email otomatis'],
       price: 'Mulai dari Rp 15.000.000',
       popular: false,
-      gradient: 'from-orange-500 to-red-500'
+      gradient: 'from-purple-500 to-pink-500',
+      bgColor: 'bg-purple-50 dark:bg-purple-950/20'
     },
     {
-      id: 'custom',
-      icon: Zap,
-      title: 'Solusi Custom',
-      description: 'Pengembangan khusus sesuai kebutuhan bisnis Anda dengan teknologi terdepan.',
-      features: ['Custom Features', 'API Integration', 'Third-party Services', 'Scalable Architecture'],
-      price: 'Harga Negosiasi',
+      id: 'web-app-complex',
+      icon: Rocket,
+      title: 'Web App Kompleks',
+      duration: '30–60 hari',
+      description: 'Sistem besar dan kompleks dengan integrasi API, keamanan tinggi untuk enterprise dan skala besar.',
+      features: ['Sistem enterprise-grade', 'E-commerce & afiliasi', 'Integrasi API eksternal', 'Keamanan tingkat tinggi', 'Arsitektur scalable'],
+      price: 'Mulai dari Rp 30.000.000',
       popular: false,
-      gradient: 'from-violet-500 to-purple-500'
-    },
-    {
-      id: 'ui-ux',
-      icon: Palette,
-      title: 'UI/UX Design',
-      description: 'Desain antarmuka yang menarik dan user experience yang optimal untuk website atau aplikasi Anda.',
-      features: ['User Research', 'Wireframing', 'Prototyping', 'Design System'],
-      price: 'Mulai dari Rp 5.000.000',
-      popular: false,
-      gradient: 'from-pink-500 to-rose-500'
+      gradient: 'from-orange-500 to-red-500',
+      bgColor: 'bg-orange-50 dark:bg-orange-950/20'
     }
   ];
 
@@ -75,56 +63,63 @@ const Services = () => {
     return (
       <div
         ref={cardRef}
-        className={`group relative bg-card/80 dark:bg-card/60 backdrop-blur-sm rounded-2xl border border-border/50 dark:border-border/30 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-3 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30 transform ${
+        className={`group relative bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-3 hover:shadow-2xl hover:shadow-primary/10 transform ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'
-        } ${service.popular ? 'ring-2 ring-primary/50' : ''}`}
+        } ${service.popular ? 'ring-2 ring-primary shadow-lg' : ''}`}
         style={{ 
           transitionDelay: cardVisible ? `${index * 150}ms` : '0ms',
           animationFillMode: 'both'
         }}
       >
         {service.popular && (
-          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
-            <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-              Paling Populer
+          <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+            <div className="bg-gradient-to-r from-primary to-primary/80 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
+              🔥 Paling Populer
             </div>
           </div>
         )}
 
-        {/* Animated gradient overlay */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-5 transition-all duration-500 rounded-2xl`}></div>
+        <div className={`h-2 bg-gradient-to-r ${service.gradient}`}></div>
         
-        <div className="p-8 relative z-10">
-          <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${service.gradient} mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-            <service.icon className="w-8 h-8 text-white" />
+        <div className="p-8">
+          <div className={`inline-flex p-4 rounded-2xl ${service.bgColor} mb-6 group-hover:scale-110 transition-transform duration-300`}>
+            <service.icon className={`w-8 h-8 bg-gradient-to-r ${service.gradient} bg-clip-text text-transparent`} />
           </div>
 
-          <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
-            {service.title}
-          </h3>
+          <div className="flex items-center gap-3 mb-4">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {service.title}
+            </h3>
+            <div className="flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full">
+              <Clock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">{service.duration}</span>
+            </div>
+          </div>
           
-          <p className="text-muted-foreground mb-6 leading-relaxed text-sm">
+          <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
             {service.description}
           </p>
 
-          <div className="space-y-3 mb-6">
+          <div className="space-y-3 mb-8">
             {service.features.map((feature: string, featureIndex: number) => (
               <div key={featureIndex} className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${service.gradient} shadow-sm`}></div>
-                <span className="text-sm text-muted-foreground">{feature}</span>
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                <span className="text-gray-700 dark:text-gray-300">{feature}</span>
               </div>
             ))}
           </div>
 
-          <div className="border-t border-border/50 pt-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-lg font-bold text-primary">{service.price}</span>
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <div className="text-center mb-6">
+              <span className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                {service.price}
+              </span>
             </div>
-            <button className={`w-full bg-gradient-to-r ${service.gradient} text-white px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 text-sm font-medium hover:shadow-lg transform hover:scale-105 group`}>
-              Pilih Paket
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <button className={`w-full bg-gradient-to-r ${service.gradient} text-white px-6 py-4 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 font-semibold hover:shadow-lg transform hover:scale-105`}>
+              Pilih Paket Ini
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
@@ -133,11 +128,10 @@ const Services = () => {
   };
 
   return (
-    <section id="services" className="py-32 bg-gradient-to-b from-muted/30 to-background relative overflow-hidden">
-      {/* Enhanced background decoration */}
+    <section id="services" className="py-32 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
       <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/10 to-primary/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-primary/8 to-primary/4 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary/10 to-primary/5 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-primary/8 to-primary/4 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -147,38 +141,33 @@ const Services = () => {
             titleVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
         >
-          <div className="inline-block">
-            <h2 className="text-4xl md:text-5xl font-light text-foreground mb-6 relative">
-              Layanan
-              <span className="font-bold block bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-                Profesional Kami
-              </span>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60 rounded-full"></div>
-            </h2>
-          </div>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Solusi digital lengkap untuk mengembangkan bisnis Anda. Dari website sederhana hingga aplikasi kompleks, 
-            kami siap mewujudkan kebutuhan digital Anda dengan kualitas terbaik.
+          <h2 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            Paket <span className="bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">Layanan Kami</span>
+          </h2>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            Pilih paket yang sesuai dengan kebutuhan bisnis Anda. Semua paket sudah termasuk konsultasi gratis, 
+            revisi unlimited, dan garansi 1 tahun.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           {services.map((service, index) => (
             <ServiceCard key={service.id} service={service} index={index} />
           ))}
         </div>
 
         {/* CTA Section */}
-        <div className="text-center mt-16">
-          <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-2xl p-8 border border-primary/20">
-            <h3 className="text-2xl font-bold text-foreground mb-4">
-              Tidak yakin paket mana yang cocok?
+        <div className="text-center">
+          <div className="bg-gradient-to-r from-primary/10 to-primary/5 backdrop-blur-sm rounded-3xl p-12 border border-primary/20">
+            <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              Masih Bingung Pilih Paket?
             </h3>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Konsultasikan kebutuhan Anda dengan tim ahli kami. Kami akan membantu menentukan solusi terbaik untuk bisnis Anda.
+            <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto text-lg">
+              Tim ahli kami siap membantu menentukan solusi terbaik untuk kebutuhan bisnis Anda. 
+              Konsultasi gratis tanpa komitmen!
             </p>
-            <button className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-8 py-4 rounded-xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:scale-105 font-medium">
-              Konsultasi Gratis Sekarang
+            <button className="bg-gradient-to-r from-primary to-primary/80 text-white px-12 py-4 rounded-2xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 hover:scale-105 font-semibold text-lg">
+              💬 Konsultasi Gratis Sekarang
             </button>
           </div>
         </div>
