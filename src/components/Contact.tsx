@@ -1,13 +1,15 @@
 
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Globe, Calendar } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Calendar } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 const Contact = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,15 +23,31 @@ const Contact = () => {
     e.preventDefault();
     // Handle form submission here
     console.log('Form submitted:', formData);
+    
+    // Show success toast
+    toast({
+      title: "Konsultasi berhasil dikirim!",
+      description: "Tim kami akan segera menghubungi Anda dalam 24 jam ke depan.",
+    });
+
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      projectType: '',
+      budget: '',
+      message: ''
+    });
   };
 
   const contactInfo = [
     {
       icon: Phone,
       title: 'Telepon & WhatsApp',
-      details: '+62 812-3456-7890',
+      details: '+62 85156321198',
       subdescription: 'Respon cepat dalam 5 menit',
-      action: 'tel:+6281234567890',
+      action: 'tel:+6285156321198',
       color: 'text-green-500',
       bgColor: 'bg-green-50 dark:bg-green-950/20'
     },
@@ -123,18 +141,6 @@ const Contact = () => {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Quick Action Buttons */}
-            <div className="space-y-4">
-              <button className="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-105 font-semibold flex items-center justify-center gap-3 shadow-lg">
-                <Phone className="w-5 h-5" />
-                WhatsApp Sekarang
-              </button>
-              <button className="w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-4 rounded-2xl transition-all duration-300 hover:scale-105 font-semibold flex items-center justify-center gap-3 shadow-lg">
-                <Mail className="w-5 h-5" />
-                Kirim Email
-              </button>
             </div>
           </div>
 
@@ -245,12 +251,12 @@ const Contact = () => {
               Lokasi Kantor Kami
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              📍 Jakarta Selatan, DKI Jakarta - Strategis dan mudah dijangkau
+              📍 ANSAC (Anagata Sasmitaloka Consulting) Karangmiri, UH 7 Gg. Cinde Amoh No.317C, Giwangan, Kec. Umbulharjo, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55163
             </p>
           </div>
           <div className="h-80 relative">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63246.17829309715!2d106.74707207910156!3d-6.229386999999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x5371bf0fdad786a2!2sJakarta%20Selatan%2C%20Kota%20Jakarta%20Selatan%2C%20Daerah%20Khusus%20Ibukota%20Jakarta!5e0!3m2!1sid!2sid!4v1701234567890!5m2!1sid!2sid"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.7654321!2d110.3692!3d-7.8234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a572b6b6b6b6b%3A0x1234567890abcdef!2sANSAC%20(Anagata%20Sasmitaloka%20Consulting)!5e0!3m2!1sid!2sid!4v1701234567890!5m2!1sid!2sid"
               width="100%"
               height="100%"
               style={{ border: 0 }}

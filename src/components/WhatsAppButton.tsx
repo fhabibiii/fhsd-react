@@ -5,7 +5,7 @@ import { MessageCircle } from 'lucide-react';
 const WhatsAppButton = () => {
   const [isHovered, setIsHovered] = useState(false);
   
-  const whatsappNumber = "+6281234567890";
+  const whatsappNumber = "+6281225510099";
   const defaultMessage = "Halo! Saya tertarik dengan layanan FH Digital Solutions. Bisakah kita diskusi lebih lanjut?";
   
   const handleWhatsAppClick = () => {
