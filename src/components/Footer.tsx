@@ -10,9 +10,7 @@ const Footer = () => {
     'Basic Website',
     'Web App Dasar',
     'Web App Menengah', 
-    'Web App Kompleks',
-    'UI/UX Design',
-    'Maintenance & Support'
+    'Web App Kompleks'
   ];
 
   const quickLinks = [

@@ -11,7 +11,26 @@ const Projects = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [titleRef, titleVisible] = useScrollAnimation();
   
-  const itemsPerPage = 6;
+  // Responsive items per page
+  const getItemsPerPage = () => {
+    if (typeof window === 'undefined') return 6;
+    return window.innerWidth < 768 ? 3 : 6;
+  };
+  
+  const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
+  
+  React.useEffect(() => {
+    const handleResize = () => {
+      const newItemsPerPage = getItemsPerPage();
+      if (newItemsPerPage !== itemsPerPage) {
+        setItemsPerPage(newItemsPerPage);
+        setCurrentPage(0); // Reset to first page when items per page changes
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [itemsPerPage]);
   
   const selectedProjectData = data.projects.find(p => p.id === selectedProject);
 
@@ -20,55 +39,49 @@ const Projects = () => {
     {
       id: 'demo-1',
       title: 'E-Commerce Fashion',
-      description: 'Platform jual beli fashion online lengkap dengan sistem pembayaran yang aman dan terintegrasi. Website ini memiliki fitur keranjang belanja yang mudah digunakan, sistem checkout yang simpel, dan berbagai pilihan metode pembayaran. Dilengkapi juga dengan fitur wishlist untuk menyimpan produk favorit dan sistem review untuk membantu pembeli lain.',
+      description: 'Platform jual beli fashion online lengkap dengan sistem pembayaran yang aman dan terintegrasi. Website ini memiliki fitur keranjang belanja yang mudah digunakan, sistem checkout yang simpel, dan berbagai pilihan metode pembayaran. Dilengkapi juga dengan fitur wishlist untuk menyimpan produk favorit dan sistem review untuk membantu pembeli lain. Selain itu, terdapat fitur rekomendasi produk berdasarkan riwayat pembelian dan preferensi pengguna.',
       details: 'Website e-commerce lengkap dengan fitur keranjang belanja, checkout, payment gateway, dan admin dashboard untuk mengelola produk dan pesanan.',
       image: '/placeholder.svg',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
       link: ''
     },
     {
       id: 'demo-2',
       title: 'Company Profile Tech',
-      description: 'Website company profile untuk perusahaan teknologi dengan desain yang modern, responsif, dan profesional. Menampilkan informasi lengkap tentang perusahaan, visi misi, tim profesional, dan portfolio produk. Dilengkapi dengan halaman blog untuk sharing knowledge dan contact form yang terintegrasi dengan email marketing.',
+      description: 'Website company profile untuk perusahaan teknologi dengan desain yang modern, responsif, dan profesional. Menampilkan informasi lengkap tentang perusahaan, visi misi, tim profesional, dan portfolio produk. Dilengkapi dengan halaman blog untuk sharing knowledge dan contact form yang terintegrasi dengan email marketing. Website ini juga memiliki fitur live chat untuk komunikasi langsung dengan tim sales dan support.',
       details: 'Website corporate yang menampilkan profil perusahaan, layanan, tim, dan portofolio dengan design yang clean dan professional.',
       image: '/placeholder.svg',
-      technologies: ['React', 'Tailwind CSS', 'Framer Motion'],
       link: ''
     },
     {
       id: 'demo-3',
       title: 'Restaurant App',
-      description: 'Aplikasi pemesanan makanan online dengan fitur tracking pesanan secara real-time dan sistem notifikasi otomatis. Pelanggan dapat melihat menu lengkap dengan foto menarik, melakukan pemesanan dengan mudah, dan memantau status pesanan mereka. Dilengkapi juga dengan sistem rating dan review untuk membantu meningkatkan kualitas layanan.',
+      description: 'Aplikasi pemesanan makanan online dengan fitur tracking pesanan secara real-time dan sistem notifikasi otomatis. Pelanggan dapat melihat menu lengkap dengan foto menarik, melakukan pemesanan dengan mudah, dan memantau status pesanan mereka. Dilengkapi juga dengan sistem rating dan review untuk membantu meningkatkan kualitas layanan. Aplikasi ini juga terintegrasi dengan sistem POS restoran untuk efisiensi operasional.',
       details: 'Aplikasi web untuk restoran dengan sistem pemesanan online, tracking pesanan real-time, dan integrasi dengan sistem POS.',
       image: '/placeholder.svg',
-      technologies: ['React', 'Socket.io', 'Express', 'PostgreSQL'],
       link: ''
     },
     {
       id: 'demo-4',
       title: 'Learning Management System',
-      description: 'Platform pembelajaran online komprehensif dengan sistem video streaming berkualitas tinggi dan quiz interaktif. Menyediakan berbagai kursus online dengan materi yang terstruktur, video pembelajaran HD, dan sistem evaluasi yang lengkap. Student dapat mengakses materi kapan saja dan mengikuti progress belajar mereka dengan dashboard yang informatif.',
+      description: 'Platform pembelajaran online komprehensif dengan sistem video streaming berkualitas tinggi dan quiz interaktif. Menyediakan berbagai kursus online dengan materi yang terstruktur, video pembelajaran HD, dan sistem evaluasi yang lengkap. Student dapat mengakses materi kapan saja dan mengikuti progress belajar mereka dengan dashboard yang informatif. Platform ini juga dilengkapi dengan forum diskusi dan sistem mentoring online.',
       details: 'LMS lengkap dengan fitur course management, video player, quiz system, progress tracking, dan sertifikat.',
       image: '/placeholder.svg',
-      technologies: ['React', 'Node.js', 'MySQL', 'AWS'],
       link: ''
     },
     {
       id: 'demo-5',
       title: 'Real Estate Portal',
-      description: 'Platform properti dengan sistem pencarian advanced dan virtual tour 360 derajat yang memukau. User dapat mencari properti berdasarkan lokasi, range harga, tipe properti, dan berbagai filter lainnya. Fitur virtual tour memungkinkan calon pembeli untuk melihat properti secara detail tanpa harus datang langsung ke lokasi.',
+      description: 'Platform properti dengan sistem pencarian advanced dan virtual tour 360 derajat yang memukau. User dapat mencari properti berdasarkan lokasi, range harga, tipe properti, dan berbagai filter lainnya. Fitur virtual tour memungkinkan calon pembeli untuk melihat properti secara detail tanpa harus datang langsung ke lokasi. Platform ini juga terintegrasi dengan sistem CRM untuk mengelola lead dan follow-up dengan calon pembeli.',
       details: 'Website properti dengan fitur pencarian berdasarkan lokasi, harga, tipe, virtual tour, dan sistem CRM untuk agent.',
       image: '/placeholder.svg',
-      technologies: ['React', 'Google Maps API', 'Firebase'],
       link: ''
     },
     {
       id: 'demo-6',
       title: 'Healthcare Dashboard',
-      description: 'Sistem manajemen rumah sakit dan klinik yang komprehensif untuk mengelola data pasien dan jadwal dokter. Menyediakan dashboard yang user-friendly untuk admin, dokter, dan pasien. Sistem ini memudahkan proses registrasi pasien, penjadwalan appointment, pengelolaan rekam medis digital, dan sistem billing yang terintegrasi.',
+      description: 'Sistem manajemen rumah sakit dan klinik yang komprehensif untuk mengelola data pasien dan jadwal dokter. Menyediakan dashboard yang user-friendly untuk admin, dokter, dan pasien. Sistem ini memudahkan proses registrasi pasien, penjadwalan appointment, pengelolaan rekam medis digital, dan sistem billing yang terintegrasi. Dilengkapi juga dengan modul inventory untuk manajemen obat dan alat medis.',
       details: 'Aplikasi manajemen rumah sakit dengan fitur registrasi pasien, jadwal dokter, rekam medis, dan sistem pembayaran.',
       image: '/placeholder.svg',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Chart.js'],
       link: ''
     }
   ];
@@ -185,7 +198,7 @@ const Projects = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className={`grid ${itemsPerPage === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'} gap-8 mb-12`}>
           {currentProjects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}
@@ -197,34 +210,20 @@ const Projects = () => {
             <button
               onClick={handlePrevPage}
               disabled={currentPage === 0}
-              className="flex items-center gap-2 px-6 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="w-5 h-5" />
-              <span className="font-medium">Previous</span>
             </button>
             
-            <div className="flex items-center gap-2">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i)}
-                  className={`w-10 h-10 rounded-full transition-all duration-300 font-medium ${
-                    currentPage === i
-                      ? 'bg-primary text-primary-foreground shadow-lg'
-                      : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-primary/10 hover:border-primary/30'
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
+            <div className="px-4 py-2 bg-primary text-primary-foreground rounded-xl font-medium">
+              {currentPage + 1}
             </div>
             
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages - 1}
-              className="flex items-center gap-2 px-6 py-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span className="font-medium">Next</span>
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>

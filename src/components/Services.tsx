@@ -1,10 +1,24 @@
 
 import React from 'react';
-import { Globe, Code, Zap, Rocket, ArrowRight, Clock, CheckCircle } from 'lucide-react';
+import { Globe, Code, Zap, Rocket, Clock, CheckCircle } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 const Services = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
+
+  const handleConsultationClick = () => {
+    const whatsappNumber = "085156321198";
+    const message = "Halo! Saya ingin konsultasi dalam memilih paket pembuatan website. Bisakah kita diskusi lebih lanjut?";
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
+  const handlePackageClick = (packageName: string) => {
+    const whatsappNumber = "085156321198";
+    const message = `Halo! Saya tertarik dengan paket ${packageName}. Bisakah kita diskusi lebih lanjut mengenai pembuatan website?`;
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
 
   const services = [
     {
@@ -14,7 +28,7 @@ const Services = () => {
       duration: '5–7 hari',
       description: 'Landing page interaktif dengan kontak dan animasi ringan yang sempurna untuk memperkenalkan bisnis Anda.',
       features: ['Landing page interaktif', 'Form kontak terintegrasi', 'Animasi ringan & smooth', 'Responsive design', 'SEO friendly'],
-      price: 'Mulai dari Rp 2.500.000'
+      price: 'Rp 2.500.000'
     },
     {
       id: 'web-app-basic',
@@ -23,7 +37,7 @@ const Services = () => {
       duration: '10–15 hari',
       description: 'Aplikasi web dengan fitur login, dashboard user, dan manajemen data dasar untuk kebutuhan bisnis kecil.',
       features: ['Sistem login & registrasi', 'Dashboard user', 'Input data (CRUD)', 'Validasi form', 'Pagination data'],
-      price: 'Mulai dari Rp 7.000.000'
+      price: 'Rp 7.000.000'
     },
     {
       id: 'web-app-medium',
@@ -32,7 +46,7 @@ const Services = () => {
       duration: '20–30 hari',
       description: 'Solusi lengkap dengan admin panel, multi-role user, dan fitur advanced untuk bisnis yang berkembang.',
       features: ['Admin panel lengkap', 'Multi-role management', 'Upload & manajemen file', 'Grafik & analisis data', 'Notifikasi email otomatis'],
-      price: 'Mulai dari Rp 15.000.000'
+      price: 'Rp 15.000.000'
     },
     {
       id: 'web-app-complex',
@@ -41,7 +55,7 @@ const Services = () => {
       duration: '30–60 hari',
       description: 'Sistem besar dan kompleks dengan integrasi API, keamanan tinggi untuk enterprise dan skala besar.',
       features: ['Sistem enterprise-grade', 'E-commerce & afiliasi', 'Integrasi API eksternal', 'Keamanan tingkat tinggi', 'Arsitektur scalable'],
-      price: 'Mulai dari Rp 30.000.000'
+      price: 'Rp 30.000.000'
     }
   ];
 
@@ -51,7 +65,7 @@ const Services = () => {
     return (
       <div
         ref={cardRef}
-        className={`group relative bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-2xl hover:shadow-gray-900/10 dark:hover:shadow-black/20 transform ${
+        className={`group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-black/20 transform ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'
@@ -61,48 +75,42 @@ const Services = () => {
           animationFillMode: 'both'
         }}
       >
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/60"></div>
-        
-        <div className="p-8">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="p-3 rounded-xl bg-gray-100 dark:bg-gray-700 group-hover:bg-primary/10 transition-colors duration-300">
-              <service.icon className="w-6 h-6 text-primary" />
+        <div className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <service.icon className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 {service.title}
               </h3>
-              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                <Clock className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                <Clock className="w-3 h-3" />
                 <span>{service.duration}</span>
               </div>
             </div>
           </div>
           
-          <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+          <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed">
             {service.description}
           </p>
 
-          <div className="space-y-3 mb-8">
+          <div className="space-y-2 mb-6">
             {service.features.map((feature: string, featureIndex: number) => (
-              <div key={featureIndex} className="flex items-center gap-3">
-                <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                <span className="text-gray-700 dark:text-gray-300 text-sm">{feature}</span>
+              <div key={featureIndex} className="flex items-center gap-2">
+                <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
+                <span className="text-gray-700 dark:text-gray-300 text-xs">{feature}</span>
               </div>
             ))}
           </div>
 
-          <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <div className="text-center mb-4">
-              <span className="text-2xl font-bold text-primary">
-                {service.price}
-              </span>
-            </div>
-            <button className="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transform hover:scale-[1.02]">
-              Pilih Paket Ini
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
+          <button 
+            onClick={() => handlePackageClick(service.title)}
+            className="w-full bg-primary hover:bg-primary/90 text-white px-4 py-3 rounded-lg transition-all duration-300 font-semibold text-sm hover:scale-[1.02] flex flex-col items-center gap-1"
+          >
+            <span className="text-lg font-bold">{service.price}</span>
+            <span>Pilih Paket Ini</span>
+          </button>
         </div>
       </div>
     );
@@ -119,7 +127,7 @@ const Services = () => {
         <div 
           ref={titleRef}
           className={`text-center mb-16 transform transition-all duration-1000 ${
-            titleVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+            titleVisible ?'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
           }`}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
@@ -131,7 +139,7 @@ const Services = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 mb-16">
+        <div className="grid grid-cols-4 gap-6 mb-16">
           {services.map((service, index) => (
             <ServiceCard key={service.id} service={service} index={index} />
           ))}
@@ -147,7 +155,10 @@ const Services = () => {
               Tim ahli kami siap membantu menentukan solusi terbaik untuk kebutuhan bisnis Anda. 
               Konsultasi gratis tanpa komitmen!
             </p>
-            <button className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold">
+            <button 
+              onClick={handleConsultationClick}
+              className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold"
+            >
               💬 Konsultasi Gratis Sekarang
             </button>
           </div>

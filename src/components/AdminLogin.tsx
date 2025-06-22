@@ -104,12 +104,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
             )}
           </button>
         </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-muted-foreground text-sm">
-            Demo: username: <span className="text-primary">admin</span>, password: <span className="text-primary">admin123</span>
-          </p>
-        </div>
       </div>
     </div>
   );

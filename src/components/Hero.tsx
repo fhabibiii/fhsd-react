@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Star, Users, Award, CheckCircle, Trophy, Clock, Target, Coffee, Heart, Zap } from 'lucide-react';
+import { ArrowRight, Star, Target, Coffee, Heart, Zap } from 'lucide-react';
 
 const Hero = () => {
   const scrollToServices = () => {
@@ -10,11 +10,11 @@ const Hero = () => {
     }
   };
 
-  const scrollToContact = () => {
-    const element = document.querySelector('#contact');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleConsultationClick = () => {
+    const whatsappNumber = "085156321198";
+    const message = "Halo! Saya ingin konsultasi dalam pembuatan website. Bisakah kita diskusi lebih lanjut?";
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   };
 
   const highlights = [
@@ -58,13 +58,13 @@ const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={scrollToServices}
-                className="group px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white dark:text-gray-900 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold flex items-center justify-center gap-2"
+                className="group px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold flex items-center justify-center gap-2"
               >
                 🚀 Lihat Paket Layanan
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
-                onClick={scrollToContact}
+                onClick={handleConsultationClick}
                 className="px-8 py-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border-2 border-primary/30 text-gray-900 dark:text-white rounded-xl hover:bg-primary/5 hover:border-primary/50 transition-all duration-300 font-semibold"
               >
                 💬 Konsultasi Gratis
