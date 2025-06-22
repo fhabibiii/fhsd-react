@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowRight, Star, Users, Award, CheckCircle, Trophy, Clock } from 'lucide-react';
+import { ArrowRight, Star, Users, Award, CheckCircle, Trophy, Clock, Target, Coffee, Heart, Zap } from 'lucide-react';
 
 const Hero = () => {
   const scrollToServices = () => {
@@ -17,11 +17,11 @@ const Hero = () => {
     }
   };
 
-  const achievements = [
-    { icon: Users, number: "50+", label: "Klien Puas", color: "text-blue-500" },
-    { icon: Trophy, number: "100+", label: "Project Selesai", color: "text-green-500" },
-    { icon: Clock, number: "3+", label: "Tahun Pengalaman", color: "text-purple-500" },
-    { icon: Award, number: "5.0", label: "Rating Client", color: "text-yellow-500" }
+  const highlights = [
+    { icon: Target, title: "Fokus Quality", description: "Setiap project dikerjakan dengan detail dan kualitas terbaik", color: "text-blue-500" },
+    { icon: Coffee, title: "Konsultasi Gratis", description: "Diskusi tanpa batas untuk hasil yang sempurna", color: "text-green-500" },
+    { icon: Heart, title: "After Sales", description: "Support dan maintenance berkelanjutan", color: "text-purple-500" },
+    { icon: Zap, title: "Fast Response", description: "Respon cepat untuk setiap kebutuhan Anda", color: "text-yellow-500" }
   ];
 
   return (
@@ -38,7 +38,7 @@ const Hero = () => {
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary/10 to-primary/5 rounded-full border border-primary/20">
               <Star className="w-4 h-4 text-primary" />
-              <span className="text-primary font-semibold text-sm">🔥 Partner Digital Terpercaya #1</span>
+              <span className="text-primary font-semibold text-sm">🔥 Partner Digital Terpercaya</span>
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
@@ -58,7 +58,7 @@ const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={scrollToServices}
-                className="group px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold flex items-center justify-center gap-2"
+                className="group px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-white dark:text-gray-900 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg font-semibold flex items-center justify-center gap-2"
               >
                 🚀 Lihat Paket Layanan
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -86,24 +86,24 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right Content - Achievement Stats */}
+          {/* Right Content - Business Highlights */}
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              {achievements.map(({ icon: Icon, number, label, color }, index) => (
+              {highlights.map(({ icon: Icon, title, description, color }, index) => (
                 <div 
-                  key={label}
-                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-center"
+                  key={title}
+                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
-                  <Icon className={`w-8 h-8 ${color} mx-auto mb-3`} />
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{number}</div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">{label}</div>
+                  <Icon className={`w-8 h-8 ${color} mb-3`} />
+                  <div className="text-lg font-bold text-gray-900 dark:text-white mb-2">{title}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{description}</div>
                 </div>
               ))}
             </div>
 
             {/* Trust Indicators */}
             <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 text-center">Dipercaya Berbagai Bisnis</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 text-center">Siap Melayani Berbagai Bisnis</h3>
               <div className="grid grid-cols-2 gap-3">
                 {["🏢 Startup", "🏪 UKM", "🏬 Korporat", "🛒 E-Commerce"].map((type, index) => (
                   <div key={index} className="text-center py-2 px-3 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-800 rounded-lg">

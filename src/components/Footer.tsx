@@ -7,10 +7,10 @@ const Footer = () => {
   const [footerRef, footerVisible] = useScrollAnimation();
 
   const services = [
-    'Website Statis',
-    'Aplikasi Web',
-    'E-Commerce', 
-    'Mobile App (PWA)',
+    'Basic Website',
+    'Web App Dasar',
+    'Web App Menengah', 
+    'Web App Kompleks',
     'UI/UX Design',
     'Maintenance & Support'
   ];
@@ -19,8 +19,7 @@ const Footer = () => {
     { name: 'Beranda', href: '#home' },
     { name: 'Portfolio', href: '#projects' },
     { name: 'Layanan', href: '#services' },
-    { name: 'Kontak', href: '#contact' },
-    { name: 'Admin', href: '/admin' }
+    { name: 'Kontak', href: '#contact' }
   ];
 
   const scrollToSection = (href: string) => {
@@ -64,7 +63,7 @@ const Footer = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <MapPin className="w-4 h-4 text-primary" />
-                  <span className="text-sm">ANSAC (Anagata Sasmitaloka Consulting) Karangmiri, UH 7 Gg. Cinde Amoh No.317C, Giwangan, Kec. Umbulharjo, Kota Yogyakarta, DIY 55163</span>
+                  <span className="text-sm">ANSAC (Anagata Sasmitaloka Consulting) Karangmiri, UH 7 Gg. Cinde Amoh No.317C, Giwangan, Kec. Umbulharjo, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55163</span>
                 </div>
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <Phone className="w-4 h-4 text-primary" />

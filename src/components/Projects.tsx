@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ExternalLink, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -14,12 +15,12 @@ const Projects = () => {
   
   const selectedProjectData = data.projects.find(p => p.id === selectedProject);
 
-  // Sample additional projects for demo
+  // Sample additional projects for demo with longer descriptions
   const additionalProjects = [
     {
       id: 'demo-1',
       title: 'E-Commerce Fashion',
-      description: 'Platform jual beli fashion online dengan sistem pembayaran terintegrasi dan manajemen inventory.',
+      description: 'Platform jual beli fashion online lengkap dengan sistem pembayaran yang aman dan terintegrasi. Website ini memiliki fitur keranjang belanja yang mudah digunakan, sistem checkout yang simpel, dan berbagai pilihan metode pembayaran. Dilengkapi juga dengan fitur wishlist untuk menyimpan produk favorit dan sistem review untuk membantu pembeli lain.',
       details: 'Website e-commerce lengkap dengan fitur keranjang belanja, checkout, payment gateway, dan admin dashboard untuk mengelola produk dan pesanan.',
       image: '/placeholder.svg',
       technologies: ['React', 'Node.js', 'MongoDB', 'Stripe'],
@@ -28,7 +29,7 @@ const Projects = () => {
     {
       id: 'demo-2',
       title: 'Company Profile Tech',
-      description: 'Website company profile untuk perusahaan teknologi dengan desain modern dan responsif.',
+      description: 'Website company profile untuk perusahaan teknologi dengan desain yang modern, responsif, dan profesional. Menampilkan informasi lengkap tentang perusahaan, visi misi, tim profesional, dan portfolio produk. Dilengkapi dengan halaman blog untuk sharing knowledge dan contact form yang terintegrasi dengan email marketing.',
       details: 'Website corporate yang menampilkan profil perusahaan, layanan, tim, dan portofolio dengan design yang clean dan professional.',
       image: '/placeholder.svg',
       technologies: ['React', 'Tailwind CSS', 'Framer Motion'],
@@ -37,7 +38,7 @@ const Projects = () => {
     {
       id: 'demo-3',
       title: 'Restaurant App',
-      description: 'Aplikasi pemesanan makanan online dengan fitur real-time tracking dan notifikasi.',
+      description: 'Aplikasi pemesanan makanan online dengan fitur tracking pesanan secara real-time dan sistem notifikasi otomatis. Pelanggan dapat melihat menu lengkap dengan foto menarik, melakukan pemesanan dengan mudah, dan memantau status pesanan mereka. Dilengkapi juga dengan sistem rating dan review untuk membantu meningkatkan kualitas layanan.',
       details: 'Aplikasi web untuk restoran dengan sistem pemesanan online, tracking pesanan real-time, dan integrasi dengan sistem POS.',
       image: '/placeholder.svg',
       technologies: ['React', 'Socket.io', 'Express', 'PostgreSQL'],
@@ -46,7 +47,7 @@ const Projects = () => {
     {
       id: 'demo-4',
       title: 'Learning Management System',
-      description: 'Platform pembelajaran online dengan video streaming dan sistem quiz interaktif.',
+      description: 'Platform pembelajaran online komprehensif dengan sistem video streaming berkualitas tinggi dan quiz interaktif. Menyediakan berbagai kursus online dengan materi yang terstruktur, video pembelajaran HD, dan sistem evaluasi yang lengkap. Student dapat mengakses materi kapan saja dan mengikuti progress belajar mereka dengan dashboard yang informatif.',
       details: 'LMS lengkap dengan fitur course management, video player, quiz system, progress tracking, dan sertifikat.',
       image: '/placeholder.svg',
       technologies: ['React', 'Node.js', 'MySQL', 'AWS'],
@@ -55,7 +56,7 @@ const Projects = () => {
     {
       id: 'demo-5',
       title: 'Real Estate Portal',
-      description: 'Platform properti dengan pencarian advanced dan virtual tour 360 derajat.',
+      description: 'Platform properti dengan sistem pencarian advanced dan virtual tour 360 derajat yang memukau. User dapat mencari properti berdasarkan lokasi, range harga, tipe properti, dan berbagai filter lainnya. Fitur virtual tour memungkinkan calon pembeli untuk melihat properti secara detail tanpa harus datang langsung ke lokasi.',
       details: 'Website properti dengan fitur pencarian berdasarkan lokasi, harga, tipe, virtual tour, dan sistem CRM untuk agent.',
       image: '/placeholder.svg',
       technologies: ['React', 'Google Maps API', 'Firebase'],
@@ -64,7 +65,7 @@ const Projects = () => {
     {
       id: 'demo-6',
       title: 'Healthcare Dashboard',
-      description: 'Sistem manajemen pasien dan jadwal dokter untuk klinik dan rumah sakit.',
+      description: 'Sistem manajemen rumah sakit dan klinik yang komprehensif untuk mengelola data pasien dan jadwal dokter. Menyediakan dashboard yang user-friendly untuk admin, dokter, dan pasien. Sistem ini memudahkan proses registrasi pasien, penjadwalan appointment, pengelolaan rekam medis digital, dan sistem billing yang terintegrasi.',
       details: 'Aplikasi manajemen rumah sakit dengan fitur registrasi pasien, jadwal dokter, rekam medis, dan sistem pembayaran.',
       image: '/placeholder.svg',
       technologies: ['React', 'Node.js', 'MongoDB', 'Chart.js'],
@@ -124,28 +125,12 @@ const Projects = () => {
         </div>
 
         <div className="p-8 relative z-10">
-          <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors duration-300">
+          <h3 className="text-xl font-semibold text-foreground mb-4 group-hover:text-primary transition-colors duration-300">
             {project.title}
           </h3>
-          <p className="text-muted-foreground mb-6 leading-relaxed text-sm">
+          <p className="text-muted-foreground mb-6 leading-relaxed text-sm line-clamp-4">
             {project.description}
           </p>
-
-          <div className="flex flex-wrap gap-2 mb-6">
-            {project.technologies.slice(0, 3).map((tech: string, techIndex: number) => (
-              <span
-                key={techIndex}
-                className="px-3 py-1.5 bg-primary/10 text-primary text-xs rounded-full font-medium border border-primary/20 hover:bg-primary/20 transition-colors duration-200"
-              >
-                {tech}
-              </span>
-            ))}
-            {project.technologies.length > 3 && (
-              <span className="px-3 py-1.5 bg-muted/20 text-muted-foreground text-xs rounded-full">
-                +{project.technologies.length - 3}
-              </span>
-            )}
-          </div>
 
           <div className="flex gap-3">
             <button
@@ -196,7 +181,7 @@ const Projects = () => {
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Koleksi website dan aplikasi web yang telah kami kembangkan untuk berbagai klien dari berbagai industri. 
-            Setiap project dibuat dengan teknologi terdepan dan desain yang user-friendly.
+            Setiap project dibuat dengan kualitas terbaik dan desain yang menarik.
           </p>
         </div>
 
@@ -266,16 +251,6 @@ const Projects = () => {
             <p className="text-muted-foreground text-lg leading-relaxed">
               {selectedProjectData?.details}
             </p>
-            <div className="flex flex-wrap gap-2">
-              {selectedProjectData?.technologies.map((tech, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1.5 bg-primary/10 text-primary text-sm rounded-full font-medium border border-primary/20"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
             <div className="bg-muted/20 rounded-xl p-4 border border-border/30">
               <p className="text-sm text-muted-foreground text-center">
                 🚧 Website ini sedang dalam tahap development dan akan segera dapat diakses
