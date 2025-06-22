@@ -94,7 +94,7 @@ const Contact = () => {
               </h3>
               <div className="rounded-lg overflow-hidden">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d988.1567417242107!2d110.39214246961177!3d-7.829247070908199!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a572b1bfabf29%3A0x873a57d24e38feb4!2sANSAC%20(Anagata%20Sasmitaloka%20Consulting)!5e0!3m2!1sid!2sid!4v1750598947691!5m2!1sid!2sid" 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31525.07543296743!2d110.37063807431643!3d-7.797068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5787bd5b6bc5%3A0x6b1e9e0b6b6b6b6b!2sYogyakarta%2C%20Special%20Region%20of%20Yogyakarta%2C%20Indonesia!5e0!3m2!1sen!2sid!4v1732122000000!5m2!1sen!2sid" 
                   width="100%" 
                   height="300" 
                   style={{ border: 0 }} 
