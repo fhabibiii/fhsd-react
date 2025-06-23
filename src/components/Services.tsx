@@ -36,7 +36,7 @@ const Services = () => {
       title: 'Web App Dasar',
       duration: '10–15 hari',
       description: 'Aplikasi web dengan fitur login, dashboard user, dan manajemen data dasar untuk kebutuhan bisnis kecil.',
-      features: ['Sistem login & registrasi', 'Dashboard user', 'Input data (CRUD)', 'Validasi form', 'Pagination data'],
+      features: ['Sistem login & registrasi', 'Dashboard user',  'Input data (CRUD)', 'Validasi form', 'Pagination data'],
       price: 'Rp 7.000.000'
     },
     {
@@ -65,7 +65,7 @@ const Services = () => {
     return (
       <div
         ref={cardRef}
-        className={`group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-black/20 transform flex flex-col ${
+        className={`group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-white/20 transform flex flex-col ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'

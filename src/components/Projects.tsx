@@ -216,7 +216,7 @@ const Projects = () => {
             </button>
             
             <div className="px-4 py-2 bg-primary text-primary-foreground rounded-xl font-medium">
-              {currentPage + 1}
+              Halaman {currentPage + 1}/{totalPages}
             </div>
             
             <button

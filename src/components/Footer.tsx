@@ -54,22 +54,37 @@ const Footer = () => {
                 FH Digital Solutions
               </h3>
               <div className="w-12 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full mb-4"></div>
-              <p className="text-muted-foreground leading-relaxed mb-4">
+              <p className="text-muted-foreground leading-relaxed mb-6">
                 Partner digital terpercaya untuk mengembangkan bisnis Anda. Kami menyediakan solusi website, 
                 aplikasi web, dan strategi digital yang inovatif dan berkualitas tinggi.
               </p>
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 text-muted-foreground">
-                  <MapPin className="w-4 h-4 text-primary" />
-                  <span className="text-sm">ANSAC (Anagata Sasmitaloka Consulting) Karangmiri, UH 7 Gg. Cinde Amoh No.317C, Giwangan, Kec. Umbulharjo, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55163</span>
-                </div>
-                <div className="flex items-center gap-3 text-muted-foreground">
-                  <Phone className="w-4 h-4 text-primary" />
-                  <span className="text-sm">+62 851-5632-1198 / +62 812-2551-0099</span>
-                </div>
-                <div className="flex items-center gap-3 text-muted-foreground">
-                  <Mail className="w-4 h-4 text-primary" />
-                  <span className="text-sm">hello@fhdigital.com</span>
+              
+              {/* Social Media moved here */}
+              <div>
+                <h5 className="text-sm font-medium text-foreground mb-4">Ikuti Kami</h5>
+                <div className="flex gap-3">
+                  {[
+                    { icon: Facebook, href: "#", color: "hover:bg-blue-500/10 hover:border-blue-500/30 hover:text-blue-500" },
+                    { icon: Instagram, href: "#", color: "hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500" },
+                    { icon: Linkedin, href: "#", color: "hover:bg-blue-600/10 hover:border-blue-600/30 hover:text-blue-600" },
+                    { icon: Mail, href: "mailto:hello@fhdigital.com", color: "hover:bg-green-500/10 hover:border-green-500/30 hover:text-green-500" }
+                  ].map(({ icon: Icon, href, color }, index) => (
+                    <a
+                      key={index}
+                      href={href}
+                      target={href.startsWith('mailto:') ? undefined : "_blank"}
+                      rel={href.startsWith('mailto:') ? undefined : "noopener noreferrer"}
+                      className={`group p-2 bg-card/50 backdrop-blur-sm rounded-lg border border-border/50 transition-all duration-300 hover:scale-110 ${color} transform ${
+                        footerVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                      }`}
+                      style={{ 
+                        transitionDelay: footerVisible ? `${index * 100}ms` : '0ms',
+                        animationFillMode: 'both'
+                      }}
+                    >
+                      <Icon className="w-4 h-4 transition-all duration-300" />
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
@@ -117,35 +132,6 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-
-            {/* Social Media */}
-            <div className="mt-8">
-              <h5 className="text-sm font-medium text-foreground mb-4">Ikuti Kami</h5>
-              <div className="flex gap-3">
-                {[
-                  { icon: Facebook, href: "#", color: "hover:bg-blue-500/10 hover:border-blue-500/30 hover:text-blue-500" },
-                  { icon: Instagram, href: "#", color: "hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500" },
-                  { icon: Linkedin, href: "#", color: "hover:bg-blue-600/10 hover:border-blue-600/30 hover:text-blue-600" },
-                  { icon: Mail, href: "mailto:hello@fhdigital.com", color: "hover:bg-green-500/10 hover:border-green-500/30 hover:text-green-500" }
-                ].map(({ icon: Icon, href, color }, index) => (
-                  <a
-                    key={index}
-                    href={href}
-                    target={href.startsWith('mailto:') ? undefined : "_blank"}
-                    rel={href.startsWith('mailto:') ? undefined : "noopener noreferrer"}
-                    className={`group p-2 bg-card/50 backdrop-blur-sm rounded-lg border border-border/50 transition-all duration-300 hover:scale-110 ${color} transform ${
-                      footerVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                    }`}
-                    style={{ 
-                      transitionDelay: footerVisible ? `${index * 100}ms` : '0ms',
-                      animationFillMode: 'both'
-                    }}
-                  >
-                    <Icon className="w-4 h-4 transition-all duration-300" />
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
 
@@ -155,9 +141,6 @@ const Footer = () => {
             <div className="text-center md:text-left">
               <p className="text-muted-foreground text-sm">
                 © 2024 FH Digital Solutions. All rights reserved.
-              </p>
-              <p className="text-muted-foreground text-xs mt-1">
-                Crafted with ❤️ for your digital success
               </p>
             </div>
             
