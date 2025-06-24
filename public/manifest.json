@@ -1,9 +1,9 @@
 
 {
-  "name": "FH Digital Solutions - Professional Web Development Services",
-  "short_name": "FH Digital",
-  "description": "Professional web development services including static websites, web applications, and custom digital solutions",
-  "start_url": "/",
+  "name": "FH Digital Admin Dashboard",
+  "short_name": "FH Admin",
+  "description": "Admin dashboard for FH Digital Solutions to manage portfolio, services, and messages",
+  "start_url": "/admin",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
@@ -22,17 +22,17 @@
   "categories": ["business", "productivity"],
   "shortcuts": [
     {
-      "name": "Our Services",
-      "short_name": "Services",
-      "description": "View our web development services",
-      "url": "/#services",
+      "name": "Messages",
+      "short_name": "Messages",
+      "description": "View incoming messages",
+      "url": "/admin#messages",
       "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
     },
     {
       "name": "Portfolio",
       "short_name": "Portfolio",
-      "description": "View our portfolio",
-      "url": "/#projects",
+      "description": "Manage portfolio projects",
+      "url": "/admin#projects",
       "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
     }
   ]

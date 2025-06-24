@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {
@@ -47,6 +48,7 @@ const MessagesManager = () => {
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'read' | 'unread'>('all');
+  const [deleteMessageId, setDeleteMessageId] = useState<string | null>(null);
 
   const filteredMessages = messages.filter(message => {
     const matchesSearch = message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -66,15 +68,17 @@ const MessagesManager = () => {
     ));
   };
 
-  const handleDeleteMessage = (id: string) => {
+  const handleDeleteConfirm = (id: string) => {
     setMessages(prev => prev.filter(msg => msg.id !== id));
     if (selectedMessage?.id === id) {
       setSelectedMessage(null);
     }
     toast({
-      title: "Pesan berhasil dihapus!",
-      description: "Pesan telah dihapus dari inbox.",
+      title: "Message deleted!",
+      description: "Message has been successfully deleted.",
+      variant: "destructive",
     });
+    setDeleteMessageId(null);
   };
 
   const handleViewMessage = (message: Message) => {
@@ -87,23 +91,38 @@ const MessagesManager = () => {
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('id-ID', {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     }).format(date);
   };
 
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    const diffInDays = Math.floor(diffInHours / 24);
+    
+    if (diffInDays > 0) {
+      return `${diffInDays}d ago`;
+    } else if (diffInHours > 0) {
+      return `${diffInHours}h ago`;
+    } else {
+      return 'Just now';
+    }
+  };
+
   const unreadCount = messages.filter(msg => !msg.isRead).length;
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:p-8 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Messages Management</h2>
           <p className="text-gray-600 dark:text-gray-300 mt-1">
             {unreadCount > 0 && (
-              <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+              <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium animate-pulse">
                 {unreadCount} pesan belum dibaca
               </span>
             )}
@@ -127,6 +146,7 @@ const MessagesManager = () => {
             variant={filterStatus === 'all' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('all')}
             size="sm"
+            className="hover:scale-105 transition-all duration-200"
           >
             Semua
           </Button>
@@ -134,6 +154,7 @@ const MessagesManager = () => {
             variant={filterStatus === 'unread' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('unread')}
             size="sm"
+            className="hover:scale-105 transition-all duration-200"
           >
             Belum Dibaca
           </Button>
@@ -141,15 +162,16 @@ const MessagesManager = () => {
             variant={filterStatus === 'read' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('read')}
             size="sm"
+            className="hover:scale-105 transition-all duration-200"
           >
             Sudah Dibaca
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Messages List - Smaller on larger screens */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className="lg:col-span-1 space-y-3">
           {filteredMessages.length === 0 ? (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
@@ -158,7 +180,7 @@ const MessagesManager = () => {
             filteredMessages.map((message) => (
               <div
                 key={message.id}
-                className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 ${
+                className={`border rounded-xl p-3 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-md animate-scale-in ${
                   !message.isRead
                     ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
                     : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -169,18 +191,21 @@ const MessagesManager = () => {
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <h3 className={`font-semibold text-sm ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
+                    <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
                       {message.name}
                     </h3>
                     {!message.isRead && (
-                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
                     )}
                   </div>
                 </div>
                 
-                <div className="text-xs text-gray-600 dark:text-gray-300 mb-2">
-                  <div className="mb-1">{message.projectType}</div>
-                  <div>{message.budget}</div>
+                <div className="text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span>{message.projectType}</span>
+                    <span className="text-xs text-gray-500">{formatTimeAgo(message.createdAt)}</span>
+                  </div>
+                  <div className="text-xs font-medium text-primary">{message.budget}</div>
                 </div>
               </div>
             ))
@@ -188,9 +213,9 @@ const MessagesManager = () => {
         </div>
 
         {/* Message Detail - Larger on larger screens */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           {selectedMessage ? (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300 animate-fade-in">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -200,24 +225,42 @@ const MessagesManager = () => {
                     {formatDate(selectedMessage.createdAt)}
                   </p>
                 </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDeleteMessage(selectedMessage.id)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="hover:scale-105 transition-all duration-200"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete the message from "{selectedMessage.name}".
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDeleteConfirm(selectedMessage.id)}>
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Email
                     </label>
                     <p className="text-gray-900 dark:text-white">{selectedMessage.email}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Phone
                     </label>
@@ -226,13 +269,13 @@ const MessagesManager = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Jenis Project
                     </label>
                     <p className="text-gray-900 dark:text-white">{selectedMessage.projectType}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Budget
                     </label>
@@ -240,7 +283,7 @@ const MessagesManager = () => {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200">
                   <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">
                     Detail Project
                   </label>
@@ -251,7 +294,7 @@ const MessagesManager = () => {
 
                 <div className="flex gap-3 pt-4">
                   <Button
-                    className="flex-1"
+                    className="flex-1 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                     onClick={() => {
                       const phoneNumber = selectedMessage.phone.replace(/\D/g, '');
                       const message = `Halo ${selectedMessage.name}, terima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
@@ -264,7 +307,7 @@ const MessagesManager = () => {
                   </Button>
                   <Button
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                     onClick={() => {
                       const subject = `Re: Konsultasi ${selectedMessage.projectType}`;
                       const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
@@ -279,7 +322,7 @@ const MessagesManager = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300">
               <div className="text-center">
                 <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Pilih pesan untuk melihat detail</p>

@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus, Edit, Trash2, Upload } from 'lucide-react';
 import { usePortfolio, Project } from '../../context/PortfolioContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,6 +19,8 @@ const ProjectsManager = () => {
     image: '',
     link: '',
   });
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [deleteProjectId, setDeleteProjectId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleOpenModal = (project?: Project) => {
@@ -38,7 +41,21 @@ const ProjectsManager = () => {
         link: '',
       });
     }
+    setUploadedFile(null);
     setIsModalOpen(true);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+      // Create a data URL for preview
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setFormData(prev => ({ ...prev, image: event.target?.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -75,22 +92,25 @@ const ProjectsManager = () => {
     setEditingProject(null);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this project?')) {
-      const updatedProjects = data.projects.filter(p => p.id !== id);
-      updateProjects(updatedProjects);
-      toast({
-        title: "Project deleted!",
-        description: "Project has been successfully deleted.",
-      });
-    }
+  const handleDeleteConfirm = (id: string) => {
+    const updatedProjects = data.projects.filter(p => p.id !== id);
+    updateProjects(updatedProjects);
+    toast({
+      title: "Project deleted!",
+      description: "Project has been successfully deleted.",
+      variant: "destructive",
+    });
+    setDeleteProjectId(null);
   };
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:p-8 animate-fade-in">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-foreground">Manage Projects</h2>
-        <Button onClick={() => handleOpenModal()} className="flex items-center gap-2">
+        <Button 
+          onClick={() => handleOpenModal()} 
+          className="flex items-center gap-2 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+        >
           <Plus className="w-4 h-4" />
           Add Project
         </Button>
@@ -100,7 +120,7 @@ const ProjectsManager = () => {
         {data.projects.map((project) => (
           <div
             key={project.id}
-            className="bg-card text-card-foreground rounded-lg p-4 border border-border hover:shadow-lg transition-shadow"
+            className="bg-card text-card-foreground rounded-lg p-4 border border-border hover:shadow-xl transition-all duration-300 hover:scale-105 animate-scale-in"
           >
             <img
               src={project.image}
@@ -115,20 +135,37 @@ const ProjectsManager = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleOpenModal(project)}
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 hover:scale-105 transition-all duration-200"
               >
                 <Edit className="w-3 h-3" />
                 Edit
               </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleDelete(project.id)}
-                className="flex items-center gap-1"
-              >
-                <Trash2 className="w-3 h-3" />
-                Delete
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="flex items-center gap-1 hover:scale-105 transition-all duration-200"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete the project "{project.title}".
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => handleDeleteConfirm(project.id)}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         ))}
@@ -163,13 +200,26 @@ const ProjectsManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-foreground">Image URL *</label>
-              <Input
-                value={formData.image}
-                onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                placeholder="https://example.com/image.jpg"
-                required
-              />
+              <label className="block text-sm font-medium mb-2 text-foreground">Project Image *</label>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/80"
+                    required={!editingProject}
+                  />
+                  <Upload className="w-4 h-4 text-muted-foreground" />
+                </div>
+                {formData.image && (
+                  <img
+                    src={formData.image}
+                    alt="Preview"
+                    className="w-full h-32 object-cover rounded-lg border"
+                  />
+                )}
+              </div>
             </div>
 
             <div>
@@ -177,7 +227,7 @@ const ProjectsManager = () => {
               <Input
                 value={formData.link}
                 onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
-                placeholder="https://github.com/username/project"
+                placeholder="https://github.com/username/project or https://yourproject.com"
                 required
               />
             </div>
