@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Lock, User, Eye, EyeOff } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -41,7 +40,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center px-4">
-      <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md border border-border animate-scale-in shadow-xl hover:shadow-2xl transition-all duration-300 hover: -translate-y-1">
+      <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md border border-border animate-scale-in shadow-xl hover:shadow-2xl dark:shadow-white/20 dark:hover:shadow-white/40 transition-all duration-300 hover:-translate-y-1">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="w-8 h-8 text-primary" />
