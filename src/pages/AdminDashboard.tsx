@@ -1,9 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, LogOut, Home, Mail, Menu, User, Code } from 'lucide-react';
+import { LayoutDashboard, FileText, LogOut, Home, Mail, Menu, User, Code, MessageSquare } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import AdminLogin from '../components/AdminLogin';
 import ProjectsManager from '../components/admin/ProjectsManager';
+import HeroManager from '../components/admin/HeroManager';
+import ServicesManager from '../components/admin/ServicesManager';
+import ContactManager from '../components/admin/ContactManager';
+import MessagesManager from '../components/admin/MessagesManager';
 import ThemeToggle from '../components/admin/ThemeToggle';
 import { useToast } from '@/hooks/use-toast';
 
@@ -41,7 +45,9 @@ const AdminDashboard = () => {
     }
   }, [isAdmin, logout, toast]);
 
-  if (!isAdmin || sessionExpired) {
+  if (!isAdmin ||
+
+ sessionExpired) {
     return <AdminLogin onLogin={() => {
       setActiveTab('projects');
       setSessionExpired(false);
@@ -60,7 +66,8 @@ const AdminDashboard = () => {
     { id: 'projects', label: 'Portfolio', icon: FileText },
     { id: 'hero', label: 'Hero Section', icon: Home },
     { id: 'services', label: 'Services', icon: Code },
-    { id: 'contact', label: 'Contact', icon: Mail }
+    { id: 'contact', label: 'Contact', icon: Mail },
+    { id: 'messages', label: 'Messages', icon: MessageSquare }
   ];
 
   const renderContent = () => {
@@ -68,44 +75,13 @@ const AdminDashboard = () => {
       case 'projects':
         return <ProjectsManager />;
       case 'hero':
-        return (
-          <div className="p-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Hero Section Management</h2>
-              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800/30">
-                <p className="text-blue-700 dark:text-blue-300 text-center">
-                  🚧 Hero section management akan segera tersedia
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+        return <HeroManager />;
       case 'services':
-        return (
-          <div className="p-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Services Management</h2>
-              <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800/30">
-                <p className="text-green-700 dark:text-green-300 text-center">
-                  🚧 Services management akan segera tersedia
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+        return <ServicesManager />;
       case 'contact':
-        return (
-          <div className="p-8">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Contact Management</h2>
-              <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800/30">
-                <p className="text-purple-700 dark:text-purple-300 text-center">
-                  🚧 Contact management akan segera tersedia
-                </p>
-              </div>
-            </div>
-          </div>
-        );
+        return <ContactManager />;
+      case 'messages':
+        return <MessagesManager />;
       default:
         return <ProjectsManager />;
     }
