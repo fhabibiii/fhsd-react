@@ -219,6 +219,7 @@ const ProjectsManager = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <Input
+                    id="project-image-upload"
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
@@ -228,7 +229,10 @@ const ProjectsManager = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => document.querySelector('input[type="file"]')?.click()}
+                    onClick={() => {
+                      const fileInput = document.getElementById('project-image-upload') as HTMLInputElement;
+                      fileInput?.click();
+                    }}
                     className="flex items-center gap-2"
                   >
                     <Upload className="w-4 h-4" />
