@@ -11,27 +11,32 @@ interface AdminLoginProps {
 const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const { state, login } = usePortfolio();
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = usePortfolio();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    const success = await login(credentials.username, credentials.password);
-    
-    if (success) {
-      onLogin();
-      toast({
-        title: "Login berhasil!",
-        description: "Selamat datang di dashboard admin.",
-      });
-    } else {
-      toast({
-        title: "Login gagal",
-        description: state.error || "Username atau password salah.",
-        variant: "destructive",
-      });
-    }
+    // Simulate API call
+    setTimeout(() => {
+      if (credentials.username === 'admin' && credentials.password === 'admin123') {
+        login();
+        onLogin();
+        toast({
+          title: "Login berhasil!",
+          description: "Selamat datang di dashboard admin.",
+        });
+      } else {
+        toast({
+          title: "Login gagal",
+          description: "Username atau password salah.",
+          variant: "destructive",
+        });
+      }
+      setIsLoading(false);
+    }, 1000);
   };
 
   return (
@@ -89,10 +94,10 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
 
           <button
             type="submit"
-            disabled={state.loading}
+            disabled={isLoading}
             className="w-full bg-primary hover:bg-primary/90 disabled:bg-primary/50 text-primary-foreground font-medium py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 disabled:scale-100"
           >
-            {state.loading ? (
+            {isLoading ? (
               <div className="w-5 h-5 border-2 border-primary-foreground/20 border-t-primary-foreground rounded-full animate-spin"></div>
             ) : (
               'Masuk'

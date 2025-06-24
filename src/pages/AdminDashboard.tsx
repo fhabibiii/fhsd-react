@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -11,10 +12,11 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
-  const { state, logout, checkAuth } = usePortfolio();
+  const { isAdmin, logout, login } = usePortfolio();
   const [activeTab, setActiveTab] = useState('projects');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
@@ -34,10 +36,29 @@ const AdminDashboard = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Check authentication on mount
+  // Session management
   useEffect(() => {
-    checkAuth();
-  }, []);
+    if (isAdmin) {
+      const sessionTimeout = setTimeout(() => {
+        setSessionExpired(true);
+        logout();
+        toast({
+          title: "Session expired",
+          description: "Your session has expired. Please login again.",
+          variant: "destructive",
+        });
+      }, 24 * 60 * 60 * 1000);
+
+      const refreshInterval = setInterval(() => {
+        console.log('Refreshing session token...');
+      }, 60 * 60 * 1000);
+
+      return () => {
+        clearTimeout(sessionTimeout);
+        clearInterval(refreshInterval);
+      };
+    }
+  }, [isAdmin, logout, toast]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -52,9 +73,10 @@ const AdminDashboard = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  if (!state.isAuthenticated) {
+  if (!isAdmin || sessionExpired) {
     return <AdminLogin onLogin={() => {
       setActiveTab('projects');
+      setSessionExpired(false);
     }} />;
   }
 
@@ -63,8 +85,8 @@ const AdminDashboard = () => {
     setUserDropdownOpen(false);
   };
 
-  const handleLogoutConfirm = async () => {
-    await logout();
+  const handleLogoutConfirm = () => {
+    logout();
     toast({
       title: "Logout berhasil",
       description: "Anda telah keluar dari dashboard admin.",
@@ -238,9 +260,7 @@ const AdminDashboard = () => {
                 </div>
                 {!isMobile && (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      Welcome, {state.user?.username || 'Admin'}
-                    </span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>
                     <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
                   </div>
                 )}

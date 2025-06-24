@@ -5,63 +5,39 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { apiService } from '../services/api';
 
 const Contact = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    subject: '',
+    projectType: '',
+    budget: '',
     message: ''
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    // Handle form submission here
+    console.log('Form submitted:', formData);
+    
+    // Show success toast
+    toast({
+      title: "Konsultasi berhasil dikirim!",
+      description: "Tim kami akan segera menghubungi Anda dalam 24 jam ke depan.",
+    });
 
-    try {
-      const result = await apiService.sendMessage({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        subject: formData.subject,
-        message: formData.message
-      });
-
-      if (result.success) {
-        toast({
-          title: "Pesan berhasil dikirim!",
-          description: "Tim kami akan segera menghubungi Anda dalam 24 jam ke depan.",
-        });
-
-        // Reset form
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: ''
-        });
-      } else {
-        toast({
-          title: "Gagal mengirim pesan",
-          description: result.message || "Terjadi kesalahan saat mengirim pesan. Silakan coba lagi.",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Gagal mengirim pesan",
-        description: "Terjadi kesalahan jaringan. Silakan coba lagi.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      projectType: '',
+      budget: '',
+      message: ''
+    });
   };
 
   const contactInfo = [
@@ -101,6 +77,22 @@ const Contact = () => {
       color: 'text-orange-500',
       bgColor: 'bg-orange-50 dark:bg-orange-950/20'
     }
+  ];
+
+  const projectTypes = [
+    'Basic Website',
+    'Web App Dasar', 
+    'Web App Menengah',
+    'Web App Kompleks',
+    'Konsultasi'
+  ];
+
+  const budgetRanges = [
+    'Di bawah Rp 5 juta',
+    'Rp 5 - 15 juta',
+    'Rp 15 - 30 juta', 
+    'Di atas Rp 30 juta',
+    'Diskusi lebih lanjut'
   ];
 
   return (
@@ -156,7 +148,7 @@ const Contact = () => {
             <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                 <Send className="w-7 h-7 text-primary" />
-                Kirim Pesan Kepada Kami
+                Formulir Konsultasi Gratis
               </h3>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -172,12 +164,12 @@ const Contact = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Email *</label>
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Email Bisnis *</label>
                     <Input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      placeholder="email@example.com"
+                      placeholder="email@perusahaan.com"
                       required
                       className="h-12 rounded-xl border-2 focus:border-primary"
                     />
@@ -186,33 +178,52 @@ const Contact = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Nomor WhatsApp</label>
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Nomor WhatsApp *</label>
                     <Input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                       placeholder="+62 812-3456-7890"
+                      required
                       className="h-12 rounded-xl border-2 focus:border-primary"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Subject</label>
-                    <Input
-                      type="text"
-                      value={formData.subject}
-                      onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
-                      placeholder="Topik pesan Anda"
-                      className="h-12 rounded-xl border-2 focus:border-primary"
-                    />
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Jenis Project *</label>
+                    <select 
+                      value={formData.projectType}
+                      onChange={(e) => setFormData(prev => ({ ...prev, projectType: e.target.value }))}
+                      required
+                      className="w-full h-12 px-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary"
+                    >
+                      <option value="">Pilih jenis project</option>
+                      {projectTypes.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Pesan *</label>
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Estimasi Budget</label>
+                  <select 
+                    value={formData.budget}
+                    onChange={(e) => setFormData(prev => ({ ...prev, budget: e.target.value }))}
+                    className="w-full h-12 px-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary"
+                  >
+                    <option value="">Pilih range budget</option>
+                    {budgetRanges.map(range => (
+                      <option key={range} value={range}>{range}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-3">Detail Project *</label>
                   <Textarea
                     value={formData.message}
                     onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                    placeholder="Ceritakan kebutuhan project Anda, fitur-fitur yang diinginkan, timeline, dan informasi lain yang relevan..."
+                    placeholder="Ceritakan detail project yang ingin Anda kembangkan, fitur-fitur yang dibutuhkan, target waktu, dan informasi lain yang relevan..."
                     rows={6}
                     required
                     className="rounded-xl border-2 focus:border-primary resize-none"
@@ -221,15 +232,10 @@ const Contact = () => {
 
                 <Button 
                   type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white dark:text-gray-900 py-4 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:scale-105 disabled:scale-100"
+                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white dark:text-gray-900 py-4 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:scale-105"
                 >
-                  {isSubmitting ? (
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                  ) : (
-                    <Send className="w-5 h-5" />
-                  )}
-                  {isSubmitting ? 'Mengirim...' : 'Kirim Pesan'}
+                  <Send className="w-5 h-5" />
+                  Kirim Konsultasi Gratis
                 </Button>
               </form>
             </div>

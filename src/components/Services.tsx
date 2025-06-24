@@ -1,15 +1,10 @@
-import React, { useEffect } from 'react';
+
+import React from 'react';
 import { Globe, Code, Zap, Rocket, Clock, CheckCircle } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
-import { usePortfolio } from '../context/PortfolioContext';
 
 const Services = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
-  const { state, fetchServices } = usePortfolio();
-
-  useEffect(() => {
-    fetchServices();
-  }, []);
 
   const handleConsultationClick = () => {
     const whatsappNumber = "085156321198";
@@ -25,14 +20,47 @@ const Services = () => {
     window.open(url, '_blank');
   };
 
-  const getServiceIcon = (index: number) => {
-    const icons = [Globe, Code, Zap, Rocket];
-    return icons[index % icons.length];
-  };
+  const services = [
+    {
+      id: 'basic-website',
+      icon: Globe,
+      title: 'Basic Website',
+      duration: '5–7 hari',
+      description: 'Landing page interaktif dengan kontak dan animasi ringan yang sempurna untuk memperkenalkan bisnis Anda.',
+      features: ['Landing page interaktif', 'Form kontak terintegrasi', 'Animasi ringan & smooth', 'Responsive design', 'SEO friendly'],
+      price: 'Rp 2.500.000'
+    },
+    {
+      id: 'web-app-basic',
+      icon: Code,
+      title: 'Web App Dasar',
+      duration: '10–15 hari',
+      description: 'Aplikasi web dengan fitur login, dashboard user, dan manajemen data dasar untuk kebutuhan bisnis kecil.',
+      features: ['Sistem login & registrasi', 'Dashboard user',  'Input data (CRUD)', 'Validasi form', 'Pagination data'],
+      price: 'Rp 7.000.000'
+    },
+    {
+      id: 'web-app-medium',
+      icon: Zap,
+      title: 'Web App Menengah',
+      duration: '20–30 hari',
+      description: 'Solusi lengkap dengan admin panel, multi-role user, dan fitur advanced untuk bisnis yang berkembang.',
+      features: ['Admin panel lengkap', 'Multi-role management', 'Upload & manajemen file', 'Grafik & analisis data', 'Notifikasi email otomatis'],
+      price: 'Rp 15.000.000'
+    },
+    {
+      id: 'web-app-complex',
+      icon: Rocket,
+      title: 'Web App Kompleks',
+      duration: '30–60 hari',
+      description: 'Sistem besar dan kompleks dengan integrasi API, keamanan tinggi untuk enterprise dan skala besar.',
+      features: ['Sistem enterprise-grade', 'E-commerce & afiliasi', 'Integrasi API eksternal', 'Keamanan tingkat tinggi', 'Arsitektur scalable'],
+      price: 'Rp 30.000.000'
+    }
+  ];
 
   const ServiceCard = ({ service, index }: { service: any; index: number }) => {
     const [cardRef, cardVisible] = useScrollAnimation();
-    const ServiceIcon = getServiceIcon(index);
 
     return (
       <div
@@ -50,12 +78,16 @@ const Services = () => {
         <div className="p-6 flex flex-col flex-1">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-primary/10">
-              <ServiceIcon className="w-5 h-5 text-primary" />
+              <service.icon className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                 {service.title}
               </h3>
+              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                <Clock className="w-3 h-3" />
+                <span>{service.duration}</span>
+              </div>
             </div>
           </div>
           
@@ -76,25 +108,13 @@ const Services = () => {
             onClick={() => handlePackageClick(service.title)}
             className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white dark:text-gray-900 px-4 py-3 rounded-lg transition-all duration-300 font-semibold text-sm hover:scale-[1.02] flex flex-col items-center gap-1 mt-auto"
           >
+            <span className="text-lg font-bold">{service.price}</span>
             <span>Pilih Paket Ini</span>
           </button>
         </div>
       </div>
     );
   };
-
-  if (state.loading) {
-    return (
-      <section id="services" className="py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center">
-            <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Memuat layanan...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="services" className="py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
@@ -119,17 +139,11 @@ const Services = () => {
           </p>
         </div>
 
-        {state.services.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg">Belum ada layanan yang tersedia.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
-            {state.services.map((service, index) => (
-              <ServiceCard key={service.id} service={service} index={index} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
+          {services.map((service, index) => (
+            <ServiceCard key={service.id} service={service} index={index} />
+          ))}
+        </div>
 
         {/* CTA Section */}
         <div className="text-center">

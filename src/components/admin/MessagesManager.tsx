@@ -1,54 +1,60 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { apiService, Message } from '../../services/api';
+
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  projectType: string;
+  budget: string;
+  message: string;
+  createdAt: Date;
+  isRead: boolean;
+}
 
 const MessagesManager = () => {
   const { toast } = useToast();
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      phone: '+62 812-3456-7890',
+      projectType: 'Basic Website',
+      budget: 'Di bawah Rp 5 juta',
+      message: 'Saya ingin membuat website untuk toko online saya. Apakah bisa dibantu untuk diskusi lebih lanjut?',
+      createdAt: new Date('2024-01-15T10:30:00'),
+      isRead: false
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      email: 'jane@company.com',
+      phone: '+62 813-9876-5432',
+      projectType: 'Web App Menengah',
+      budget: 'Rp 15 - 30 juta',
+      message: 'Perusahaan kami membutuhkan sistem manajemen inventory. Mohon info detail paket dan timeline.',
+      createdAt: new Date('2024-01-14T14:20:00'),
+      isRead: true
+    }
+  ]);
+
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'read' | 'unread'>('all');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null);
 
-  const fetchMessages = async () => {
-    setLoading(true);
-    try {
-      const result = await apiService.getMessages();
-      if (result.success) {
-        setMessages(result.data || []);
-      } else {
-        toast({
-          title: "Gagal memuat pesan",
-          description: result.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Gagal memuat pesan",
-        description: "Terjadi kesalahan jaringan",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-  }, []);
-
   const filteredMessages = messages.filter(message => {
     const matchesSearch = message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          message.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (message.subject && message.subject.toLowerCase().includes(searchTerm.toLowerCase()));
+                         message.projectType.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesFilter = filterStatus === 'all' || 
                          (filterStatus === 'read' && message.isRead) ||
@@ -57,20 +63,10 @@ const MessagesManager = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const handleMarkAsRead = async (id: string) => {
-    try {
-      const result = await apiService.updateMessageReadStatus(id, true);
-      if (result.success) {
-        setMessages(prev => prev.map(msg => 
-          msg.id === id ? { ...msg, isRead: true } : msg
-        ));
-        if (selectedMessage && selectedMessage.id === id) {
-          setSelectedMessage({ ...selectedMessage, isRead: true });
-        }
-      }
-    } catch (error) {
-      console.error('Failed to mark message as read:', error);
-    }
+  const handleMarkAsRead = (id: string) => {
+    setMessages(prev => prev.map(msg => 
+      msg.id === id ? { ...msg, isRead: true } : msg
+    ));
   };
 
   const handleDeleteClick = (id: string) => {
@@ -78,34 +74,17 @@ const MessagesManager = () => {
     setDeleteConfirmOpen(true);
   };
 
-  const handleDeleteConfirm = async () => {
+  const handleDeleteConfirm = () => {
     if (deletingMessageId) {
-      try {
-        const result = await apiService.deleteMessage(deletingMessageId);
-        if (result.success) {
-          setMessages(prev => prev.filter(msg => msg.id !== deletingMessageId));
-          if (selectedMessage?.id === deletingMessageId) {
-            setSelectedMessage(null);
-          }
-          toast({
-            title: "Pesan berhasil dihapus!",
-            description: "Pesan telah dihapus dari inbox.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Gagal menghapus pesan",
-            description: result.message,
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
-        toast({
-          title: "Gagal menghapus pesan",
-          description: "Terjadi kesalahan jaringan",
-          variant: "destructive",
-        });
+      setMessages(prev => prev.filter(msg => msg.id !== deletingMessageId));
+      if (selectedMessage?.id === deletingMessageId) {
+        setSelectedMessage(null);
       }
+      toast({
+        title: "Pesan berhasil dihapus!",
+        description: "Pesan telah dihapus dari inbox.",
+        variant: "destructive",
+      });
     }
     setDeleteConfirmOpen(false);
     setDeletingMessageId(null);
@@ -118,35 +97,24 @@ const MessagesManager = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('id-ID', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    }).format(new Date(dateString));
+    }).format(date);
   };
 
-  const formatTime = (dateString: string) => {
+  const formatTime = (date: Date) => {
     return new Intl.DateTimeFormat('id-ID', {
       hour: '2-digit',
       minute: '2-digit'
-    }).format(new Date(dateString));
+    }).format(date);
   };
 
   const unreadCount = messages.filter(msg => !msg.isRead).length;
-
-  if (loading) {
-    return (
-      <div className="p-4 md:p-8 animate-fade-in">
-        <div className="text-center py-20">
-          <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Memuat pesan...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="p-4 md:p-8 animate-fade-in">
@@ -170,7 +138,7 @@ const MessagesManager = () => {
           <Input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Cari berdasarkan nama, email, atau subject..."
+            placeholder="Cari berdasarkan nama, email, atau jenis project..."
             className="pl-10"
           />
         </div>
@@ -239,7 +207,10 @@ const MessagesManager = () => {
                 
                 <div className="text-xs text-gray-600 dark:text-gray-300 mb-2">
                   <div className="flex items-center justify-between mb-1">
-                    <span>{message.subject || message.email}</span>
+                    <span>{message.projectType}</span>
+                    <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                      {message.budget}
+                    </span>
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
                     {formatDate(message.createdAt)}
@@ -281,28 +252,32 @@ const MessagesManager = () => {
                     </label>
                     <p className="text-gray-900 dark:text-white">{selectedMessage.email}</p>
                   </div>
-                  {selectedMessage.phone && (
-                    <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                      <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                        Phone
-                      </label>
-                      <p className="text-gray-900 dark:text-white">{selectedMessage.phone}</p>
-                    </div>
-                  )}
-                </div>
-
-                {selectedMessage.subject && (
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Subject
+                      Phone
                     </label>
-                    <p className="text-gray-900 dark:text-white">{selectedMessage.subject}</p>
+                    <p className="text-gray-900 dark:text-white">{selectedMessage.phone}</p>
                   </div>
-                )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      Jenis Project
+                    </label>
+                    <p className="text-gray-900 dark:text-white">{selectedMessage.projectType}</p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      Budget
+                    </label>
+                    <p className="text-gray-900 dark:text-white">{selectedMessage.budget}</p>
+                  </div>
+                </div>
 
                 <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                   <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">
-                    Pesan
+                    Detail Project
                   </label>
                   <p className="text-gray-900 dark:text-white leading-relaxed">
                     {selectedMessage.message}
@@ -310,26 +285,24 @@ const MessagesManager = () => {
                 </div>
 
                 <div className="flex gap-3 pt-4">
-                  {selectedMessage.phone && (
-                    <Button
-                      className="flex-1 hover:shadow-md transition-all duration-200"
-                      onClick={() => {
-                        const phoneNumber = selectedMessage.phone?.replace(/\D/g, '');
-                        const message = `Halo ${selectedMessage.name}, terima kasih atas pesan Anda. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
-                        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-                        window.open(url, '_blank');
-                      }}
-                    >
-                      <Phone className="w-4 h-4 mr-2" />
-                      WhatsApp
-                    </Button>
-                  )}
+                  <Button
+                    className="flex-1 hover:shadow-md transition-all duration-200"
+                    onClick={() => {
+                      const phoneNumber = selectedMessage.phone.replace(/\D/g, '');
+                      const message = `Halo ${selectedMessage.name}, terima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
+                      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                      window.open(url, '_blank');
+                    }}
+                  >
+                    <Phone className="w-4 h-4 mr-2" />
+                    WhatsApp
+                  </Button>
                   <Button
                     variant="outline"
                     className="flex-1 hover:shadow-md transition-all duration-200"
                     onClick={() => {
-                      const subject = `Re: ${selectedMessage.subject || 'Pesan Anda'}`;
-                      const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas pesan Anda. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
+                      const subject = `Re: Konsultasi ${selectedMessage.projectType}`;
+                      const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
                       const url = `mailto:${selectedMessage.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                       window.open(url);
                     }}
