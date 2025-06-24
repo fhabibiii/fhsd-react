@@ -1,8 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Moon, Sun, Settings } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { Link } from 'react-router-dom';
+import { Menu, X, Moon, Sun } from 'lucide-react';
+import { useTheme } from './ThemeProvider';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +40,7 @@ const Navigation = () => {
           {/* Logo */}
           <div className="flex-shrink-0">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              FH Digital
+              FHDS
             </h1>
           </div>
 
@@ -70,16 +69,6 @@ const Navigation = () => {
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
 
-            {/* Admin Link */}
-            <Link
-              to="/admin"
-              className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200"
-              title="Admin Dashboard"
-            >
-              <Settings className="w-4 h-4" />
-              <span className="text-sm font-medium">Admin</span>
-            </Link>
-
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -103,14 +92,6 @@ const Navigation = () => {
                   {item.label}
                 </button>
               ))}
-              <Link
-                to="/admin"
-                className="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                <Settings className="w-4 h-4" />
-                Admin Dashboard
-              </Link>
             </div>
           </div>
         )}
