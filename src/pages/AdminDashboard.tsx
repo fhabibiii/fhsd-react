@@ -12,36 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
-  // Move usePortfolio hook call inside a try-catch or conditional check
-  const [portfolioContext, setPortfolioContext] = useState<any>(null);
-  const [contextError, setContextError] = useState<string | null>(null);
-  
-  // Safely get portfolio context
-  React.useEffect(() => {
-    try {
-      // This will be set after the component mounts and context is available
-    } catch (error) {
-      console.error('Portfolio context error:', error);
-      setContextError('Portfolio context not available');
-    }
-  }, []);
-
-  // Get portfolio context conditionally
-  let isAdmin = false;
-  let login = () => {};
-  let logout = () => {};
-
-  try {
-    const context = usePortfolio();
-    isAdmin = context.isAdmin;
-    login = context.login;
-    logout = context.logout;
-  } catch (error) {
-    console.error('usePortfolio hook error:', error);
-    // Fallback to local state management
-    isAdmin = false;
-  }
-
+  const { isAdmin, logout, login } = usePortfolio();
   const [activeTab, setActiveTab] = useState('projects');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
