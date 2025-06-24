@@ -40,12 +40,21 @@ export interface Skill {
   technologies: string[];
 }
 
+export interface Contact {
+  phone: string;
+  email: string;
+  hours: string;
+  address: string;
+  mapUrl: string;
+}
+
 interface PortfolioData {
   projects: Project[];
   certificates: Certificate[];
   education: Education[];
   experience: Experience[];
   skills: Skill[];
+  contact?: Contact;
 }
 
 interface PortfolioContextType {
@@ -55,6 +64,7 @@ interface PortfolioContextType {
   updateEducation: (education: Education[]) => void;
   updateExperience: (experience: Experience[]) => void;
   updateSkills: (skills: Skill[]) => void;
+  updateContact: (contact: Contact) => void;
   isAdmin: boolean;
   login: () => void;
   logout: () => void;
@@ -166,7 +176,14 @@ const initialData: PortfolioData = {
       category: 'Tools & Platform',
       technologies: ['Docker', 'AWS', 'Git', 'Jenkins', 'Kubernetes']
     }
-  ]
+  ],
+  contact: {
+    phone: '+62 812-3456-7890',
+    email: 'contact@fhdigital.com',
+    hours: 'Senin - Jumat: 09:00 - 17:00 WIB',
+    address: 'Jl. Contoh No. 123, Jakarta, Indonesia',
+    mapUrl: 'https://www.google.com/maps/embed?pb=1!1m18!1m12!1m3!1d3151.835253576489!2d144.9537353!3d-37.8162791!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d43f3f77f67%3A0x5045675218ce6e0!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sid!4v1649862351234!5m2!1sen!2sid'
+  }
 };
 
 export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -193,6 +210,10 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
     setData(prev => ({ ...prev, skills }));
   };
 
+  const updateContact = (contact: Contact) => {
+    setData(prev => ({ ...prev, contact }));
+  };
+
   const login = () => {
     setIsAdmin(true);
   };
@@ -210,6 +231,7 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
         updateEducation,
         updateExperience,
         updateSkills,
+        updateContact,
         isAdmin,
         login,
         logout,
