@@ -1,9 +1,9 @@
 
 {
-  "name": "FH Admin Dashboard - Manage Your Digital Business",
-  "short_name": "FH Admin",
-  "description": "Admin dashboard for FH Digital Solutions - manage projects, services, contacts and messages",
-  "start_url": "/admin",
+  "name": "FH Digital Solutions - Professional Web Development Services",
+  "short_name": "FH Digital",
+  "description": "Professional web development services including static websites, web applications, and custom digital solutions",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
@@ -11,33 +11,29 @@
     {
       "src": "/placeholder.svg",
       "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/svg+xml"
     },
     {
       "src": "/placeholder.svg",
       "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/svg+xml"
     }
   ],
-  "categories": ["business", "productivity", "utilities"],
+  "categories": ["business", "productivity"],
   "shortcuts": [
     {
-      "name": "Messages",
-      "short_name": "Messages",
-      "description": "Check new messages from clients",
-      "url": "/admin?tab=messages",
+      "name": "Our Services",
+      "short_name": "Services",
+      "description": "View our web development services",
+      "url": "/#services",
       "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
     },
     {
       "name": "Portfolio",
       "short_name": "Portfolio",
-      "description": "Manage portfolio projects",
-      "url": "/admin?tab=projects",
+      "description": "View our portfolio",
+      "url": "/#projects",
       "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
     }
-  ],
-  "scope": "/admin",
-  "orientation": "portrait-primary"
+  ]
 }

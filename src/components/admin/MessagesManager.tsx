@@ -4,17 +4,6 @@ import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter } from 'lucide-react
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 interface Message {
   id: string;
@@ -83,9 +72,8 @@ const MessagesManager = () => {
       setSelectedMessage(null);
     }
     toast({
-      title: "Message deleted!",
-      description: "Message has been successfully deleted.",
-      variant: "destructive",
+      title: "Pesan berhasil dihapus!",
+      description: "Pesan telah dihapus dari inbox.",
     });
   };
 
@@ -97,15 +85,6 @@ const MessagesManager = () => {
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
-
-  const formatDateTime = (date: Date) => {
     return new Intl.DateTimeFormat('id-ID', {
       year: 'numeric',
       month: 'long',
@@ -124,7 +103,7 @@ const MessagesManager = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Messages Management</h2>
           <p className="text-gray-600 dark:text-gray-300 mt-1">
             {unreadCount > 0 && (
-              <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium animate-pulse">
+              <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
                 {unreadCount} pesan belum dibaca
               </span>
             )}
@@ -140,7 +119,7 @@ const MessagesManager = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Cari berdasarkan nama, email, atau jenis project..."
-            className="pl-10 hover:shadow-md transition-all duration-200"
+            className="pl-10"
           />
         </div>
         <div className="flex gap-2">
@@ -148,7 +127,6 @@ const MessagesManager = () => {
             variant={filterStatus === 'all' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('all')}
             size="sm"
-            className="hover:shadow-md transition-all duration-200"
           >
             Semua
           </Button>
@@ -156,7 +134,6 @@ const MessagesManager = () => {
             variant={filterStatus === 'unread' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('unread')}
             size="sm"
-            className="hover:shadow-md transition-all duration-200"
           >
             Belum Dibaca
           </Button>
@@ -164,16 +141,15 @@ const MessagesManager = () => {
             variant={filterStatus === 'read' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('read')}
             size="sm"
-            className="hover:shadow-md transition-all duration-200"
           >
             Sudah Dibaca
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List - Smaller on larger screens */}
-        <div className="lg:col-span-1 space-y-3">
+        <div className="lg:col-span-1 space-y-4">
           {filteredMessages.length === 0 ? (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
@@ -182,7 +158,7 @@ const MessagesManager = () => {
             filteredMessages.map((message) => (
               <div
                 key={message.id}
-                className={`border rounded-xl p-3 cursor-pointer transition-all duration-200 hover:shadow-lg animate-fade-in ${
+                className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 ${
                   !message.isRead
                     ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
                     : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -197,19 +173,14 @@ const MessagesManager = () => {
                       {message.name}
                     </h3>
                     {!message.isRead && (
-                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
                     )}
                   </div>
                 </div>
                 
                 <div className="text-xs text-gray-600 dark:text-gray-300 mb-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span>{message.projectType}</span>
-                    <span>{message.budget}</span>
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {formatDate(message.createdAt)}
-                  </div>
+                  <div className="mb-1">{message.projectType}</div>
+                  <div>{message.budget}</div>
                 </div>
               </div>
             ))
@@ -217,54 +188,36 @@ const MessagesManager = () => {
         </div>
 
         {/* Message Detail - Larger on larger screens */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-2">
           {selectedMessage ? (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 animate-fade-in hover:shadow-lg transition-all duration-200">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     {selectedMessage.name}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 text-sm">
-                    {formatDateTime(selectedMessage.createdAt)}
+                    {formatDate(selectedMessage.createdAt)}
                   </p>
                 </div>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="hover:shadow-md transition-all duration-200"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Message</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to delete this message from {selectedMessage.name}? This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDeleteMessage(selectedMessage.id)}>
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDeleteMessage(selectedMessage.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </div>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Email
                     </label>
                     <p className="text-gray-900 dark:text-white">{selectedMessage.email}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Phone
                     </label>
@@ -273,13 +226,13 @@ const MessagesManager = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Jenis Project
                     </label>
                     <p className="text-gray-900 dark:text-white">{selectedMessage.projectType}</p>
                   </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Budget
                     </label>
@@ -287,7 +240,7 @@ const MessagesManager = () => {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200">
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                   <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">
                     Detail Project
                   </label>
@@ -298,7 +251,7 @@ const MessagesManager = () => {
 
                 <div className="flex gap-3 pt-4">
                   <Button
-                    className="flex-1 hover:shadow-lg transition-all duration-200 hover:scale-105"
+                    className="flex-1"
                     onClick={() => {
                       const phoneNumber = selectedMessage.phone.replace(/\D/g, '');
                       const message = `Halo ${selectedMessage.name}, terima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
@@ -311,7 +264,7 @@ const MessagesManager = () => {
                   </Button>
                   <Button
                     variant="outline"
-                    className="flex-1 hover:shadow-lg transition-all duration-200 hover:scale-105"
+                    className="flex-1"
                     onClick={() => {
                       const subject = `Re: Konsultasi ${selectedMessage.projectType}`;
                       const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
@@ -326,7 +279,7 @@ const MessagesManager = () => {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-200">
+            <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
               <div className="text-center">
                 <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Pilih pesan untuk melihat detail</p>
