@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import AdminLogin from '../components/AdminLogin';
 import ProjectsManager from '../components/admin/ProjectsManager';
@@ -8,6 +8,7 @@ import ServicesManager from '../components/admin/ServicesManager';
 import ContactManager from '../components/admin/ContactManager';
 import MessagesManager from '../components/admin/MessagesManager';
 import ThemeToggle from '../components/admin/ThemeToggle';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
@@ -17,6 +18,8 @@ const AdminDashboard = () => {
   const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const { toast } = useToast();
 
   // Check if mobile
@@ -57,6 +60,19 @@ const AdminDashboard = () => {
     }
   }, [isAdmin, logout, toast]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.user-dropdown-container')) {
+        setUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   if (!isAdmin || sessionExpired) {
     return <AdminLogin onLogin={() => {
       setActiveTab('projects');
@@ -64,12 +80,19 @@ const AdminDashboard = () => {
     }} />;
   }
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
+    setLogoutConfirmOpen(true);
+    setUserDropdownOpen(false);
+  };
+
+  const handleLogoutConfirm = () => {
     logout();
     toast({
       title: "Logout berhasil",
       description: "Anda telah keluar dari dashboard admin.",
+      variant: "destructive",
     });
+    setLogoutConfirmOpen(false);
   };
 
   const menuItems = [
@@ -172,7 +195,7 @@ const AdminDashboard = () => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleLogout();
+              handleLogoutClick();
             }}
             className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200`}
             title={(sidebarCollapsed && !isMobile) ? 'Logout' : undefined}
@@ -226,14 +249,33 @@ const AdminDashboard = () => {
           <div className="flex items-center gap-4">
             <ThemeToggle />
             
-            {/* Admin Greeting */}
-            <div className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <User className="w-4 h-4 text-white dark:text-gray-900" />
-              </div>
-              {!isMobile && (
-                <div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>
+            {/* Admin Greeting with Dropdown */}
+            <div className="relative user-dropdown-container">
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              >
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white dark:text-gray-900" />
+                </div>
+                {!isMobile && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>
+                    <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                )}
+              </button>
+
+              {/* User Dropdown Menu */}
+              {userDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 animate-fade-in">
+                  <button
+                    onClick={handleLogoutClick}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="font-medium">Logout</span>
+                  </button>
                 </div>
               )}
             </div>
@@ -245,6 +287,24 @@ const AdminDashboard = () => {
           {renderContent()}
         </main>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <AlertDialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin keluar dari dashboard admin?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogoutConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Logout
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

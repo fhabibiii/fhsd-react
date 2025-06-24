@@ -4,6 +4,7 @@ import { Plus, Edit, Trash2, Save, X, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 
 interface Service {
@@ -42,6 +43,8 @@ const ServicesManager = () => {
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newFeature, setNewFeature] = useState('');
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deletingServiceId, setDeletingServiceId] = useState<string | null>(null);
 
   const handleAddService = () => {
     const newService: Service = {
@@ -80,12 +83,22 @@ const ServicesManager = () => {
     setIsAddingNew(false);
   };
 
-  const handleDeleteService = (id: string) => {
-    setServices(prev => prev.filter(service => service.id !== id));
-    toast({
-      title: "Layanan berhasil dihapus!",
-      description: "Layanan telah dihapus dari daftar.",
-    });
+  const handleDeleteClick = (id: string) => {
+    setDeletingServiceId(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deletingServiceId) {
+      setServices(prev => prev.filter(service => service.id !== deletingServiceId));
+      toast({
+        title: "Layanan berhasil dihapus!",
+        description: "Layanan telah dihapus dari daftar.",
+        variant: "destructive",
+      });
+    }
+    setDeleteConfirmOpen(false);
+    setDeletingServiceId(null);
   };
 
   const handleAddFeature = () => {
@@ -113,7 +126,7 @@ const ServicesManager = () => {
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Services Management</h2>
         <Button
           onClick={handleAddService}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:scale-105 transition-transform duration-200"
         >
           <Plus className="w-4 h-4" />
           <span className="hidden sm:inline">Tambah Layanan</span>
@@ -122,8 +135,12 @@ const ServicesManager = () => {
 
       {/* Services List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-        {services.map((service) => (
-          <div key={service.id} className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 shadow-sm">
+        {services.map((service, index) => (
+          <div 
+            key={service.id} 
+            className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300 transform animate-fade-in"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h3 className="font-bold text-gray-900 dark:text-white text-lg">{service.title}</h3>
@@ -137,13 +154,15 @@ const ServicesManager = () => {
                   size="sm"
                   variant="outline"
                   onClick={() => setEditingService(service)}
+                  className="hover:scale-105 transition-transform duration-200"
                 >
                   <Edit className="w-3 h-3" />
                 </Button>
                 <Button
                   size="sm"
                   variant="destructive"
-                  onClick={() => handleDeleteService(service.id)}
+                  onClick={() => handleDeleteClick(service.id)}
+                  className="hover:scale-105 transition-transform duration-200"
                 >
                   <Trash2 className="w-3 h-3" />
                 </Button>
@@ -171,7 +190,7 @@ const ServicesManager = () => {
       {/* Edit Modal */}
       {editingService && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                 {isAddingNew ? 'Tambah Layanan Baru' : 'Edit Layanan'}
@@ -288,6 +307,24 @@ const ServicesManager = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Layanan</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus layanan ini? Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
