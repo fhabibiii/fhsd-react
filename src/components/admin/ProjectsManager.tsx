@@ -15,7 +15,6 @@ const ProjectsManager = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    details: '',
     image: '',
     link: '',
   });
@@ -27,7 +26,6 @@ const ProjectsManager = () => {
       setFormData({
         title: project.title,
         description: project.description,
-        details: project.details,
         image: project.image,
         link: project.link || '',
       });
@@ -36,7 +34,6 @@ const ProjectsManager = () => {
       setFormData({
         title: '',
         description: '',
-        details: '',
         image: '',
         link: '',
       });
@@ -51,10 +48,10 @@ const ProjectsManager = () => {
       id: editingProject?.id || Date.now().toString(),
       title: formData.title,
       description: formData.description,
-      details: formData.details,
+      details: formData.description,
       image: formData.image,
-      technologies: [], // Remove technologies field
-      link: formData.link || undefined,
+      technologies: [],
+      link: formData.link,
     };
 
     if (editingProject) {
@@ -90,7 +87,7 @@ const ProjectsManager = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-foreground">Manage Projects</h2>
         <Button onClick={() => handleOpenModal()} className="flex items-center gap-2">
@@ -147,7 +144,7 @@ const ProjectsManager = () => {
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-foreground">Title</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Title *</label>
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
@@ -156,7 +153,7 @@ const ProjectsManager = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium mb-2 text-foreground">Description</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Description *</label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
@@ -166,17 +163,7 @@ const ProjectsManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-foreground">Details</label>
-              <Textarea
-                value={formData.details}
-                onChange={(e) => setFormData(prev => ({ ...prev, details: e.target.value }))}
-                rows={4}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2 text-foreground">Image URL</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Image URL *</label>
               <Input
                 value={formData.image}
                 onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
@@ -186,11 +173,12 @@ const ProjectsManager = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-foreground">Project Link (optional)</label>
+              <label className="block text-sm font-medium mb-2 text-foreground">Project Link *</label>
               <Input
                 value={formData.link}
                 onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
                 placeholder="https://github.com/username/project"
+                required
               />
             </div>
 

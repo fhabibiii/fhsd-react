@@ -30,39 +30,39 @@ const ContactManager = () => {
   };
 
   return (
-    <div className="p-8">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Contact Management</h2>
-          <div className="flex gap-3">
-            {!isEditing ? (
+    <div className="p-4 md:p-8">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Contact Management</h2>
+        <div className="flex gap-3">
+          {!isEditing ? (
+            <Button
+              onClick={() => setIsEditing(true)}
+              className="flex items-center gap-2"
+            >
+              <Edit className="w-4 h-4" />
+              <span className="hidden sm:inline">Edit Kontak</span>
+            </Button>
+          ) : (
+            <div className="flex gap-2">
               <Button
-                onClick={() => setIsEditing(true)}
+                onClick={handleSave}
                 className="flex items-center gap-2"
               >
-                <Edit className="w-4 h-4" />
-                Edit Kontak
+                <Save className="w-4 h-4" />
+                <span className="hidden sm: inline">Simpan</span>
               </Button>
-            ) : (
-              <div className="flex gap-2">
-                <Button
-                  onClick={handleSave}
-                  className="flex items-center gap-2"
-                >
-                  <Save className="w-4 h-4" />
-                  Simpan
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleCancel}
-                >
-                  Batal
-                </Button>
-              </div>
-            )}
-          </div>
+              <Button
+                variant="outline"
+                onClick={handleCancel}
+              >
+                Batal
+              </Button>
+            </div>
+          )}
         </div>
+      </div>
 
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 md:p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Form Section */}
           <div className="space-y-6">

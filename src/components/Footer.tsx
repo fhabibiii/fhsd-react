@@ -145,8 +145,6 @@ const Footer = () => {
             </div>
             
             <div className="flex items-center gap-6 text-xs text-muted-foreground">
-              <a href="#" className="hover:text-primary transition-colors duration-200">Privacy Policy</a>
-              <a href="#" className="hover:text-primary transition-colors duration-200">Terms of Service</a>
               <div className="flex items-center gap-1">
                 <Globe className="w-3 h-3" />
                 <span>Indonesia</span>

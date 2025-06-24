@@ -97,215 +97,195 @@ const MessagesManager = () => {
   const unreadCount = messages.filter(msg => !msg.isRead).length;
 
   return (
-    <div className="p-8">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Messages Management</h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {unreadCount > 0 && (
-                <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
-                  {unreadCount} pesan belum dibaca
-                </span>
-              )}
-            </p>
-          </div>
+    <div className="p-4 md:p-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Messages Management</h2>
+          <p className="text-gray-600 dark:text-gray-300 mt-1">
+            {unreadCount > 0 && (
+              <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+                {unreadCount} pesan belum dibaca
+              </span>
+            )}
+          </p>
         </div>
+      </div>
 
-        {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex-1 relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <Input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Cari berdasarkan nama, email, atau jenis project..."
-              className="pl-10"
-            />
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant={filterStatus === 'all' ? 'default' : 'outline'}
-              onClick={() => setFilterStatus('all')}
-              size="sm"
-            >
-              Semua
-            </Button>
-            <Button
-              variant={filterStatus === 'unread' ? 'default' : 'outline'}
-              onClick={() => setFilterStatus('unread')}
-              size="sm"
-            >
-              Belum Dibaca
-            </Button>
-            <Button
-              variant={filterStatus === 'read' ? 'default' : 'outline'}
-              onClick={() => setFilterStatus('read')}
-              size="sm"
-            >
-              Sudah Dibaca
-            </Button>
-          </div>
+      {/* Search and Filter */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="flex-1 relative">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Cari berdasarkan nama, email, atau jenis project..."
+            className="pl-10"
+          />
         </div>
+        <div className="flex gap-2">
+          <Button
+            variant={filterStatus === 'all' ? 'default' : 'outline'}
+            onClick={() => setFilterStatus('all')}
+            size="sm"
+          >
+            Semua
+          </Button>
+          <Button
+            variant={filterStatus === 'unread' ? 'default' : 'outline'}
+            onClick={() => setFilterStatus('unread')}
+            size="sm"
+          >
+            Belum Dibaca
+          </Button>
+          <Button
+            variant={filterStatus === 'read' ? 'default' : 'outline'}
+            onClick={() => setFilterStatus('read')}
+            size="sm"
+          >
+            Sudah Dibaca
+          </Button>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Messages List */}
-          <div className="space-y-4">
-            {filteredMessages.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Messages List - Smaller on larger screens */}
+        <div className="lg:col-span-1 space-y-4">
+          {filteredMessages.length === 0 ? (
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
+            </div>
+          ) : (
+            filteredMessages.map((message) => (
+              <div
+                key={message.id}
+                className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 ${
+                  !message.isRead
+                    ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
+                    : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                } ${
+                  selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
+                }`}
+                onClick={() => handleViewMessage(message)}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <h3 className={`font-semibold text-sm ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
+                      {message.name}
+                    </h3>
+                    {!message.isRead && (
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-600 dark:text-gray-300 mb-2">
+                  <div className="mb-1">{message.projectType}</div>
+                  <div>{message.budget}</div>
+                </div>
               </div>
-            ) : (
-              filteredMessages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 ${
-                    !message.isRead
-                      ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
-                      : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  } ${
-                    selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
-                  }`}
-                  onClick={() => handleViewMessage(message)}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <h3 className={`font-semibold ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
-                        {message.name}
-                      </h3>
-                      {!message.isRead && (
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
-                      )}
-                    </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {formatDate(message.createdAt)}
-                    </span>
-                  </div>
-                  
-                  <div className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                    <div className="flex items-center gap-4 mb-1">
-                      <span className="flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
-                        {message.email}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Phone className="w-3 h-3" />
-                        {message.phone}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {message.projectType} • {message.budget}
-                    </div>
-                  </div>
-                  
-                  <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
-                    {message.message}
+            ))
+          )}
+        </div>
+
+        {/* Message Detail - Larger on larger screens */}
+        <div className="lg:col-span-2">
+          {selectedMessage ? (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    {selectedMessage.name}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    {formatDate(selectedMessage.createdAt)}
                   </p>
                 </div>
-              ))
-            )}
-          </div>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDeleteMessage(selectedMessage.id)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
 
-          {/* Message Detail */}
-          <div className="lg:border-l lg:border-gray-200 dark:lg:border-gray-700 lg:pl-6">
-            {selectedMessage ? (
-              <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      {selectedMessage.name}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">
-                      {formatDate(selectedMessage.createdAt)}
-                    </p>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      Email
+                    </label>
+                    <p className="text-gray-900 dark:text-white">{selectedMessage.email}</p>
                   </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      Phone
+                    </label>
+                    <p className="text-gray-900 dark:text-white">{selectedMessage.phone}</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      Jenis Project
+                    </label>
+                    <p className="text-gray-900 dark:text-white">{selectedMessage.projectType}</p>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                      Budget
+                    </label>
+                    <p className="text-gray-900 dark:text-white">{selectedMessage.budget}</p>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                  <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">
+                    Detail Project
+                  </label>
+                  <p className="text-gray-900 dark:text-white leading-relaxed">
+                    {selectedMessage.message}
+                  </p>
+                </div>
+
+                <div className="flex gap-3 pt-4">
                   <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDeleteMessage(selectedMessage.id)}
+                    className="flex-1"
+                    onClick={() => {
+                      const phoneNumber = selectedMessage.phone.replace(/\D/g, '');
+                      const message = `Halo ${selectedMessage.name}, terima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
+                      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+                      window.open(url, '_blank');
+                    }}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Phone className="w-4 h-4 mr-2" />
+                    WhatsApp
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => {
+                      const subject = `Re: Konsultasi ${selectedMessage.projectType}`;
+                      const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
+                      const url = `mailto:${selectedMessage.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                      window.open(url);
+                    }}
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Email
                   </Button>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3">
-                      <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                        Email
-                      </label>
-                      <p className="text-gray-900 dark:text-white">{selectedMessage.email}</p>
-                    </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3">
-                      <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                        Phone
-                      </label>
-                      <p className="text-gray-900 dark:text-white">{selectedMessage.phone}</p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3">
-                      <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                        Jenis Project
-                      </label>
-                      <p className="text-gray-900 dark:text-white">{selectedMessage.projectType}</p>
-                    </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3">
-                      <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                        Budget
-                      </label>
-                      <p className="text-gray-900 dark:text-white">{selectedMessage.budget}</p>
-                    </div>
-                  </div>
-
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">
-                      Detail Project
-                    </label>
-                    <p className="text-gray-900 dark:text-white leading-relaxed">
-                      {selectedMessage.message}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-3 pt-4">
-                    <Button
-                      className="flex-1"
-                      onClick={() => {
-                        const phoneNumber = selectedMessage.phone.replace(/\D/g, '');
-                        const message = `Halo ${selectedMessage.name}, terima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
-                        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-                        window.open(url, '_blank');
-                      }}
-                    >
-                      <Phone className="w-4 h-4 mr-2" />
-                      WhatsApp
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => {
-                        const subject = `Re: Konsultasi ${selectedMessage.projectType}`;
-                        const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
-                        const url = `mailto:${selectedMessage.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                        window.open(url);
-                      }}
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Email
-                    </Button>
-                  </div>
-                </div>
               </div>
-            ) : (
-              <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                <div className="text-center">
-                  <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>Pilih pesan untuk melihat detail</p>
-                </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="text-center">
+                <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>Pilih pesan untuk melihat detail</p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
