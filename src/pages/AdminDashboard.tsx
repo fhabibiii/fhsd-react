@@ -8,9 +8,6 @@ import ServicesManager from '../components/admin/ServicesManager';
 import ContactManager from '../components/admin/ContactManager';
 import MessagesManager from '../components/admin/MessagesManager';
 import ThemeToggle from '../components/admin/ThemeToggle';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
@@ -25,9 +22,8 @@ const AdminDashboard = () => {
   // Check if mobile
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth < 768;
-      setIsMobile(mobile);
-      if (mobile) {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth < 768) {
         setSidebarCollapsed(true);
       }
     };
@@ -65,18 +61,14 @@ const AdminDashboard = () => {
     return <AdminLogin onLogin={() => {
       setActiveTab('projects');
       setSessionExpired(false);
-      toast({
-        title: "Login successful!",
-        description: "Welcome to FH Digital Admin Dashboard.",
-      });
     }} />;
   }
 
   const handleLogout = () => {
     logout();
     toast({
-      title: "Logout successful",
-      description: "You have been logged out from admin dashboard.",
+      title: "Logout berhasil",
+      description: "Anda telah keluar dari dashboard admin.",
     });
   };
 
@@ -111,11 +103,11 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex w-full overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden">
       {/* Mobile Overlay */}
       {isMobile && sidebarMobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 animate-fade-in"
+          className="fixed inset-0 bg-black/50 z-40"
           onClick={() => setSidebarMobileOpen(false)}
         />
       )}
@@ -124,8 +116,8 @@ const AdminDashboard = () => {
       <div className={`${
         isMobile 
           ? `fixed left-0 top-0 h-full z-50 transform transition-transform duration-300 ${sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full'} w-64`
-          : `${sidebarCollapsed ? 'w-0' : 'w-64'} transition-all duration-300 fixed h-full z-30`
-      } bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-xl`}>
+          : `${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-300 fixed h-full z-30`
+      } bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col`}>
         
         {/* Sidebar Area - clickable to toggle */}
         <div 
@@ -134,10 +126,14 @@ const AdminDashboard = () => {
         >
           {/* Logo */}
           <div className="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-            <div className="flex items-center gap-2">
+            {!sidebarCollapsed || isMobile ? (
+              <div className="flex items-center gap-2">
+                <LayoutDashboard className="w-8 h-8 text-primary" />
+                <span className="text-xl font-bold text-gray-900 dark:text-white">FH Admin</span>
+              </div>
+            ) : (
               <LayoutDashboard className="w-8 h-8 text-primary" />
-              <span className="text-xl font-bold text-gray-900 dark:text-white">FH Admin</span>
-            </div>
+            )}
           </div>
 
           {/* Navigation */}
@@ -153,14 +149,17 @@ const AdminDashboard = () => {
                       setActiveTab(item.id);
                       if (isMobile) setSidebarMobileOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-all duration-200 hover:scale-105 ${
+                    className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 rounded-lg text-left transition-all duration-200 ${
                       activeTab === item.id
                         ? 'bg-primary text-white dark:text-gray-900 shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }`}
+                    title={(sidebarCollapsed && !isMobile) ? item.label : undefined}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
-                    <span className="font-medium">{item.label}</span>
+                    {(!sidebarCollapsed || isMobile) && (
+                      <span className="font-medium">{item.label}</span>
+                    )}
                   </button>
                 );
               })}
@@ -170,31 +169,19 @@ const AdminDashboard = () => {
 
         {/* Logout Button at Bottom */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <button
-                onClick={(e) => e.stopPropagation()}
-                className="w-full flex items-center gap-3 px-3 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200 hover:scale-105"
-              >
-                <LogOut className="w-5 h-5 flex-shrink-0" />
-                <span className="font-medium">Logout</span>
-              </button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  You will be logged out from the admin dashboard and redirected to the login page.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleLogout}>
-                  Logout
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLogout();
+            }}
+            className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200`}
+            title={(sidebarCollapsed && !isMobile) ? 'Logout' : undefined}
+          >
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            {(!sidebarCollapsed || isMobile) && (
+              <span className="font-medium">Logout</span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -202,9 +189,9 @@ const AdminDashboard = () => {
       {!isMobile && (
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
+          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 shadow-lg hover:shadow-xl transition-all duration-200"
           style={{ 
-            left: sidebarCollapsed ? '16px' : '240px',
+            left: sidebarCollapsed ? '48px' : '240px',
             transition: 'left 0.3s ease'
           }}
         >
@@ -217,14 +204,14 @@ const AdminDashboard = () => {
       )}
 
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col ${isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-0' : 'ml-64')} transition-all duration-300`}>
+      <div className={`flex-1 flex flex-col ${isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-64')} transition-all duration-300`}>
         {/* Navbar */}
-        <header className={`h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 fixed right-0 z-20 ${isMobile ? 'left-0' : (sidebarCollapsed ? 'left-0' : 'left-64')} transition-all duration-300 shadow-sm`}>
+        <header className={`h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 fixed right-0 z-20 ${isMobile ? 'left-0' : (sidebarCollapsed ? 'left-16' : 'left-64')} transition-all duration-300`}>
           <div className="flex items-center gap-4">
             {isMobile && (
               <button
                 onClick={() => setSidebarMobileOpen(!sidebarMobileOpen)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors hover:scale-105"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               </button>
@@ -239,45 +226,17 @@ const AdminDashboard = () => {
           <div className="flex items-center gap-4">
             <ThemeToggle />
             
-            {/* Admin Greeting with Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 hover:scale-105">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-white dark:text-gray-900" />
-                  </div>
-                  {!isMobile && (
-                    <div>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>
-                    </div>
-                  )}
+            {/* Admin Greeting */}
+            <div className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <User className="w-4 h-4 text-white dark:text-gray-900" />
+              </div>
+              {!isMobile && (
+                <div>
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>
                 </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="animate-fade-in">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                      <LogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        You will be logged out from the admin dashboard and redirected to the login page.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleLogout}>
-                        Logout
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              )}
+            </div>
           </div>
         </header>
 
