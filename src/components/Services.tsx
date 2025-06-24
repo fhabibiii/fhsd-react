@@ -106,7 +106,7 @@ const Services = () => {
 
           <button 
             onClick={() => handlePackageClick(service.title)}
-            className="w-full bg-primary hover:bg-primary/90 text-white dark:text-gray-900 px-4 py-3 rounded-lg transition-all duration-300 font-semibold text-sm hover:scale-[1.02] flex flex-col items-center gap-1 mt-auto"
+            className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white dark:text-gray-900 px-4 py-3 rounded-lg transition-all duration-300 font-semibold text-sm hover:scale-[1.02] flex flex-col items-center gap-1 mt-auto"
           >
             <span className="text-lg font-bold">{service.price}</span>
             <span>Pilih Paket Ini</span>
@@ -157,7 +157,7 @@ const Services = () => {
             </p>
             <button 
               onClick={handleConsultationClick}
-              className="bg-primary hover:bg-primary/90 text-white dark:text-gray-900 px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold"
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white dark:text-gray-900 px-8 py-3 rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold"
             >
               💬 Konsultasi Gratis Sekarang
             </button>

@@ -1,121 +1,116 @@
 
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Moon, Sun } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { Menu, X, Moon, Sun, Settings } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Link } from 'react-router-dom';
 
 const Navigation = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-      
-      // Update active section based on scroll position
-      const sections = ['home', 'projects', 'services', 'contact'];
-      const currentSection = sections.find(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
-        }
-        return false;
-      });
-      
-      if (currentSection) {
-        setActiveSection(currentSection);
-      }
+      setScrolled(window.scrollY > 50);
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = [
-    { href: '#home', label: 'Beranda' },
-    { href: '#projects', label: 'Portfolio' },
-    { href: '#services', label: 'Layanan' },
-    { href: '#contact', label: 'Kontak' },
-  ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
+  const scrollToSection = (id: string) => {
+    const element = document.querySelector(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      setIsOpen(false);
     }
-    setIsMenuOpen(false);
   };
+
+  const navItems = [
+    { label: 'Home', href: '#home' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Services', href: '#services' },
+    { label: 'Contact', href: '#contact' },
+  ];
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-background/80 backdrop-blur-md border-b border-border' 
-        : 'bg-transparent'
+      scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg' : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <span className="text-xl font-bold text-foreground">FH</span>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              FH Digital
+            </h1>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <button
-                key={item.href}
-                onClick={() => scrollToSection(item.href)}
-                className={`transition-all duration-200 text-sm font-medium ${
-                  activeSection === item.href.substring(1)
-                    ? 'text-primary font-bold'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Theme Toggle & Mobile Menu */}
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-200"
-            >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </button>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-200"
-              >
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-border">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-background/95 backdrop-blur-md">
+          <div className="hidden md:block">
+            <div className="flex items-center space-x-8">
               {navItems.map((item) => (
                 <button
-                  key={item.href}
+                  key={item.label}
                   onClick={() => scrollToSection(item.href)}
-                  className={`block w-full text-left px-3 py-2 rounded-md transition-colors duration-200 ${
-                    activeSection === item.href.substring(1)
-                      ? 'text-primary font-bold bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                  }`}
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium"
                 >
                   {item.label}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Right Side Items */}
+          <div className="flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+
+            {/* Admin Link */}
+            <Link
+              to="/admin"
+              className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200"
+              title="Admin Dashboard"
+            >
+              <Settings className="w-4 h-4" />
+              <span className="text-sm font-medium">Admin</span>
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+            >
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+              {navItems.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => scrollToSection(item.href)}
+                  className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium"
+                >
+                  {item.label}
+                </button>
+              ))}
+              <Link
+                to="/admin"
+                className="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium"
+                onClick={() => setIsOpen(false)}
+              >
+                <Settings className="w-4 h-4" />
+                Admin Dashboard
+              </Link>
             </div>
           </div>
         )}

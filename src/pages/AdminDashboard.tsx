@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -173,7 +174,7 @@ const AdminDashboard = () => {
                     }}
                     className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 rounded-lg text-left transition-all duration-200 ${
                       activeTab === item.id
-                        ? 'bg-primary text-white dark:text-gray-900 shadow-lg'
+                        ? 'bg-gradient-to-r from-primary to-primary/80 text-white dark:text-gray-900 shadow-lg'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }`}
                     title={(sidebarCollapsed && !isMobile) ? item.label : undefined}
