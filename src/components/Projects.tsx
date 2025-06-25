@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
-import { ExternalLink, Globe, ChevronLeft, ChevronRight } from 'lucide-react';
-import { usePortfolio } from '../context/PortfolioContext';
+import { ExternalLink, Globe, ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
+import { useBackendData } from '../hooks/useBackendData';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const Projects = () => {
-  const { data } = usePortfolio();
+  const { projects, loading, errors } = useBackendData();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [titleRef, titleVisible] = useScrollAnimation();
@@ -32,10 +32,10 @@ const Projects = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [itemsPerPage]);
   
-  const selectedProjectData = data.projects.find(p => p.id === selectedProject);
+  const selectedProjectData = projects.find((p: any) => p.id === selectedProject);
 
-  // Sample additional projects for demo with longer descriptions
-  const additionalProjects = [
+  // Sample additional projects for demo (only if no backend data)
+  const additionalProjects = projects.length === 0 ? [
     {
       id: 'demo-1',
       title: 'E-Commerce Fashion',
@@ -59,34 +59,10 @@ const Projects = () => {
       details: 'Aplikasi web untuk restoran dengan sistem pemesanan online, tracking pesanan real-time, dan integrasi dengan sistem POS.',
       image: '/placeholder.svg',
       link: ''
-    },
-    {
-      id: 'demo-4',
-      title: 'Learning Management System',
-      description: 'Platform pembelajaran online komprehensif dengan sistem video streaming berkualitas tinggi dan quiz interaktif. Menyediakan berbagai kursus online dengan materi yang terstruktur, video pembelajaran HD, dan sistem evaluasi yang lengkap. Student dapat mengakses materi kapan saja dan mengikuti progress belajar mereka dengan dashboard yang informatif. Platform ini juga dilengkapi dengan forum diskusi dan sistem mentoring online.',
-      details: 'LMS lengkap dengan fitur course management, video player, quiz system, progress tracking, dan sertifikat.',
-      image: '/placeholder.svg',
-      link: ''
-    },
-    {
-      id: 'demo-5',
-      title: 'Real Estate Portal',
-      description: 'Platform properti dengan sistem pencarian advanced dan virtual tour 360 derajat yang memukau. User dapat mencari properti berdasarkan lokasi, range harga, tipe properti, dan berbagai filter lainnya. Fitur virtual tour memungkinkan calon pembeli untuk melihat properti secara detail tanpa harus datang langsung ke lokasi. Platform ini juga terintegrasi dengan sistem CRM untuk mengelola lead dan follow-up dengan calon pembeli.',
-      details: 'Website properti dengan fitur pencarian berdasarkan lokasi, harga, tipe, virtual tour, dan sistem CRM untuk agent.',
-      image: '/placeholder.svg',
-      link: ''
-    },
-    {
-      id: 'demo-6',
-      title: 'Healthcare Dashboard',
-      description: 'Sistem manajemen rumah sakit dan klinik yang komprehensif untuk mengelola data pasien dan jadwal dokter. Menyediakan dashboard yang user-friendly untuk admin, dokter, dan pasien. Sistem ini memudahkan proses registrasi pasien, penjadwalan appointment, pengelolaan rekam medis digital, dan sistem billing yang terintegrasi. Dilengkapi juga dengan modul inventory untuk manajemen obat dan alat medis.',
-      details: 'Aplikasi manajemen rumah sakit dengan fitur registrasi pasien, jadwal dokter, rekam medis, dan sistem pembayaran.',
-      image: '/placeholder.svg',
-      link: ''
     }
-  ];
+  ] : [];
 
-  const allProjects = [...data.projects, ...additionalProjects];
+  const allProjects = projects.length > 0 ? projects : additionalProjects;
   const totalPages = Math.ceil(allProjects.length / itemsPerPage);
   const currentProjects = allProjects.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
@@ -168,6 +144,19 @@ const Projects = () => {
     );
   };
 
+  // Loading state
+  if (loading.projects) {
+    return (
+      <section id="projects" className="py-32 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center justify-center h-64">
+            <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="projects" className="py-32 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden">
       {/* Enhanced background decoration */}
@@ -198,35 +187,62 @@ const Projects = () => {
           </p>
         </div>
 
-        <div className={`grid ${itemsPerPage === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'} gap-8 mb-12`}>
-          {currentProjects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
-
-        {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4">
-            <button
-              onClick={handlePrevPage}
-              disabled={currentPage === 0}
-              className="p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            
-            <div className="px-4 py-2 bg-primary text-primary-foreground rounded-xl font-medium">
-              {currentPage + 1}/{totalPages}
-            </div>
-            
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages - 1}
-              className="p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+        {/* Error State */}
+        {errors.projects && (
+          <div className="bg-card rounded-xl p-12 border border-destructive/20 text-center mb-12">
+            <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">Failed to Load Projects</h3>
+            <p className="text-muted-foreground">
+              {errors.projects}
+            </p>
           </div>
+        )}
+
+        {/* No Data State */}
+        {!errors.projects && allProjects.length === 0 && (
+          <div className="bg-card rounded-xl p-12 border border-border text-center mb-12">
+            <Globe className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">No Projects Available</h3>
+            <p className="text-muted-foreground">
+              Projects will appear here once they are added to the database.
+            </p>
+          </div>
+        )}
+
+        {/* Projects Grid */}
+        {allProjects.length > 0 && (
+          <>
+            <div className={`grid ${itemsPerPage === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'} gap-8 mb-12`}>
+              {currentProjects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} index={index} />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4">
+                <button
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 0}
+                  className="p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                
+                <div className="px-4 py-2 bg-primary text-primary-foreground rounded-xl font-medium">
+                  {currentPage + 1}/{totalPages}
+                </div>
+                
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages - 1}
+                  className="p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-primary/5 hover:border-primary/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -248,13 +264,15 @@ const Projects = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              {selectedProjectData?.details}
+              {selectedProjectData?.description}
             </p>
-            <div className="bg-muted/20 rounded-xl p-4 border border-border/30">
-              <p className="text-sm text-muted-foreground text-center">
-                🚧 Website ini sedang dalam tahap development dan akan segera dapat diakses
-              </p>
-            </div>
+            {projects.length === 0 && (
+              <div className="bg-muted/20 rounded-xl p-4 border border-border/30">
+                <p className="text-sm text-muted-foreground text-center">
+                  🚧 Website ini sedang dalam tahap development dan akan segera dapat diakses
+                </p>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

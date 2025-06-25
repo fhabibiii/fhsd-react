@@ -1,10 +1,12 @@
 
 import React from 'react';
-import { Globe, Code, Zap, Rocket, Clock, CheckCircle } from 'lucide-react';
+import { Globe, Code, Zap, Rocket, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { useBackendData } from '../hooks/useBackendData';
 
 const Services = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
+  const { services, loading, errors } = useBackendData();
 
   const handleConsultationClick = () => {
     const whatsappNumber = "085156321198";
@@ -20,47 +22,79 @@ const Services = () => {
     window.open(url, '_blank');
   };
 
-  const services = [
+  // Fallback services if no backend data
+  const fallbackServices = [
     {
       id: 'basic-website',
-      icon: Globe,
       title: 'Basic Website',
       duration: '5–7 hari',
       description: 'Landing page interaktif dengan kontak dan animasi ringan yang sempurna untuk memperkenalkan bisnis Anda.',
-      features: ['Landing page interaktif', 'Form kontak terintegrasi', 'Animasi ringan & smooth', 'Responsive design', 'SEO friendly'],
+      features: [
+        { feature: 'Landing page interaktif' },
+        { feature: 'Form kontak terintegrasi' },
+        { feature: 'Animasi ringan & smooth' },
+        { feature: 'Responsive design' },
+        { feature: 'SEO friendly' }
+      ],
       price: 'Rp 2.500.000'
     },
     {
       id: 'web-app-basic',
-      icon: Code,
       title: 'Web App Dasar',
       duration: '10–15 hari',
       description: 'Aplikasi web dengan fitur login, dashboard user, dan manajemen data dasar untuk kebutuhan bisnis kecil.',
-      features: ['Sistem login & registrasi', 'Dashboard user',  'Input data (CRUD)', 'Validasi form', 'Pagination data'],
+      features: [
+        { feature: 'Sistem login & registrasi' },
+        { feature: 'Dashboard user' },
+        { feature: 'Input data (CRUD)' },
+        { feature: 'Validasi form' },
+        { feature: 'Pagination data' }
+      ],
       price: 'Rp 7.000.000'
     },
     {
       id: 'web-app-medium',
-      icon: Zap,
       title: 'Web App Menengah',
       duration: '20–30 hari',
       description: 'Solusi lengkap dengan admin panel, multi-role user, dan fitur advanced untuk bisnis yang berkembang.',
-      features: ['Admin panel lengkap', 'Multi-role management', 'Upload & manajemen file', 'Grafik & analisis data', 'Notifikasi email otomatis'],
+      features: [
+        { feature: 'Admin panel lengkap' },
+        { feature: 'Multi-role management' },
+        { feature: 'Upload & manajemen file' },
+        { feature: 'Grafik & analisis data' },
+        { feature: 'Notifikasi email otomatis' }
+      ],
       price: 'Rp 15.000.000'
     },
     {
       id: 'web-app-complex',
-      icon: Rocket,
       title: 'Web App Kompleks',
       duration: '30–60 hari',
       description: 'Sistem besar dan kompleks dengan integrasi API, keamanan tinggi untuk enterprise dan skala besar.',
-      features: ['Sistem enterprise-grade', 'E-commerce & afiliasi', 'Integrasi API eksternal', 'Keamanan tingkat tinggi', 'Arsitektur scalable'],
+      features: [
+        { feature: 'Sistem enterprise-grade' },
+        { feature: 'E-commerce & afiliasi' },
+        { feature: 'Integrasi API eksternal' },
+        { feature: 'Keamanan tingkat tinggi' },
+        { feature: 'Arsitektur scalable' }
+      ],
       price: 'Rp 30.000.000'
     }
   ];
 
+  const displayServices = services.length > 0 ? services : fallbackServices;
+
+  const getServiceIcon = (title: string) => {
+    if (title.toLowerCase().includes('basic')) return Globe;
+    if (title.toLowerCase().includes('dasar')) return Code;
+    if (title.toLowerCase().includes('menengah')) return Zap;
+    if (title.toLowerCase().includes('kompleks')) return Rocket;
+    return Globe;
+  };
+
   const ServiceCard = ({ service, index }: { service: any; index: number }) => {
     const [cardRef, cardVisible] = useScrollAnimation();
+    const IconComponent = getServiceIcon(service.title);
 
     return (
       <div
@@ -78,7 +112,7 @@ const Services = () => {
         <div className="p-6 flex flex-col flex-1">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-primary/10">
-              <service.icon className="w-5 h-5 text-primary" />
+              <IconComponent className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -96,10 +130,12 @@ const Services = () => {
           </p>
 
           <div className="space-y-2 mb-6 flex-1">
-            {service.features.map((feature: string, featureIndex: number) => (
+            {service.features.map((featureObj: any, featureIndex: number) => (
               <div key={featureIndex} className="flex items-center gap-2">
                 <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                <span className="text-gray-700 dark:text-gray-300 text-xs">{feature}</span>
+                <span className="text-gray-700 dark:text-gray-300 text-xs">
+                  {featureObj.feature || featureObj}
+                </span>
               </div>
             ))}
           </div>
@@ -115,6 +151,19 @@ const Services = () => {
       </div>
     );
   };
+
+  // Loading state
+  if (loading.services) {
+    return (
+      <section id="services" className="py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center justify-center h-64">
+            <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="services" className="py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
@@ -139,11 +188,40 @@ const Services = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
-          {services.map((service, index) => (
-            <ServiceCard key={service.id} service={service} index={index} />
-          ))}
-        </div>
+        {/* Error State */}
+        {errors.services && (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-destructive/20 shadow-xl text-center mb-16">
+            <AlertCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+              Failed to Load Services
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-xl mx-auto">
+              {errors.services}
+            </p>
+          </div>
+        )}
+
+        {/* No Data State */}
+        {!errors.services && displayServices.length === 0 && (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-xl text-center mb-16">
+            <Zap className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+              No Services Available
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-xl mx-auto">
+              Services will appear here once they are added to the database.
+            </p>
+          </div>
+        )}
+
+        {/* Services Grid */}
+        {displayServices.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
+            {displayServices.map((service, index) => (
+              <ServiceCard key={service.id} service={service} index={index} />
+            ))}
+          </div>
+        )}
 
         {/* CTA Section */}
         <div className="text-center">

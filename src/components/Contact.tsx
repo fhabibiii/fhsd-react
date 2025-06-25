@@ -1,14 +1,18 @@
+
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Calendar } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Calendar, AlertCircle } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { useBackendData } from '../hooks/useBackendData';
 
 const Contact = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
   const { toast } = useToast();
+  const { contactInfo, loading, errors, sendMessage } = useBackendData();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,51 +22,87 @@ const Contact = () => {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    setIsSubmitting(true);
     
-    // Show success toast
-    toast({
-      title: "Konsultasi berhasil dikirim!",
-      description: "Tim kami akan segera menghubungi Anda dalam 24 jam ke depan.",
-    });
+    try {
+      const response = await sendMessage({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        projectType: formData.projectType,
+        budget: formData.budget,
+        message: formData.message
+      });
 
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      projectType: '',
-      budget: '',
-      message: ''
-    });
+      if (response.success) {
+        toast({
+          title: "Konsultasi berhasil dikirim!",
+          description: "Tim kami akan segera menghubungi Anda dalam 24 jam ke depan.",
+        });
+
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          projectType: '',
+          budget: '',
+          message: ''
+        });
+      } else {
+        toast({
+          title: "Gagal mengirim pesan",
+          description: response.message || "Terjadi kesalahan, silakan coba lagi.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Gagal mengirim pesan",
+        description: "Terjadi kesalahan jaringan, silakan coba lagi.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const contactInfo = [
+  // Fallback contact info
+  const fallbackContactInfo = {
+    phone: '+62 85156321198',
+    email: 'hello@fhdigital.com',
+    workHours: 'Senin - Jumat: 09:00 - 21:00',
+    address: 'ANSAC (Anagata Sasmitaloka Consulting) Karangmiri, UH 7 Gg. Cinde Amoh No.317C, Giwangan, Kec. Umbulharjo, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55163',
+    map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.7654321!2d110.3692!3d-7.8234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a572b6b6b6b6b%3A0x1234567890abcdef!2sANSAC%20(Anagata%20Sasmitaloka%20Consulting)!5e0!3m2!1sid!2sid!4v1701234567890!5m2!1sid!2sid'
+  };
+
+  const displayContactInfo = contactInfo || fallbackContactInfo;
+
+  const contactInfoCards = [
     {
       icon: Phone,
       title: 'Telepon & WhatsApp',
-      details: '+62 85156321198',
+      details: displayContactInfo.phone,
       subdescription: 'Respon cepat dalam 5 menit',
-      action: 'tel:+6285156321198',
+      action: `tel:${displayContactInfo.phone}`,
       color: 'text-green-500',
       bgColor: 'bg-green-50 dark:bg-green-950/20'
     },
     {
       icon: Mail,
       title: 'Email Bisnis',
-      details: 'hello@fhdigital.com',
+      details: displayContactInfo.email,
       subdescription: 'Untuk penawaran & konsultasi',
-      action: 'mailto:hello@fhdigital.com',
+      action: `mailto:${displayContactInfo.email}`,
       color: 'text-blue-500',
       bgColor: 'bg-blue-50 dark:bg-blue-950/20'
     },
     {
       icon: Clock,
       title: 'Jam Operasional',
-      details: 'Senin - Jumat: 09:00 - 21:00',
+      details: displayContactInfo.workHours,
       subdescription: 'Sabtu: 09:00 - 15:00 | Minggu: Libur',
       action: '#',
       color: 'text-purple-500',
@@ -126,20 +166,41 @@ const Contact = () => {
                 <MessageCircle className="w-7 h-7 text-primary" />
                 Kontak Langsung
               </h3>
-              <div className="space-y-6">
-                {contactInfo.map((item, index) => (
-                  <div key={index} className={`p-5 ${item.bgColor} rounded-2xl border border-gray-100 dark:border-gray-600 hover:shadow-lg transition-all duration-300`}>
-                    <div className="flex items-start gap-4">
-                      <item.icon className={`w-6 h-6 ${item.color} mt-1 flex-shrink-0`} />
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{item.title}</h4>
-                        <p className="text-gray-700 dark:text-gray-300 font-medium">{item.details}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.subdescription}</p>
+              
+              {/* Loading State */}
+              {loading.contact && (
+                <div className="flex items-center justify-center py-8">
+                  <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+                </div>
+              )}
+
+              {/* Error State */}
+              {errors.contact && (
+                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 mb-6">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5 text-destructive" />
+                    <p className="text-sm text-destructive">Failed to load contact info</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Contact Info Cards */}
+              {!loading.contact && (
+                <div className="space-y-6">
+                  {contactInfoCards.map((item, index) => (
+                    <div key={index} className={`p-5 ${item.bgColor} rounded-2xl border border-gray-100 dark:border-gray-600 hover:shadow-lg transition-all duration-300`}>
+                      <div className="flex items-start gap-4">
+                        <item.icon className={`w-6 h-6 ${item.color} mt-1 flex-shrink-0`} />
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900 dark:text-white mb-1">{item.title}</h4>
+                          <p className="text-gray-700 dark:text-gray-300 font-medium">{item.details}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{item.subdescription}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -232,10 +293,20 @@ const Contact = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white dark:text-gray-900 py-4 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:scale-105"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white dark:text-gray-900 py-4 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Send className="w-5 h-5" />
-                  Kirim Konsultasi Gratis
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      Mengirim...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Kirim Konsultasi Gratis
+                    </>
+                  )}
                 </Button>
               </form>
             </div>
@@ -250,12 +321,12 @@ const Contact = () => {
               Lokasi Kantor Kami
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-4">
-              📍 ANSAC (Anagata Sasmitaloka Consulting) Karangmiri, UH 7 Gg. Cinde Amoh No.317C, Giwangan, Kec. Umbulharjo, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55163
+              📍 {displayContactInfo.address}
             </p>
           </div>
           <div className="h-80 relative">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.7654321!2d110.3692!3d-7.8234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a572b6b6b6b6b%3A0x1234567890abcdef!2sANSAC%20(Anagata%20Sasmitaloka%20Consulting)!5e0!3m2!1sid!2sid!4v1701234567890!5m2!1sid!2sid"
+              src={displayContactInfo.map}
               width="100%"
               height="100%"
               style={{ border: 0 }}

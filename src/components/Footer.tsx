@@ -2,26 +2,21 @@
 import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, Phone, MapPin, Globe, Facebook, Instagram } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
-import { apiService, ContactInfo } from '../services/api';
+import { useBackendData } from '../hooks/useBackendData';
 
 const Footer = () => {
   const [footerRef, footerVisible] = useScrollAnimation();
-  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const { contactInfo } = useBackendData();
 
-  useEffect(() => {
-    fetchContactInfo();
-  }, []);
-
-  const fetchContactInfo = async () => {
-    try {
-      const response = await apiService.getContactInfo();
-      if (response.success && response.data) {
-        setContactInfo(response.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch contact info:', error);
-    }
+  // Fallback contact info
+  const fallbackContactInfo = {
+    phone: '+62 85156321198',
+    email: 'hello@fhdigital.com',
+    instagram: 'https://www.instagram.com/fhds.id',
+    whatsApp: 'https://wa.me/6285156321198'
   };
+
+  const displayContactInfo = contactInfo || fallbackContactInfo;
 
   const services = [
     'Basic Website',
@@ -84,13 +79,13 @@ const Footer = () => {
                     { icon: Facebook, href: "#", color: "hover:bg-blue-500/10 hover:border-blue-500/30 hover:text-blue-500" },
                     { 
                       icon: Instagram, 
-                      href: contactInfo?.instagram || "#", 
+                      href: displayContactInfo?.instagram || "#", 
                       color: "hover:bg-pink-500/10 hover:border-pink-500/30 hover:text-pink-500" 
                     },
                     { icon: Linkedin, href: "#", color: "hover:bg-blue-600/10 hover:border-blue-600/30 hover:text-blue-600" },
                     { 
                       icon: Mail, 
-                      href: contactInfo?.email ? `mailto:${contactInfo.email}` : "mailto:hello@fhdigital.com", 
+                      href: displayContactInfo?.email ? `mailto:${displayContactInfo.email}` : "mailto:hello@fhdigital.com", 
                       color: "hover:bg-green-500/10 hover:border-green-500/30 hover:text-green-500" 
                     }
                   ].map(({ icon: Icon, href, color }, index) => (

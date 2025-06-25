@@ -1,302 +1,222 @@
+
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
-import { usePortfolio } from '../context/PortfolioContext';
+import { useNavigate } from 'react-router-dom';
+import { 
+  User, 
+  MessageSquare, 
+  FolderOpen, 
+  Settings, 
+  LogOut,
+  Menu,
+  X,
+  Home,
+  Briefcase,
+  Mail,
+  Award,
+  GraduationCap,
+  Zap,
+  BookOpen
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import AdminLogin from '../components/AdminLogin';
+import HeroManager from '../components/admin/HeroManager';
 import ProjectsManager from '../components/admin/ProjectsManager';
 import ServicesManager from '../components/admin/ServicesManager';
-import ContactManager from '../components/admin/ContactManager';
 import MessagesManager from '../components/admin/MessagesManager';
+import ContactManager from '../components/admin/ContactManager';
+import SkillsManager from '../components/admin/SkillsManager';
+import ExperienceManager from '../components/admin/ExperienceManager';
+import EducationManager from '../components/admin/EducationManager';
+import CertificatesManager from '../components/admin/CertificatesManager';
+import FeaturesList from '../components/admin/FeaturesList';
 import ThemeToggle from '../components/admin/ThemeToggle';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { useToast } from '@/hooks/use-toast';
+import { apiService } from '../services/api';
 
 const AdminDashboard = () => {
-  const { isAdmin, logout, isLoading } = usePortfolio();
-  const [activeTab, setActiveTab] = useState('projects');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [activeTab, setActiveTab] = useState('hero');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  // Check if mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
-        setSidebarCollapsed(true);
-      }
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  // Dummy state for FeaturesList component
+  const [features, setFeatures] = useState<string[]>([]);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('.user-dropdown-container')) {
-        setUserDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
-
-  if (!isAdmin) {
-    return <AdminLogin onLogin={() => {
-      setActiveTab('projects');
-    }} />;
-  }
-
-  const handleLogoutClick = () => {
-    setLogoutConfirmOpen(true);
-    setUserDropdownOpen(false);
+  const handleFeaturesChange = (newFeatures: string[]) => {
+    setFeatures(newFeatures);
   };
 
-  const handleLogoutConfirm = async () => {
+  useEffect(() => {
+    // Check if user is already authenticated
+    const checkAuth = () => {
+      const isAuth = apiService.isAuthenticated();
+      setIsAuthenticated(isAuth);
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    toast({
+      title: "Login Berhasil!",
+      description: "Selamat datang di dashboard admin.",
+    });
+  };
+
+  const handleLogout = async () => {
     try {
-      await logout();
+      await apiService.logout();
+      setIsAuthenticated(false);
       toast({
-        title: "Logout berhasil",
+        title: "Logout Berhasil!",
         description: "Anda telah keluar dari dashboard admin.",
-        variant: "destructive",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Terjadi kesalahan saat logout.",
+        description: "Gagal logout. Silakan coba lagi.",
         variant: "destructive",
       });
-    } finally {
-      setLogoutConfirmOpen(false);
     }
   };
 
   const menuItems = [
-    { id: 'projects', label: 'Portfolio', icon: FileText },
-    { id: 'services', label: 'Services', icon: Code },
-    { id: 'contact', label: 'Contact', icon: Mail },
-    { id: 'messages', label: 'Messages', icon: MessageSquare }
+    { id: 'hero', name: 'Hero Section', icon: Home },
+    { id: 'projects', name: 'Projects', icon: FolderOpen },
+    { id: 'services', name: 'Services', icon: Briefcase },
+    { id: 'messages', name: 'Messages', icon: MessageSquare },
+    { id: 'contact', name: 'Contact Info', icon: Mail },
+    { id: 'skills', name: 'Skills', icon: Zap },
+    { id: 'experience', name: 'Experience', icon: Briefcase },
+    { id: 'education', name: 'Education', icon: GraduationCap },
+    { id: 'certificates', name: 'Certificates', icon: Award },
+    { id: 'features', name: 'Features', icon: BookOpen },
   ];
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'hero':
+        return <HeroManager />;
       case 'projects':
         return <ProjectsManager />;
       case 'services':
         return <ServicesManager />;
-      case 'contact':
-        return <ContactManager />;
       case 'messages':
         return <MessagesManager />;
+      case 'contact':
+        return <ContactManager />;
+      case 'skills':
+        return <SkillsManager />;
+      case 'experience':
+        return <ExperienceManager />;
+      case 'education':
+        return <EducationManager />;
+      case 'certificates':
+        return <CertificatesManager />;
+      case 'features':
+        return <FeaturesList features={features} onChange={handleFeaturesChange} />;
       default:
-        return <ProjectsManager />;
+        return <HeroManager />;
     }
   };
 
-  const handleSidebarAreaClick = () => {
-    if (isMobile) {
-      setSidebarMobileOpen(!sidebarMobileOpen);
-    } else {
-      setSidebarCollapsed(!sidebarCollapsed);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={handleLogin} />;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden">
-      {/* Loading overlay */}
-      {isLoading && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-center gap-3">
-            <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-            <span className="text-foreground">Processing...</span>
-          </div>
-        </div>
-      )}
-
-      {/* Mobile Overlay */}
-      {isMobile && sidebarMobileOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40"
-          onClick={() => setSidebarMobileOpen(false)}
-        />
-      )}
-
+    <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
-      <div className={`${
-        isMobile 
-          ? `fixed left-0 top-0 h-full z-50 transform transition-transform duration-300 ${sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full'} w-64`
-          : `${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-300 fixed h-full z-30`
-      } bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col`}>
-        
-        {/* Sidebar Area - clickable to toggle */}
-        <div 
-          className="flex-1 cursor-pointer" 
-          onClick={handleSidebarAreaClick}
-        >
-          {/* Logo */}
-          <div className="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-            {!sidebarCollapsed || isMobile ? (
-              <div className="flex items-center gap-2">
-                <LayoutDashboard className="w-8 h-8 text-primary" />
-                <span className="text-xl font-bold text-gray-900 dark:text-white">FH Admin</span>
-              </div>
-            ) : (
-              <LayoutDashboard className="w-8 h-8 text-primary" />
-            )}
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 p-4 overflow-y-auto">
-            <div className="space-y-2">
-              {menuItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveTab(item.id);
-                      if (isMobile) setSidebarMobileOpen(false);
-                    }}
-                    className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 rounded-lg text-left transition-all duration-200 ${
-                      activeTab === item.id
-                        ? 'bg-gradient-to-r from-primary to-primary/80 text-white dark:text-gray-900 shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                    }`}
-                    title={(sidebarCollapsed && !isMobile) ? item.label : undefined}
-                  >
-                    <Icon className="w-5 h-5 flex-shrink-0" />
-                    {(!sidebarCollapsed || isMobile) && (
-                      <span className="font-medium">{item.label}</span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </nav>
-        </div>
-
-        {/* Logout Button at Bottom */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleLogoutClick();
-            }}
-            className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200`}
-            title={(sidebarCollapsed && !isMobile) ? 'Logout' : undefined}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-300 ease-in-out ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } lg:translate-x-0 lg:static lg:inset-0`}>
+        <div className="flex items-center justify-between h-16 px-6 border-b border-border">
+          <h1 className="text-xl font-bold text-foreground">FHSD</h1>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden"
           >
-            <LogOut className="w-5 h-5 flex-shrink-0" />
-            {(!sidebarCollapsed || isMobile) && (
-              <span className="font-medium">Logout</span>
-            )}
-          </button>
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
+        
+        <nav className="mt-6 px-3">
+          <div className="space-y-1">
+            {menuItems.map((item) => (
+              <Button
+                key={item.id}
+                variant={activeTab === item.id ? "default" : "ghost"}
+                className="w-full justify-start"
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setSidebarOpen(false);
+                }}
+              >
+                <item.icon className="w-5 h-5 mr-3" />
+                {item.name}
+              </Button>
+            ))}
+          </div>
+        </nav>
+
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm text-muted-foreground">Theme</span>
+            <ThemeToggle />
+          </div>
+          <Button
+            variant="outline"
+            className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-5 h-5 mr-3" />
+            Logout
+          </Button>
         </div>
       </div>
 
-      {/* Sidebar Toggle Button */}
-      {!isMobile && (
-        <button
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 shadow-lg hover:shadow-xl dark:shadow-white/20 dark:hover:shadow-white/40 transition-all duration-200"
-          style={{ 
-            left: sidebarCollapsed ? '48px' : '240px',
-            transition: 'left 0.3s ease'
-          }}
-        >
-          {sidebarCollapsed ? (
-            <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          ) : (
-            <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          )}
-        </button>
-      )}
-
       {/* Main Content */}
-      <div className={`flex-1 flex flex-col ${isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-64')} transition-all duration-300`}>
-        {/* Navbar */}
-        <header className={`h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 fixed right-0 z-20 ${isMobile ? 'left-0' : (sidebarCollapsed ? 'left-16' : 'left-64')} transition-all duration-300`}>
-          <div className="flex items-center gap-4">
-            {isMobile && (
-              <button
-                onClick={() => setSidebarMobileOpen(!sidebarMobileOpen)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </button>
-            )}
-            {!isMobile && (
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {menuItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
-              </h1>
-            )}
-          </div>
+      <div className="flex-1 lg:ml-0">
+        {/* Mobile Header */}
+        <div className="lg:hidden flex items-center justify-between h-16 px-4 bg-card border-b border-border">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+          <h1 className="text-lg font-semibold text-foreground">Admin Dashboard</h1>
+          <div className="w-10" /> {/* Spacer */}
+        </div>
 
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            
-            {/* Admin Greeting with Dropdown */}
-            <div className="relative user-dropdown-container">
-              <button
-                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-              >
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4 text-white dark:text-gray-900" />
-                </div>
-                {!isMobile && (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>
-                    <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
-                  </div>
-                )}
-              </button>
-
-              {/* User Dropdown Menu */}
-              {userDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:shadow-white/20 z-50 animate-fade-in">
-                  <button
-                    onClick={handleLogoutClick}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span className="font-medium">Logout</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-
-        {/* Page Content */}
-        <main className="flex-1 pt-16 overflow-x-hidden">
+        {/* Content */}
+        <main className="h-full lg:h-screen overflow-hidden">
           {renderContent()}
         </main>
       </div>
 
-      {/* Logout Confirmation Modal */}
-      <AlertDialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
-            <AlertDialogDescription>
-              Apakah Anda yakin ingin keluar dari dashboard admin?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={handleLogoutConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Logout
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 };
