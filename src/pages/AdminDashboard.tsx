@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -12,11 +11,10 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
-  const { isAdmin, logout, login } = usePortfolio();
+  const { isAdmin, logout, isLoading } = usePortfolio();
   const [activeTab, setActiveTab] = useState('projects');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
-  const [sessionExpired, setSessionExpired] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
@@ -36,30 +34,6 @@ const AdminDashboard = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Session management
-  useEffect(() => {
-    if (isAdmin) {
-      const sessionTimeout = setTimeout(() => {
-        setSessionExpired(true);
-        logout();
-        toast({
-          title: "Session expired",
-          description: "Your session has expired. Please login again.",
-          variant: "destructive",
-        });
-      }, 24 * 60 * 60 * 1000);
-
-      const refreshInterval = setInterval(() => {
-        console.log('Refreshing session token...');
-      }, 60 * 60 * 1000);
-
-      return () => {
-        clearTimeout(sessionTimeout);
-        clearInterval(refreshInterval);
-      };
-    }
-  }, [isAdmin, logout, toast]);
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -73,10 +47,9 @@ const AdminDashboard = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  if (!isAdmin || sessionExpired) {
+  if (!isAdmin) {
     return <AdminLogin onLogin={() => {
       setActiveTab('projects');
-      setSessionExpired(false);
     }} />;
   }
 
@@ -85,14 +58,23 @@ const AdminDashboard = () => {
     setUserDropdownOpen(false);
   };
 
-  const handleLogoutConfirm = () => {
-    logout();
-    toast({
-      title: "Logout berhasil",
-      description: "Anda telah keluar dari dashboard admin.",
-      variant: "destructive",
-    });
-    setLogoutConfirmOpen(false);
+  const handleLogoutConfirm = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Logout berhasil",
+        description: "Anda telah keluar dari dashboard admin.",
+        variant: "destructive",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat logout.",
+        variant: "destructive",
+      });
+    } finally {
+      setLogoutConfirmOpen(false);
+    }
   };
 
   const menuItems = [
@@ -127,6 +109,16 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden">
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-center gap-3">
+            <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            <span className="text-foreground">Processing...</span>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Overlay */}
       {isMobile && sidebarMobileOpen && (
         <div 

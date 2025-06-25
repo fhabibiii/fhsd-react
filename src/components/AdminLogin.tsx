@@ -11,18 +11,25 @@ interface AdminLoginProps {
 const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = usePortfolio();
+  const { login, isLoading } = usePortfolio();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      if (credentials.username === 'admin' && credentials.password === 'admin123') {
-        login();
+    if (!credentials.username || !credentials.password) {
+      toast({
+        title: "Input tidak lengkap",
+        description: "Username dan password harus diisi.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const success = await login(credentials.username, credentials.password);
+      
+      if (success) {
         onLogin();
         toast({
           title: "Login berhasil!",
@@ -35,8 +42,14 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
           variant: "destructive",
         });
       }
-      setIsLoading(false);
-    }, 1000);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat login. Silakan coba lagi.",
+        variant: "destructive",
+      });
+      console.error('Login error:', error);
+    }
   };
 
   return (
@@ -63,6 +76,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
                 onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
                 className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan username"
+                disabled={isLoading}
                 required
               />
             </div>
@@ -80,12 +94,14 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
                 onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
                 className="w-full pl-10 pr-12 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan password"
+                disabled={isLoading}
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                disabled={isLoading}
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>

@@ -1,5 +1,6 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { apiService } from '../services/api';
 
 export interface Project {
   id: string;
@@ -56,13 +57,14 @@ interface PortfolioContextType {
   updateExperience: (experience: Experience[]) => void;
   updateSkills: (skills: Skill[]) => void;
   isAdmin: boolean;
-  login: () => void;
-  logout: () => void;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  isLoading: boolean;
 }
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
-// Mock data
+// Mock data (will be replaced with API calls later)
 const initialData: PortfolioData = {
   projects: [
     {
@@ -172,6 +174,14 @@ const initialData: PortfolioData = {
 export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [data, setData] = useState<PortfolioData>(initialData);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Check if user is already logged in on mount
+  useEffect(() => {
+    if (apiService.isAuthenticated()) {
+      setIsAdmin(true);
+    }
+  }, []);
 
   const updateProjects = (projects: Project[]) => {
     setData(prev => ({ ...prev, projects }));
@@ -193,12 +203,33 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
     setData(prev => ({ ...prev, skills }));
   };
 
-  const login = () => {
-    setIsAdmin(true);
+  const login = async (username: string, password: string): Promise<boolean> => {
+    setIsLoading(true);
+    try {
+      const response = await apiService.login(username, password);
+      if (response.success) {
+        setIsAdmin(true);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const logout = () => {
-    setIsAdmin(false);
+  const logout = async () => {
+    setIsLoading(true);
+    try {
+      await apiService.logout();
+      setIsAdmin(false);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -213,6 +244,7 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
         isAdmin,
         login,
         logout,
+        isLoading,
       }}
     >
       {children}
