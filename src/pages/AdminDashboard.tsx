@@ -144,7 +144,7 @@ const AdminDashboard = () => {
             {!sidebarCollapsed || isMobile ? (
               <div className="flex items-center gap-2">
                 <LayoutDashboard className="w-8 h-8 text-primary" />
-                <span className="text-xl font-bold text-gray-900 dark:text-white">FH Admin</span>
+                <span className="text-xl font-bold text-gray-900 dark:text-white">FHSD</span>
               </div>
             ) : (
               <LayoutDashboard className="w-8 h-8 text-primary" />
