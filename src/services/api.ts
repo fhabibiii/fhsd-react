@@ -80,6 +80,30 @@ export interface ServiceUpdateRequest {
   features: string[];
 }
 
+export interface Message {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  type: string;
+  budget: string;
+  detail?: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface MessageDetail {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  type: string;
+  budget: string;
+  detail: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
 class ApiService {
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
@@ -294,6 +318,30 @@ class ApiService {
 
   async deleteService(id: string): Promise<ApiResponse<null>> {
     return this.makeRequest<null>(`/api/services/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getAllMessages(): Promise<ApiResponse<Message[]>> {
+    return this.makeRequest<Message[]>('/api/messages', {
+      method: 'GET',
+    });
+  }
+
+  async getMessageById(id: string): Promise<ApiResponse<MessageDetail>> {
+    return this.makeRequest<MessageDetail>(`/api/messages/${id}`, {
+      method: 'GET',
+    });
+  }
+
+  async markMessageAsRead(id: string): Promise<ApiResponse<MessageDetail>> {
+    return this.makeRequest<MessageDetail>(`/api/messages/${id}/read`, {
+      method: 'PATCH',
+    });
+  }
+
+  async deleteMessage(id: string): Promise<ApiResponse<null>> {
+    return this.makeRequest<null>(`/api/messages/${id}`, {
       method: 'DELETE',
     });
   }

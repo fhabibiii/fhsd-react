@@ -1,60 +1,87 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-
-interface Message {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  projectType: string;
-  budget: string;
-  message: string;
-  createdAt: Date;
-  isRead: boolean;
-}
+import { apiService, Message, MessageDetail } from '../../services/api';
 
 const MessagesManager = () => {
   const { toast } = useToast();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      email: 'john@example.com',
-      phone: '+62 812-3456-7890',
-      projectType: 'Basic Website',
-      budget: 'Di bawah Rp 5 juta',
-      message: 'Saya ingin membuat website untuk toko online saya. Apakah bisa dibantu untuk diskusi lebih lanjut?',
-      createdAt: new Date('2024-01-15T10:30:00'),
-      isRead: false
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      email: 'jane@company.com',
-      phone: '+62 813-9876-5432',
-      projectType: 'Web App Menengah',
-      budget: 'Rp 15 - 30 juta',
-      message: 'Perusahaan kami membutuhkan sistem manajemen inventory. Mohon info detail paket dan timeline.',
-      createdAt: new Date('2024-01-14T14:20:00'),
-      isRead: true
-    }
-  ]);
-
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedMessage, setSelectedMessage] = useState<MessageDetail | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'read' | 'unread'>('all');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
+  const fetchMessages = async () => {
+    setIsLoading(true);
+    try {
+      const response = await apiService.getAllMessages();
+      if (response.success && response.data) {
+        setMessages(response.data);
+      } else {
+        toast({
+          title: "Error",
+          description: response.message || "Failed to fetch messages",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch messages",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchMessageDetail = async (id: string) => {
+    setIsLoadingDetail(true);
+    try {
+      const response = await apiService.getMessageById(id);
+      if (response.success && response.data) {
+        setSelectedMessage(response.data);
+        
+        // Mark as read if it's unread
+        if (!response.data.isRead) {
+          await apiService.markMessageAsRead(id);
+          // Update local messages state
+          setMessages(prev => prev.map(msg => 
+            msg.id === id ? { ...msg, isRead: true } : msg
+          ));
+        }
+      } else {
+        toast({
+          title: "Error",
+          description: response.message || "Failed to fetch message details",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch message details",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingDetail(false);
+    }
+  };
 
   const filteredMessages = messages.filter(message => {
     const matchesSearch = message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         message.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         message.projectType.toLowerCase().includes(searchTerm.toLowerCase());
+                         message.type.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesFilter = filterStatus === 'all' || 
                          (filterStatus === 'read' && message.isRead) ||
@@ -63,41 +90,50 @@ const MessagesManager = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const handleMarkAsRead = (id: string) => {
-    setMessages(prev => prev.map(msg => 
-      msg.id === id ? { ...msg, isRead: true } : msg
-    ));
-  };
-
   const handleDeleteClick = (id: string) => {
     setDeletingMessageId(id);
     setDeleteConfirmOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deletingMessageId) {
-      setMessages(prev => prev.filter(msg => msg.id !== deletingMessageId));
-      if (selectedMessage?.id === deletingMessageId) {
-        setSelectedMessage(null);
+      try {
+        const response = await apiService.deleteMessage(deletingMessageId);
+        if (response.success) {
+          setMessages(prev => prev.filter(msg => msg.id !== deletingMessageId));
+          if (selectedMessage?.id === deletingMessageId) {
+            setSelectedMessage(null);
+          }
+          toast({
+            title: "Pesan berhasil dihapus!",
+            description: "Pesan telah dihapus dari inbox.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: response.message || "Failed to delete message",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to delete message",
+          variant: "destructive",
+        });
       }
-      toast({
-        title: "Pesan berhasil dihapus!",
-        description: "Pesan telah dihapus dari inbox.",
-        variant: "destructive",
-      });
     }
     setDeleteConfirmOpen(false);
     setDeletingMessageId(null);
   };
 
   const handleViewMessage = (message: Message) => {
-    setSelectedMessage(message);
-    if (!message.isRead) {
-      handleMarkAsRead(message.id);
-    }
+    fetchMessageDetail(message.id);
   };
 
-  const formatDate = (date: Date) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
     return new Intl.DateTimeFormat('id-ID', {
       year: 'numeric',
       month: 'short',
@@ -107,14 +143,17 @@ const MessagesManager = () => {
     }).format(date);
   };
 
-  const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat('id-ID', {
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
-
   const unreadCount = messages.filter(msg => !msg.isRead).length;
+
+  if (isLoading) {
+    return (
+      <div className="p-4 md:p-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-8 animate-fade-in">
@@ -138,7 +177,7 @@ const MessagesManager = () => {
           <Input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Cari berdasarkan nama, email, atau jenis project..."
+            placeholder="Cari berdasarkan nama atau jenis project..."
             className="pl-10"
           />
         </div>
@@ -172,58 +211,61 @@ const MessagesManager = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List */}
-        <div className="lg:col-span-1 space-y-4">
-          {filteredMessages.length === 0 ? (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
-            </div>
-          ) : (
-            filteredMessages.map((message, index) => (
-              <div
-                key={message.id}
-                className={`border rounded-xl p-4 cursor-pointer transition-all duration-300 hover:shadow-lg transform hover:scale-105 ${
-                  !message.isRead
-                    ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
-                    : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-                } ${
-                  selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
-                }`}
-                onClick={() => handleViewMessage(message)}
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className={`font-semibold text-sm ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
-                      {message.name}
-                    </h3>
-                    {!message.isRead && (
-                      <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    )}
-                  </div>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                    {formatTime(message.createdAt)}
-                  </span>
-                </div>
-                
-                <div className="text-xs text-gray-600 dark:text-gray-300 mb-2">
-                  <div className="flex items-center justify-between mb-1">
-                    <span>{message.projectType}</span>
-                    <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-                      {message.budget}
+        <div className="lg:col-span-1">
+          <div className="max-h-[calc(100vh-320px)] overflow-y-auto space-y-4 pr-2">
+            {filteredMessages.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
+              </div>
+            ) : (
+              filteredMessages.map((message, index) => (
+                <div
+                  key={message.id}
+                  className={`border rounded-xl p-4 cursor-pointer transition-all duration-300 hover:shadow-lg transform hover:scale-105 ${
+                    !message.isRead
+                      ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
+                      : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                  } ${
+                    selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
+                  }`}
+                  onClick={() => handleViewMessage(message)}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <h3 className={`font-semibold text-sm ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
+                        {message.name}
+                      </h3>
+                      {!message.isRead && (
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      )}
+                    </div>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {formatDate(message.createdAt)}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {formatDate(message.createdAt)}
+                  
+                  <div className="text-xs text-gray-600 dark:text-gray-300">
+                    <div className="flex items-center justify-between">
+                      <span>{message.type}</span>
+                      <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                        {message.budget}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
 
         {/* Message Detail */}
         <div className="lg:col-span-2">
-          {selectedMessage ? (
+          {isLoadingDetail ? (
+            <div className="flex items-center justify-center h-64 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+              <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            </div>
+          ) : selectedMessage ? (
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -265,7 +307,7 @@ const MessagesManager = () => {
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Jenis Project
                     </label>
-                    <p className="text-gray-900 dark:text-white">{selectedMessage.projectType}</p>
+                    <p className="text-gray-900 dark:text-white">{selectedMessage.type}</p>
                   </div>
                   <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                     <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
@@ -280,7 +322,7 @@ const MessagesManager = () => {
                     Detail Project
                   </label>
                   <p className="text-gray-900 dark:text-white leading-relaxed">
-                    {selectedMessage.message}
+                    {selectedMessage.detail}
                   </p>
                 </div>
 
@@ -289,7 +331,7 @@ const MessagesManager = () => {
                     className="flex-1 hover:shadow-md transition-all duration-200"
                     onClick={() => {
                       const phoneNumber = selectedMessage.phone.replace(/\D/g, '');
-                      const message = `Halo ${selectedMessage.name}, terima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
+                      const message = `Halo ${selectedMessage.name}, terima kasih atas minat Anda untuk project ${selectedMessage.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
                       const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
                       window.open(url, '_blank');
                     }}
@@ -301,8 +343,8 @@ const MessagesManager = () => {
                     variant="outline"
                     className="flex-1 hover:shadow-md transition-all duration-200"
                     onClick={() => {
-                      const subject = `Re: Konsultasi ${selectedMessage.projectType}`;
-                      const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas minat Anda untuk project ${selectedMessage.projectType}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
+                      const subject = `Re: Konsultasi ${selectedMessage.type}`;
+                      const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas minat Anda untuk project ${selectedMessage.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
                       const url = `mailto:${selectedMessage.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                       window.open(url);
                     }}
@@ -339,7 +381,7 @@ const MessagesManager = () => {
               Hapus
             </AlertDialogAction>
           </AlertDialogFooter>
-        </AlertDialogContent>
+        </AlertDialogFooter>
       </AlertDialog>
     </div>
   );

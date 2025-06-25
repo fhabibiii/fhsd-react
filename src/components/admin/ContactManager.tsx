@@ -142,54 +142,62 @@ const ContactManager = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Contact Information Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-fit">
-          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in">
-            <div className="flex items-center gap-3">
-              <Phone className="w-5 h-5 text-primary" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <Phone className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              </div>
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Telepon</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Telepon</h4>
                 <p className="text-gray-700 dark:text-gray-300 text-sm">{contactData.phone}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '100ms' }}>
-            <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-primary" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '100ms' }}>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <Mail className="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Email</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Email</h4>
                 <p className="text-gray-700 dark:text-gray-300 text-sm">{contactData.email}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '200ms' }}>
-            <div className="flex items-start gap-3">
-              <Clock className="w-5 h-5 text-primary mt-1" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                <Clock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Jam Kerja</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Jam Kerja</h4>
                 <p className="text-gray-700 dark:text-gray-300 text-sm">{contactData.workHours}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '300ms' }}>
-            <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-primary mt-1" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+              </div>
               <div>
-                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Alamat</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">Alamat</h4>
                 <p className="text-gray-700 dark:text-gray-300 text-xs leading-relaxed">{contactData.address}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Map Preview */}
-        <div className="animate-fade-in" style={{ animationDelay: '400ms' }}>
+        {/* Google Maps Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '400ms' }}>
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Google Maps</h3>
-          <div className="h-80 bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
+          <div className="h-80 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
             {contactData.map ? (
               <iframe
                 src={contactData.map}
