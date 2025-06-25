@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter } from 'lucide-react';
+import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { apiService, Message, MessageDetail } from '../../services/api';
@@ -16,6 +18,7 @@ const MessagesManager = () => {
   const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
 
   useEffect(() => {
     fetchMessages();
@@ -51,6 +54,11 @@ const MessagesManager = () => {
       const response = await apiService.getMessageById(id);
       if (response.success && response.data) {
         setSelectedMessage(response.data);
+        
+        // Open mobile modal on small screens
+        if (window.innerWidth < 1024) {
+          setIsMobileDetailOpen(true);
+        }
         
         // Mark as read if it's unread
         if (!response.data.isRead) {
@@ -102,6 +110,7 @@ const MessagesManager = () => {
           setMessages(prev => prev.filter(msg => msg.id !== deletingMessageId));
           if (selectedMessage?.id === deletingMessageId) {
             setSelectedMessage(null);
+            setIsMobileDetailOpen(false);
           }
           toast({
             title: "Pesan berhasil dihapus!",
@@ -144,6 +153,98 @@ const MessagesManager = () => {
 
   const unreadCount = messages.filter(msg => !msg.isRead).length;
 
+  const MessageDetailContent = ({ message }: { message: MessageDetail }) => (
+    <div className="space-y-4">
+      <div className="flex items-start justify-between">
+        <div>
+          <h3 className="text-xl font-bold text-foreground">
+            {message.name}
+          </h3>
+          <p className="text-muted-foreground text-sm">
+            {formatDate(message.createdAt)}
+          </p>
+        </div>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => handleDeleteClick(message.id)}
+          className="hover:shadow-md transition-all duration-200"
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-muted/50 rounded-lg p-3">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              Email
+            </label>
+            <p className="text-foreground">{message.email}</p>
+          </div>
+          <div className="bg-muted/50 rounded-lg p-3">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              Phone
+            </label>
+            <p className="text-foreground">{message.phone}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-muted/50 rounded-lg p-3">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              Jenis Project
+            </label>
+            <p className="text-foreground">{message.type}</p>
+          </div>
+          <div className="bg-muted/50 rounded-lg p-3">
+            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              Budget
+            </label>
+            <p className="text-foreground">{message.budget}</p>
+          </div>
+        </div>
+
+        <div className="bg-muted/50 rounded-lg p-4">
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 block">
+            Detail Project
+          </label>
+          <p className="text-foreground leading-relaxed">
+            {message.detail}
+          </p>
+        </div>
+
+        <div className="flex gap-3 pt-4">
+          <Button
+            className="flex-1 hover:shadow-md transition-all duration-200"
+            onClick={() => {
+              const phoneNumber = message.phone.replace(/\D/g, '');
+              const msg = `Halo ${message.name}, terima kasih atas minat Anda untuk project ${message.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
+              const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(msg)}`;
+              window.open(url, '_blank');
+            }}
+          >
+            <Phone className="w-4 h-4 mr-2" />
+            WhatsApp
+          </Button>
+          <Button
+            variant="outline"
+            className="flex-1 hover:shadow-md transition-all duration-200"
+            onClick={() => {
+              const subject = `Re: Konsultasi ${message.type}`;
+              const body = `Halo ${message.name},\n\nTerima kasih atas minat Anda untuk project ${message.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
+              const url = `mailto:${message.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+              window.open(url);
+            }}
+          >
+            <Mail className="w-4 h-4 mr-2" />
+            Email
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
       <div className="p-4 md:p-8">
@@ -158,10 +259,10 @@ const MessagesManager = () => {
     <div className="p-4 md:p-8 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Messages Management</h2>
-          <p className="text-gray-600 dark:text-gray-300 mt-1">
+          <h2 className="text-2xl font-bold text-foreground">Messages Management</h2>
+          <p className="text-muted-foreground mt-1">
             {unreadCount > 0 && (
-              <span className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 px-2 py-1 rounded-full text-xs font-medium">
+              <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-full text-xs font-medium">
                 {unreadCount} pesan belum dibaca
               </span>
             )}
@@ -172,7 +273,7 @@ const MessagesManager = () => {
       {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex-1 relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           <Input
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -211,43 +312,43 @@ const MessagesManager = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List */}
         <div className="lg:col-span-1">
-          <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2">
+          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto' : ''} space-y-3 pr-2`}>
             {filteredMessages.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+              <div className="text-center py-8 text-muted-foreground">
                 {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
               </div>
             ) : (
               filteredMessages.map((message, index) => (
                 <div
                   key={message.id}
-                  className={`border rounded-xl p-4 cursor-pointer transition-all duration-300 hover:shadow-lg transform hover:scale-105 ${
+                  className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md transform hover:scale-[1.01] ${
                     !message.isRead
                       ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
-                      : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      : 'border-border hover:bg-muted/50'
                   } ${
                     selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
                   }`}
                   onClick={() => handleViewMessage(message)}
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <h3 className={`font-semibold text-sm ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-foreground'}`}>
                         {message.name}
                       </h3>
                       {!message.isRead && (
-                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
                       )}
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
                       {formatDate(message.createdAt)}
                     </span>
                   </div>
                   
-                  <div className="text-xs text-gray-600 dark:text-gray-300">
+                  <div className="text-xs text-muted-foreground">
                     <div className="flex items-center justify-between">
-                      <span>{message.type}</span>
-                      <span className="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+                      <span className="truncate">{message.type}</span>
+                      <span className="text-xs bg-muted px-2 py-1 rounded flex-shrink-0 ml-2">
                         {message.budget}
                       </span>
                     </div>
@@ -258,104 +359,18 @@ const MessagesManager = () => {
           </div>
         </div>
 
-        {/* Message Detail */}
-        <div className="lg:col-span-2">
+        {/* Message Detail - Desktop */}
+        <div className="lg:col-span-2 hidden lg:block">
           {isLoadingDetail ? (
-            <div className="flex items-center justify-center h-64 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-center h-64 bg-card rounded-xl border border-border">
               <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
             </div>
           ) : selectedMessage ? (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                    {selectedMessage.name}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">
-                    {formatDate(selectedMessage.createdAt)}
-                  </p>
-                </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDeleteClick(selectedMessage.id)}
-                  className="hover:shadow-md transition-all duration-200"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Email
-                    </label>
-                    <p className="text-gray-900 dark:text-white">{selectedMessage.email}</p>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Phone
-                    </label>
-                    <p className="text-gray-900 dark:text-white">{selectedMessage.phone}</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Jenis Project
-                    </label>
-                    <p className="text-gray-900 dark:text-white">{selectedMessage.type}</p>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
-                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Budget
-                    </label>
-                    <p className="text-gray-900 dark:text-white">{selectedMessage.budget}</p>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                  <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2 block">
-                    Detail Project
-                  </label>
-                  <p className="text-gray-900 dark:text-white leading-relaxed">
-                    {selectedMessage.detail}
-                  </p>
-                </div>
-
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    className="flex-1 hover:shadow-md transition-all duration-200"
-                    onClick={() => {
-                      const phoneNumber = selectedMessage.phone.replace(/\D/g, '');
-                      const message = `Halo ${selectedMessage.name}, terima kasih atas minat Anda untuk project ${selectedMessage.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
-                      const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-                      window.open(url, '_blank');
-                    }}
-                  >
-                    <Phone className="w-4 h-4 mr-2" />
-                    WhatsApp
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="flex-1 hover:shadow-md transition-all duration-200"
-                    onClick={() => {
-                      const subject = `Re: Konsultasi ${selectedMessage.type}`;
-                      const body = `Halo ${selectedMessage.name},\n\nTerima kasih atas minat Anda untuk project ${selectedMessage.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
-                      const url = `mailto:${selectedMessage.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                      window.open(url);
-                    }}
-                  >
-                    <Mail className="w-4 h-4 mr-2" />
-                    Email
-                  </Button>
-                </div>
-              </div>
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
+              <MessageDetailContent message={selectedMessage} />
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-center h-64 text-muted-foreground bg-card rounded-xl border border-border">
               <div className="text-center">
                 <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Pilih pesan untuk melihat detail</p>
@@ -365,9 +380,21 @@ const MessagesManager = () => {
         </div>
       </div>
 
+      {/* Mobile Detail Modal */}
+      <Dialog open={isMobileDetailOpen} onOpenChange={setIsMobileDetailOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle>Detail Pesan</DialogTitle>
+          </DialogHeader>
+          <div className="overflow-y-auto max-h-[70vh] scrollbar-hide">
+            {selectedMessage && <MessageDetailContent message={selectedMessage} />}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Pesan</AlertDialogTitle>
             <AlertDialogDescription>

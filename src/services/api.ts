@@ -1,3 +1,4 @@
+
 const BASE_URL = 'https://344c-2001-448a-4040-9470-4ced-ae75-7340-4c94.ngrok-free.app';
 
 export interface ApiResponse<T = any> {
@@ -102,6 +103,35 @@ export interface MessageDetail {
   detail: string;
   isRead: boolean;
   createdAt: string;
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  link?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectCreateRequest {
+  title: string;
+  description: string;
+  image: string;
+  link?: string;
+}
+
+export interface ProjectUpdateRequest {
+  title: string;
+  description: string;
+  image: string;
+  link?: string;
+}
+
+export interface ImageUploadResponse {
+  filename: string;
+  url: string;
 }
 
 class ApiService {
@@ -342,6 +372,64 @@ class ApiService {
 
   async deleteMessage(id: string): Promise<ApiResponse<null>> {
     return this.makeRequest<null>(`/api/messages/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getAllProjects(): Promise<ApiResponse<Project[]>> {
+    return this.makeRequest<Project[]>('/api/projects', {
+      method: 'GET',
+    });
+  }
+
+  async getProjectById(id: string): Promise<ApiResponse<Project>> {
+    return this.makeRequest<Project>(`/api/projects/${id}`, {
+      method: 'GET',
+    });
+  }
+
+  async uploadImage(file: File): Promise<ApiResponse<ImageUploadResponse>> {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const config: RequestInit = {
+      method: 'POST',
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+        'Authorization': `Bearer ${this.accessToken}`,
+      },
+      body: formData,
+    };
+
+    const url = `${BASE_URL}/api/upload/image`;
+    
+    try {
+      const response = await fetch(url, config);
+      const result = await response.json();
+      console.log('Upload response:', result);
+      return result;
+    } catch (error) {
+      console.error('Upload failed:', error);
+      throw error;
+    }
+  }
+
+  async createProject(data: ProjectCreateRequest): Promise<ApiResponse<Project>> {
+    return this.makeRequest<Project>('/api/projects', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateProject(id: string, data: ProjectUpdateRequest): Promise<ApiResponse<Project>> {
+    return this.makeRequest<Project>(`/api/projects/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteProject(id: string): Promise<ApiResponse<null>> {
+    return this.makeRequest<null>(`/api/projects/${id}`, {
       method: 'DELETE',
     });
   }

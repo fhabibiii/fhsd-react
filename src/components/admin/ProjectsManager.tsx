@@ -1,20 +1,24 @@
 
-import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Upload } from 'lucide-react';
-import { usePortfolio, Project } from '../../context/PortfolioContext';
+import React, { useState, useEffect } from 'react';
+import { Plus, Edit, Trash2, Upload, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { apiService, Project, ProjectCreateRequest, ProjectUpdateRequest } from '../../services/api';
 
 const ProjectsManager = () => {
-  const { data, updateProjects } = usePortfolio();
+  const { toast } = useToast();
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deletingProjectId, setDeletingProjectId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -23,7 +27,34 @@ const ProjectsManager = () => {
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
-  const { toast } = useToast();
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    setIsLoading(true);
+    try {
+      const response = await apiService.getAllProjects();
+      if (response.success && response.data) {
+        setProjects(response.data);
+      } else {
+        toast({
+          title: "Error",
+          description: response.message || "Failed to fetch projects",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch projects",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleOpenModal = (project?: Project) => {
     if (project) {
@@ -49,30 +80,51 @@ const ProjectsManager = () => {
     setIsModalOpen(true);
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
         toast({
           title: "File terlalu besar",
-          description: "Ukuran file maksimal 5MB",
+          description: "Ukuran file maksimal 10MB",
           variant: "destructive",
         });
         return;
       }
       
       setImageFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setImagePreview(result);
-        setFormData(prev => ({ ...prev, image: result }));
-      };
-      reader.readAsDataURL(file);
+      setIsUploading(true);
+      
+      try {
+        const response = await apiService.uploadImage(file);
+        if (response.success && response.data) {
+          const imageUrl = response.data.url;
+          setImagePreview(imageUrl);
+          setFormData(prev => ({ ...prev, image: imageUrl }));
+          toast({
+            title: "Berhasil!",
+            description: "Gambar berhasil diupload",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: response.message || "Failed to upload image",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to upload image",
+          variant: "destructive",
+        });
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.image) {
@@ -84,35 +136,63 @@ const ProjectsManager = () => {
       return;
     }
 
-    const projectData: Project = {
-      id: editingProject?.id || Date.now().toString(),
-      title: formData.title,
-      description: formData.description,
-      details: formData.description,
-      image: formData.image,
-      technologies: [],
-      link: formData.link,
-    };
+    setIsSaving(true);
 
-    if (editingProject) {
-      const updatedProjects = data.projects.map(p => 
-        p.id === editingProject.id ? projectData : p
-      );
-      updateProjects(updatedProjects);
+    try {
+      const projectData: ProjectCreateRequest | ProjectUpdateRequest = {
+        title: formData.title,
+        description: formData.description,
+        image: formData.image,
+        link: formData.link || undefined,
+      };
+
+      if (editingProject) {
+        const response = await apiService.updateProject(editingProject.id, projectData);
+        if (response.success && response.data) {
+          setProjects(prev => prev.map(p => 
+            p.id === editingProject.id ? response.data! : p
+          ));
+          toast({
+            title: "Project berhasil diupdate!",
+            description: "Project telah berhasil diperbarui.",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: response.message || "Failed to update project",
+            variant: "destructive",
+          });
+          return;
+        }
+      } else {
+        const response = await apiService.createProject(projectData);
+        if (response.success && response.data) {
+          setProjects(prev => [...prev, response.data!]);
+          toast({
+            title: "Project berhasil ditambahkan!",
+            description: "Project baru telah berhasil ditambahkan.",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: response.message || "Failed to create project",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+
+      setIsModalOpen(false);
+      setEditingProject(null);
+    } catch (error) {
       toast({
-        title: "Project berhasil diupdate!",
-        description: "Project telah berhasil diperbarui.",
+        title: "Error",
+        description: "Failed to save project",
+        variant: "destructive",
       });
-    } else {
-      updateProjects([...data.projects, projectData]);
-      toast({
-        title: "Project berhasil ditambahkan!",
-        description: "Project baru telah berhasil ditambahkan.",
-      });
+    } finally {
+      setIsSaving(false);
     }
-
-    setIsModalOpen(false);
-    setEditingProject(null);
   };
 
   const handleDeleteClick = (id: string) => {
@@ -120,19 +200,45 @@ const ProjectsManager = () => {
     setDeleteConfirmOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (deletingProjectId) {
-      const updatedProjects = data.projects.filter(p => p.id !== deletingProjectId);
-      updateProjects(updatedProjects);
-      toast({
-        title: "Project berhasil dihapus!",
-        description: "Project telah berhasil dihapus.",
-        variant: "destructive",
-      });
+      try {
+        const response = await apiService.deleteProject(deletingProjectId);
+        if (response.success) {
+          setProjects(prev => prev.filter(p => p.id !== deletingProjectId));
+          toast({
+            title: "Project berhasil dihapus!",
+            description: "Project telah berhasil dihapus.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: response.message || "Failed to delete project",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to delete project",
+          variant: "destructive",
+        });
+      }
     }
     setDeleteConfirmOpen(false);
     setDeletingProjectId(null);
   };
+
+  if (isLoading) {
+    return (
+      <div className="p-4 md:p-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-8 animate-fade-in">
@@ -148,7 +254,7 @@ const ProjectsManager = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data.projects.map((project, index) => (
+        {projects.map((project, index) => (
           <div
             key={project.id}
             className="bg-card text-card-foreground rounded-lg p-4 border border-border hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
@@ -188,13 +294,13 @@ const ProjectsManager = () => {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>
               {editingProject ? 'Edit Project' : 'Add New Project'}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto max-h-[70vh] scrollbar-hide">
             <div>
               <label className="block text-sm font-medium mb-2 text-foreground">Title *</label>
               <Input
@@ -233,10 +339,15 @@ const ProjectsManager = () => {
                       const fileInput = document.getElementById('project-image-upload') as HTMLInputElement;
                       fileInput?.click();
                     }}
+                    disabled={isUploading}
                     className="flex items-center gap-2"
                   >
-                    <Upload className="w-4 h-4" />
-                    Upload
+                    {isUploading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Upload className="w-4 h-4" />
+                    )}
+                    {isUploading ? 'Uploading...' : 'Upload'}
                   </Button>
                 </div>
                 {imagePreview && (
@@ -261,14 +372,22 @@ const ProjectsManager = () => {
             </div>
 
             <div className="flex gap-4 pt-4">
-              <Button type="submit" className="flex-1">
-                {editingProject ? 'Update Project' : 'Add Project'}
+              <Button type="submit" className="flex-1" disabled={isSaving || isUploading}>
+                {isSaving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {editingProject ? 'Updating...' : 'Adding...'}
+                  </>
+                ) : (
+                  editingProject ? 'Update Project' : 'Add Project'
+                )}
               </Button>
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={() => setIsModalOpen(false)}
                 className="flex-1"
+                disabled={isSaving || isUploading}
               >
                 Cancel
               </Button>
@@ -279,7 +398,7 @@ const ProjectsManager = () => {
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Project</AlertDialogTitle>
             <AlertDialogDescription>
@@ -293,7 +412,7 @@ const ProjectsManager = () => {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </Dialog>
     </div>
   );
 };
