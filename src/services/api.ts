@@ -1,4 +1,3 @@
-
 const BASE_URL = 'https://344c-2001-448a-4040-9470-4ced-ae75-7340-4c94.ngrok-free.app';
 
 export interface ApiResponse<T = any> {
@@ -72,6 +71,7 @@ class ApiService {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
         ...options.headers,
       },
     };
@@ -84,27 +84,39 @@ class ApiService {
       };
     }
 
-    const response = await fetch(url, config);
-    
-    // Handle token expiration
-    if (response.status === 401 && this.refreshToken && !endpoint.includes('/auth/')) {
-      try {
-        await this.handleTokenRefresh();
-        // Retry the original request with new token
-        config.headers = {
-          ...config.headers,
-          'Authorization': `Bearer ${this.accessToken}`,
-        };
-        const retryResponse = await fetch(url, config);
-        return await retryResponse.json();
-      } catch (error) {
-        // If refresh fails, logout
-        this.logout();
-        throw new Error('Session expired. Please login again.');
-      }
-    }
+    console.log('Making request to:', url);
+    console.log('Request config:', config);
 
-    return await response.json();
+    try {
+      const response = await fetch(url, config);
+      
+      // Handle token expiration
+      if (response.status === 401 && this.refreshToken && !endpoint.includes('/auth/')) {
+        try {
+          await this.handleTokenRefresh();
+          // Retry the original request with new token
+          config.headers = {
+            ...config.headers,
+            'Authorization': `Bearer ${this.accessToken}`,
+          };
+          const retryResponse = await fetch(url, config);
+          const result = await retryResponse.json();
+          console.log('Retry response:', result);
+          return result;
+        } catch (error) {
+          // If refresh fails, logout
+          this.logout();
+          throw new Error('Session expired. Please login again.');
+        }
+      }
+
+      const result = await response.json();
+      console.log('API Response:', result);
+      return result;
+    } catch (error) {
+      console.error('Request failed:', error);
+      throw error;
+    }
   }
 
   private async handleTokenRefresh(): Promise<string> {
@@ -132,6 +144,7 @@ class ApiService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: JSON.stringify({
         refreshToken: this.refreshToken,
