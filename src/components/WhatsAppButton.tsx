@@ -1,16 +1,38 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageCircle } from 'lucide-react';
+import { apiService } from '../services/api';
 
 const WhatsAppButton = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState('');
   
-  const whatsappNumber = "+6281225510099";
   const defaultMessage = "Halo! Saya tertarik dengan layanan FH Digital Solutions. Bisakah kita diskusi lebih lanjut?";
   
+  useEffect(() => {
+    fetchContactInfo();
+  }, []);
+
+  const fetchContactInfo = async () => {
+    try {
+      const response = await apiService.getContactInfo();
+      if (response.success && response.data) {
+        setWhatsappUrl(response.data.whatsApp);
+      }
+    } catch (error) {
+      console.error('Failed to fetch contact info:', error);
+      // Fallback to default WhatsApp number
+      setWhatsappUrl('https://wa.me/6281225510099');
+    }
+  };
+
   const handleWhatsAppClick = () => {
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(defaultMessage)}`;
-    window.open(url, '_blank');
+    if (whatsappUrl) {
+      const url = whatsappUrl.includes('?') 
+        ? `${whatsappUrl}&text=${encodeURIComponent(defaultMessage)}`
+        : `${whatsappUrl}?text=${encodeURIComponent(defaultMessage)}`;
+      window.open(url, '_blank');
+    }
   };
 
   return (

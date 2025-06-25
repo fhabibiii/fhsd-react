@@ -24,6 +24,28 @@ export interface RefreshTokenResponse {
   refreshToken: string;
 }
 
+export interface ContactInfo {
+  id: string;
+  phone: string;
+  email: string;
+  address: string;
+  map: string;
+  instagram: string;
+  whatsApp: string;
+  workHours: string;
+  updatedAt: string;
+}
+
+export interface ContactUpdateRequest {
+  phone: string;
+  email: string;
+  address: string;
+  map: string;
+  instagram: string;
+  whatsApp: string;
+  workHours: string;
+}
+
 class ApiService {
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
@@ -55,7 +77,7 @@ class ApiService {
     };
 
     // Add auth header if we have a token and it's not a public endpoint
-    if (this.accessToken && !endpoint.includes('/auth/login')) {
+    if (this.accessToken && !endpoint.includes('/auth/login') && !endpoint.includes('/contact-info') || (endpoint.includes('/contact-info') && options.method !== 'GET')) {
       config.headers = {
         ...config.headers,
         'Authorization': `Bearer ${this.accessToken}`,
@@ -127,7 +149,7 @@ class ApiService {
   }
 
   private startTokenRefresh() {
-    // Refresh token every 12 seconds (before 15 second expiry)
+    // Refresh token every 7 seconds (before 15 second expiry)
     setInterval(() => {
       if (this.refreshToken) {
         this.handleTokenRefresh().catch((error) => {
@@ -135,7 +157,7 @@ class ApiService {
           this.logout();
         });
       }
-    }, 12000);
+    }, 7000);
   }
 
   private setTokens(accessToken: string, refreshToken: string) {
@@ -181,6 +203,19 @@ class ApiService {
     } finally {
       this.clearTokens();
     }
+  }
+
+  async getContactInfo(): Promise<ApiResponse<ContactInfo>> {
+    return this.makeRequest<ContactInfo>('/api/contact-info', {
+      method: 'GET',
+    });
+  }
+
+  async updateContactInfo(data: ContactUpdateRequest): Promise<ApiResponse<ContactInfo>> {
+    return this.makeRequest<ContactInfo>('/api/contact-info', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
   }
 
   isAuthenticated(): boolean {
