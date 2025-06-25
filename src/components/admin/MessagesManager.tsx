@@ -312,50 +312,54 @@ const MessagesManager = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List */}
         <div className="lg:col-span-1">
-          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto' : ''} space-y-3 pr-2`}>
-            {filteredMessages.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
-              </div>
-            ) : (
-              filteredMessages.map((message, index) => (
-                <div
-                  key={message.id}
-                  className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md transform hover:scale-[1.01] ${
-                    !message.isRead
-                      ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
-                      : 'border-border hover:bg-muted/50'
-                  } ${
-                    selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
-                  }`}
-                  onClick={() => handleViewMessage(message)}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-foreground'}`}>
-                        {message.name}
-                      </h3>
-                      {!message.isRead && (
-                        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
-                      )}
-                    </div>
-                    <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
-                      {formatDate(message.createdAt)}
-                    </span>
-                  </div>
-                  
-                  <div className="text-xs text-muted-foreground">
-                    <div className="flex items-center justify-between">
-                      <span className="truncate">{message.type}</span>
-                      <span className="text-xs bg-muted px-2 py-1 rounded flex-shrink-0 ml-2">
-                        {message.budget}
+          <div className="space-y-3">
+            <div 
+              className={filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto pr-2 space-y-3' : 'space-y-3'}
+            >
+              {filteredMessages.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
+                </div>
+              ) : (
+                filteredMessages.map((message, index) => (
+                  <div
+                    key={message.id}
+                    className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md ${
+                      !message.isRead
+                        ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
+                        : 'border-border hover:bg-muted/50'
+                    } ${
+                      selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
+                    }`}
+                    onClick={() => handleViewMessage(message)}
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-foreground'}`}>
+                          {message.name}
+                        </h3>
+                        {!message.isRead && (
+                          <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
+                        {formatDate(message.createdAt)}
                       </span>
                     </div>
+                    
+                    <div className="text-xs text-muted-foreground">
+                      <div className="flex items-center justify-between">
+                        <span className="truncate">{message.type}</span>
+                        <span className="text-xs bg-muted px-2 py-1 rounded flex-shrink-0 ml-2">
+                          {message.budget}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
         </div>
 
@@ -386,7 +390,7 @@ const MessagesManager = () => {
           <DialogHeader>
             <DialogTitle>Detail Pesan</DialogTitle>
           </DialogHeader>
-          <div className="overflow-y-auto max-h-[70vh] scrollbar-hide">
+          <div className="overflow-y-auto pr-6 modal-hide-scrollbar" style={{ maxHeight: '70vh' }}>
             {selectedMessage && <MessageDetailContent message={selectedMessage} />}
           </div>
         </DialogContent>
