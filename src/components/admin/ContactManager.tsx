@@ -1,25 +1,23 @@
 
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Clock, Save, Loader2, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Edit, Save, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { apiService, ContactInfo, ContactUpdateRequest } from '../../services/api';
+import { apiService, ContactInfo } from '../../services/api';
 
 const ContactManager = () => {
   const { toast } = useToast();
   const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [editingField, setEditingField] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    phone: '',
     email: '',
+    phone: '',
     address: '',
-    map: '',
-    instagram: '',
-    whatsApp: '',
-    workHours: '',
+    description: ''
   });
 
   useEffect(() => {
@@ -33,13 +31,10 @@ const ContactManager = () => {
       if (response.success && response.data) {
         setContactInfo(response.data);
         setFormData({
-          phone: response.data.phone,
           email: response.data.email,
+          phone: response.data.phone,
           address: response.data.address,
-          map: response.data.map,
-          instagram: response.data.instagram,
-          whatsApp: response.data.whatsApp,
-          workHours: response.data.workHours,
+          description: response.data.description
         });
       } else {
         toast({
@@ -59,12 +54,29 @@ const ContactManager = () => {
     }
   };
 
-  const handleSave = async () => {
+  const handleEdit = (field: string) => {
+    setEditingField(field);
+  };
+
+  const handleCancel = () => {
+    if (contactInfo) {
+      setFormData({
+        email: contactInfo.email,
+        phone: contactInfo.phone,
+        address: contactInfo.address,
+        description: contactInfo.description
+      });
+    }
+    setEditingField(null);
+  };
+
+  const handleSave = async (field: string) => {
     setIsSaving(true);
     try {
       const response = await apiService.updateContactInfo(formData);
       if (response.success && response.data) {
         setContactInfo(response.data);
+        setEditingField(null);
         toast({
           title: "Berhasil!",
           description: "Informasi kontak berhasil diperbarui.",
@@ -99,177 +111,237 @@ const ContactManager = () => {
 
   return (
     <div className="p-4 md:p-8 animate-fade-in">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-foreground">Contact Information</h2>
-        <Button 
-          onClick={handleSave}
-          disabled={isSaving}
-          className="hover:shadow-lg transition-all duration-300 hover:scale-105"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4 mr-2" />
-              Save Changes
-            </>
-          )}
-        </Button>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Contact Information</h2>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          Kelola informasi kontak yang ditampilkan di halaman utama
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Contact Information Cards */}
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Phone Card */}
-            <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground">Phone</h3>
-                  <p className="text-sm text-muted-foreground truncate">Contact number</p>
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Email Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
-              <Input
-                value={formData.phone}
-                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                placeholder="Enter phone number"
-              />
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Email</h3>
             </div>
-
-            {/* Email Card */}
-            <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-green-600 dark:text-green-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground">Email</h3>
-                  <p className="text-sm text-muted-foreground truncate">Email address</p>
-                </div>
-              </div>
+            {editingField !== 'email' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEdit('email')}
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+          
+          {editingField === 'email' ? (
+            <div className="space-y-3">
               <Input
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                placeholder="Enter email address"
                 type="email"
+                placeholder="contoh@email.com"
+                className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
-            </div>
-
-            {/* WhatsApp Card */}
-            <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-6 h-6 text-green-600 dark:text-green-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground">WhatsApp</h3>
-                  <p className="text-sm text-muted-foreground truncate">WhatsApp number</p>
-                </div>
-              </div>
-              <Input
-                value={formData.whatsApp}
-                onChange={(e) => setFormData(prev => ({ ...prev, whatsApp: e.target.value }))}
-                placeholder="Enter WhatsApp number"
-              />
-            </div>
-
-            {/* Instagram Card */}
-            <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Instagram className="w-6 h-6 text-pink-600 dark:text-pink-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground">Instagram</h3>
-                  <p className="text-sm text-muted-foreground truncate">Instagram profile</p>
-                </div>
-              </div>
-              <Input
-                value={formData.instagram}
-                onChange={(e) => setFormData(prev => ({ ...prev, instagram: e.target.value }))}
-                placeholder="Enter Instagram URL"
-              />
-            </div>
-
-            {/* Work Hours Card */}
-            <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in md:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground">Work Hours</h3>
-                  <p className="text-sm text-muted-foreground truncate">Business hours</p>
-                </div>
-              </div>
-              <Input
-                value={formData.workHours}
-                onChange={(e) => setFormData(prev => ({ ...prev, workHours: e.target.value }))}
-                placeholder="e.g., Mon-Fri 9AM-6PM"
-              />
-            </div>
-          </div>
-
-          {/* Address Card */}
-          <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                <MapPin className="w-6 h-6 text-red-600 dark:text-red-400" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-foreground">Address</h3>
-                <p className="text-sm text-muted-foreground truncate">Business address</p>
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => handleSave('email')}
+                  disabled={isSaving}
+                  className="flex items-center gap-1"
+                >
+                  <Save className="w-3 h-3" />
+                  Simpan
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <X className="w-3 h-3" />
+                  Batal
+                </Button>
               </div>
             </div>
-            <Textarea
-              value={formData.address}
-              onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-              placeholder="Enter full address"
-              rows={3}
-            />
-          </div>
+          ) : (
+            <p className="text-gray-700 dark:text-gray-300">{contactInfo?.email || 'Belum diatur'}</p>
+          )}
         </div>
 
-        {/* Google Maps Card */}
-        <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-              <MapPin className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground">Google Maps</h3>
-              <p className="text-sm text-muted-foreground truncate">Map embed URL</p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <Textarea
-              value={formData.map}
-              onChange={(e) => setFormData(prev => ({ ...prev, map: e.target.value }))}
-              placeholder="Enter Google Maps embed URL"
-              rows={3}
-            />
-            {formData.map && (
-              <div className="rounded-lg overflow-hidden border border-border">
-                <iframe
-                  src={formData.map}
-                  width="100%"
-                  height="300"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Google Maps"
-                  className="w-full"
-                />
+        {/* Phone Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <Phone className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Phone</h3>
+            </div>
+            {editingField !== 'phone' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEdit('phone')}
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
             )}
           </div>
+          
+          {editingField === 'phone' ? (
+            <div className="space-y-3">
+              <Input
+                value={formData.phone}
+                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                type="tel"
+                placeholder="+62 xxx-xxxx-xxxx"
+                className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => handleSave('phone')}
+                  disabled={isSaving}
+                  className="flex items-center gap-1"
+                >
+                  <Save className="w-3 h-3" />
+                  Simpan
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <X className="w-3 h-3" />
+                  Batal
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-700 dark:text-gray-300">{contactInfo?.phone || 'Belum diatur'}</p>
+          )}
+        </div>
+
+        {/* Address Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 md:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Address</h3>
+            </div>
+            {editingField !== 'address' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEdit('address')}
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+          
+          {editingField === 'address' ? (
+            <div className="space-y-3">
+              <Textarea
+                value={formData.address}
+                onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                placeholder="Alamat lengkap..."
+                rows={3}
+                className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => handleSave('address')}
+                  disabled={isSaving}
+                  className="flex items-center gap-1"
+                >
+                  <Save className="w-3 h-3" />
+                  Simpan
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <X className="w-3 h-3" />
+                  Batal
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-700 dark:text-gray-300">{contactInfo?.address || 'Belum diatur'}</p>
+          )}
+        </div>
+
+        {/* Description Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 md:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Description</h3>
+            {editingField !== 'description' && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleEdit('description')}
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+          
+          {editingField === 'description' ? (
+            <div className="space-y-3">
+              <Textarea
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Deskripsi singkat tentang Anda atau perusahaan..."
+                rows={4}
+                className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => handleSave('description')}
+                  disabled={isSaving}
+                  className="flex items-center gap-1"
+                >
+                  <Save className="w-3 h-3" />
+                  Simpan
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <X className="w-3 h-3" />
+                  Batal
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+              {contactInfo?.description || 'Belum diatur'}
+            </p>
+          )}
         </div>
       </div>
     </div>
