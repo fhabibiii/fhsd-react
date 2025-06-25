@@ -1,86 +1,134 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Save, X, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-
-interface Service {
-  id: string;
-  title: string;
-  duration: string;
-  description: string;
-  features: string[];
-  price: string;
-  whatsappMessage: string;
-}
+import { apiService, Service, ServiceCreateRequest, ServiceUpdateRequest } from '../../services/api';
 
 const ServicesManager = () => {
   const { toast } = useToast();
-  const [services, setServices] = useState<Service[]>([
-    {
-      id: '1',
-      title: 'Basic Website',
-      duration: '5–7 hari',
-      description: 'Landing page interaktif dengan kontak dan animasi ringan yang sempurna untuk memperkenalkan bisnis Anda.',
-      features: ['Landing page interaktif', 'Form kontak terintegrasi', 'Animasi ringan & smooth', 'Responsive design', 'SEO friendly'],
-      price: 'Rp 2.500.000',
-      whatsappMessage: 'Halo! Saya tertarik dengan paket Basic Website. Bisakah kita diskusi lebih lanjut mengenai pembuatan website?'
-    },
-    {
-      id: '2',
-      title: 'Web App Dasar',
-      duration: '10–15 hari',
-      description: 'Aplikasi web dengan fitur login, dashboard user, dan manajemen data dasar untuk kebutuhan bisnis kecil.',
-      features: ['Sistem login & registrasi', 'Dashboard user', 'Input data (CRUD)', 'Validasi form', 'Pagination data'],
-      price: 'Rp 7.000.000',
-      whatsappMessage: 'Halo! Saya tertarik dengan paket Web App Dasar. Bisakah kita diskusi lebih lanjut mengenai pembuatan website?'
-    }
-  ]);
-
+  const [services, setServices] = useState<Service[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newFeature, setNewFeature] = useState('');
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deletingServiceId, setDeletingServiceId] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const [editData, setEditData] = useState<ServiceCreateRequest>({
+    title: '',
+    description: '',
+    price: '',
+    duration: '',
+    features: []
+  });
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    setIsLoading(true);
+    try {
+      const response = await apiService.getAllServices();
+      if (response.success && response.data) {
+        setServices(response.data);
+      } else {
+        toast({
+          title: "Error",
+          description: response.message || "Failed to fetch services",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch services",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAddService = () => {
-    const newService: Service = {
-      id: Date.now().toString(),
+    setEditData({
       title: '',
-      duration: '',
       description: '',
-      features: [],
       price: '',
-      whatsappMessage: ''
-    };
-    setEditingService(newService);
+      duration: '',
+      features: []
+    });
+    setEditingService(null);
     setIsAddingNew(true);
   };
 
-  const handleSaveService = () => {
-    if (!editingService) return;
+  const handleEditService = (service: Service) => {
+    setEditData({
+      title: service.title,
+      description: service.description,
+      price: service.price,
+      duration: service.duration,
+      features: service.features.map(f => f.feature)
+    });
+    setEditingService(service);
+    setIsAddingNew(false);
+  };
 
-    if (isAddingNew) {
-      setServices(prev => [...prev, editingService]);
+  const handleSaveService = async () => {
+    if (!editData.title || !editData.description || !editData.price || !editData.duration) {
       toast({
-        title: "Layanan baru berhasil ditambahkan!",
-        description: "Layanan telah disimpan dan akan muncul di halaman services.",
+        title: "Error",
+        description: "Semua field wajib diisi",
+        variant: "destructive",
       });
-    } else {
-      setServices(prev => prev.map(service => 
-        service.id === editingService.id ? editingService : service
-      ));
-      toast({
-        title: "Layanan berhasil diperbarui!",
-        description: "Perubahan telah disimpan.",
-      });
+      return;
     }
 
-    setEditingService(null);
-    setIsAddingNew(false);
+    setIsSaving(true);
+    try {
+      let response;
+      if (isAddingNew) {
+        response = await apiService.createService(editData);
+      } else if (editingService) {
+        response = await apiService.updateService(editingService.id, editData);
+      }
+
+      if (response?.success) {
+        await fetchServices(); // Refresh the list
+        setEditingService(null);
+        setIsAddingNew(false);
+        setEditData({
+          title: '',
+          description: '',
+          price: '',
+          duration: '',
+          features: []
+        });
+        toast({
+          title: "Berhasil!",
+          description: isAddingNew ? "Layanan baru berhasil ditambahkan!" : "Layanan berhasil diperbarui!",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: response?.message || "Failed to save service",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save service",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDeleteClick = (id: string) => {
@@ -88,37 +136,75 @@ const ServicesManager = () => {
     setDeleteConfirmOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
-    if (deletingServiceId) {
-      setServices(prev => prev.filter(service => service.id !== deletingServiceId));
+  const handleDeleteConfirm = async () => {
+    if (!deletingServiceId) return;
+
+    try {
+      const response = await apiService.deleteService(deletingServiceId);
+      if (response.success) {
+        await fetchServices(); // Refresh the list
+        toast({
+          title: "Berhasil!",
+          description: "Layanan berhasil dihapus!",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: response.message || "Failed to delete service",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "Layanan berhasil dihapus!",
-        description: "Layanan telah dihapus dari daftar.",
+        title: "Error",
+        description: "Failed to delete service",
         variant: "destructive",
       });
+    } finally {
+      setDeleteConfirmOpen(false);
+      setDeletingServiceId(null);
     }
-    setDeleteConfirmOpen(false);
-    setDeletingServiceId(null);
   };
 
   const handleAddFeature = () => {
-    if (!editingService || !newFeature.trim()) return;
+    if (!newFeature.trim()) return;
     
-    setEditingService({
-      ...editingService,
-      features: [...editingService.features, newFeature.trim()]
+    setEditData({
+      ...editData,
+      features: [...editData.features, newFeature.trim()]
     });
     setNewFeature('');
   };
 
   const handleRemoveFeature = (index: number) => {
-    if (!editingService) return;
-    
-    setEditingService({
-      ...editingService,
-      features: editingService.features.filter((_, i) => i !== index)
+    setEditData({
+      ...editData,
+      features: editData.features.filter((_, i) => i !== index)
     });
   };
+
+  const handleCancel = () => {
+    setEditingService(null);
+    setIsAddingNew(false);
+    setEditData({
+      title: '',
+      description: '',
+      price: '',
+      duration: '',
+      features: []
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="p-4 md:p-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-8">
@@ -153,7 +239,7 @@ const ServicesManager = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setEditingService(service)}
+                  onClick={() => handleEditService(service)}
                   className="hover:scale-105 transition-transform duration-200"
                 >
                   <Edit className="w-3 h-3" />
@@ -173,9 +259,9 @@ const ServicesManager = () => {
             
             <div className="space-y-2 mb-4">
               {service.features.map((feature, index) => (
-                <div key={index} className="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                <div key={feature.id} className="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-2">
                   <div className="w-1 h-1 bg-green-500 rounded-full"></div>
-                  {feature}
+                  {feature.feature}
                 </div>
               ))}
             </div>
@@ -188,7 +274,7 @@ const ServicesManager = () => {
       </div>
 
       {/* Edit Modal */}
-      {editingService && (
+      {(editingService || isAddingNew) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -204,8 +290,8 @@ const ServicesManager = () => {
                     Nama Layanan *
                   </label>
                   <Input
-                    value={editingService.title}
-                    onChange={(e) => setEditingService({...editingService, title: e.target.value})}
+                    value={editData.title}
+                    onChange={(e) => setEditData({...editData, title: e.target.value})}
                     placeholder="Basic Website"
                   />
                 </div>
@@ -215,8 +301,8 @@ const ServicesManager = () => {
                     Waktu Pengerjaan *
                   </label>
                   <Input
-                    value={editingService.duration}
-                    onChange={(e) => setEditingService({...editingService, duration: e.target.value})}
+                    value={editData.duration}
+                    onChange={(e) => setEditData({...editData, duration: e.target.value})}
                     placeholder="5–7 hari"
                   />
                 </div>
@@ -227,8 +313,8 @@ const ServicesManager = () => {
                   Deskripsi Singkat *
                 </label>
                 <Textarea
-                  value={editingService.description}
-                  onChange={(e) => setEditingService({...editingService, description: e.target.value})}
+                  value={editData.description}
+                  onChange={(e) => setEditData({...editData, description: e.target.value})}
                   placeholder="Deskripsi layanan..."
                   rows={3}
                 />
@@ -239,7 +325,7 @@ const ServicesManager = () => {
                   Fitur-fitur
                 </label>
                 <div className="space-y-2 mb-3">
-                  {editingService.features.map((feature, index) => (
+                  {editData.features.map((feature, index) => (
                     <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded">
                       <span className="flex-1 text-sm">{feature}</span>
                       <Button
@@ -270,21 +356,9 @@ const ServicesManager = () => {
                   Harga *
                 </label>
                 <Input
-                  value={editingService.price}
-                  onChange={(e) => setEditingService({...editingService, price: e.target.value})}
+                  value={editData.price}
+                  onChange={(e) => setEditData({...editData, price: e.target.value})}
                   placeholder="Rp 2.500.000"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                  Pesan WhatsApp *
-                </label>
-                <Textarea
-                  value={editingService.whatsappMessage}
-                  onChange={(e) => setEditingService({...editingService, whatsappMessage: e.target.value})}
-                  placeholder="Pesan yang akan dikirim ketika tombol dipencet..."
-                  rows={3}
                 />
               </div>
             </div>
@@ -292,16 +366,14 @@ const ServicesManager = () => {
             <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex gap-3 justify-end">
               <Button
                 variant="outline"
-                onClick={() => {
-                  setEditingService(null);
-                  setIsAddingNew(false);
-                }}
+                onClick={handleCancel}
+                disabled={isSaving}
               >
                 Batal
               </Button>
-              <Button onClick={handleSaveService}>
+              <Button onClick={handleSaveService} disabled={isSaving}>
                 <Save className="w-4 h-4 mr-2" />
-                Simpan
+                {isSaving ? 'Menyimpan...' : 'Simpan'}
               </Button>
             </div>
           </div>

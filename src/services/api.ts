@@ -45,6 +45,41 @@ export interface ContactUpdateRequest {
   workHours: string;
 }
 
+export interface ServiceFeature {
+  id: string;
+  serviceId: string;
+  feature: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Service {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  duration: string;
+  createdAt: string;
+  updatedAt: string;
+  features: ServiceFeature[];
+}
+
+export interface ServiceCreateRequest {
+  title: string;
+  description: string;
+  price: string;
+  duration: string;
+  features: string[];
+}
+
+export interface ServiceUpdateRequest {
+  title: string;
+  description: string;
+  price: string;
+  duration: string;
+  features: string[];
+}
+
 class ApiService {
   private accessToken: string | null = null;
   private refreshToken: string | null = null;
@@ -228,6 +263,38 @@ class ApiService {
     return this.makeRequest<ContactInfo>('/api/contact-info', {
       method: 'PUT',
       body: JSON.stringify(data),
+    });
+  }
+
+  async getAllServices(): Promise<ApiResponse<Service[]>> {
+    return this.makeRequest<Service[]>('/api/services', {
+      method: 'GET',
+    });
+  }
+
+  async getServiceById(id: string): Promise<ApiResponse<Service>> {
+    return this.makeRequest<Service>(`/api/services/${id}`, {
+      method: 'GET',
+    });
+  }
+
+  async createService(data: ServiceCreateRequest): Promise<ApiResponse<Service>> {
+    return this.makeRequest<Service>('/api/services', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateService(id: string, data: ServiceUpdateRequest): Promise<ApiResponse<Service>> {
+    return this.makeRequest<Service>(`/api/services/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteService(id: string): Promise<ApiResponse<null>> {
+    return this.makeRequest<null>(`/api/services/${id}`, {
+      method: 'DELETE',
     });
   }
 

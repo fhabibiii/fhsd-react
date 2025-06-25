@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Edit, Phone, Mail, Clock, MapPin, Instagram } from 'lucide-react';
+import { Edit, Phone, Mail, Clock, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -135,92 +135,76 @@ const ContactManager = () => {
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Contact Information</h2>
         <Button
           onClick={handleEditClick}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:scale-105 transition-transform duration-200"
         >
           <Edit className="w-4 h-4" />
           <span className="hidden sm:inline">Edit Kontak</span>
         </Button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 md:p-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Contact Information Cards */}
-          <div className="space-y-4">
-            <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800/30">
-              <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-green-600" />
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white">Nomor Telepon</h4>
-                  <p className="text-gray-700 dark:text-gray-300">{contactData.phone}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800/30">
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-blue-600" />
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white">Email Bisnis</h4>
-                  <p className="text-gray-700 dark:text-gray-300">{contactData.email}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800/30">
-              <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-purple-600 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white">Jam Operasional</h4>
-                  <p className="text-gray-700 dark:text-gray-300">{contactData.workHours}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-pink-50 dark:bg-pink-900/20 rounded-xl p-4 border border-pink-200 dark:border-pink-800/30">
-              <div className="flex items-start gap-3">
-                <Instagram className="w-5 h-5 text-pink-600 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white">Instagram</h4>
-                  <p className="text-gray-700 dark:text-gray-300 text-sm break-all">{contactData.instagram}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4 border border-orange-200 dark:border-orange-800/30">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-orange-600 mt-1" />
-                <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white">Alamat</h4>
-                  <p className="text-gray-700 dark:text-gray-300 text-sm">{contactData.address}</p>
-                </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Contact Information Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-fit">
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in">
+            <div className="flex items-center gap-3">
+              <Phone className="w-5 h-5 text-primary" />
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Telepon</h4>
+                <p className="text-gray-700 dark:text-gray-300 text-sm">{contactData.phone}</p>
               </div>
             </div>
           </div>
 
-          {/* Map Preview */}
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Google Maps</h3>
-            <div className="h-80 bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600">
-              {contactData.map ? (
-                <iframe
-                  src={contactData.map}
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
-                  No map available
-                </div>
-              )}
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '100ms' }}>
+            <div className="flex items-center gap-3">
+              <Mail className="w-5 h-5 text-primary" />
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Email</h4>
+                <p className="text-gray-700 dark:text-gray-300 text-sm">{contactData.email}</p>
+              </div>
             </div>
-            
-            <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-              <p>Last updated: {new Date(contactData.updatedAt).toLocaleString('id-ID')}</p>
+          </div>
+
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '200ms' }}>
+            <div className="flex items-start gap-3">
+              <Clock className="w-5 h-5 text-primary mt-1" />
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Jam Kerja</h4>
+                <p className="text-gray-700 dark:text-gray-300 text-sm">{contactData.workHours}</p>
+              </div>
             </div>
+          </div>
+
+          <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-primary mt-1" />
+              <div>
+                <h4 className="font-semibold text-gray-900 dark:text-white text-sm">Alamat</h4>
+                <p className="text-gray-700 dark:text-gray-300 text-xs leading-relaxed">{contactData.address}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Map Preview */}
+        <div className="animate-fade-in" style={{ animationDelay: '400ms' }}>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Google Maps</h3>
+          <div className="h-80 bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
+            {contactData.map ? (
+              <iframe
+                src={contactData.map}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+                No map available
+              </div>
+            )}
           </div>
         </div>
       </div>
