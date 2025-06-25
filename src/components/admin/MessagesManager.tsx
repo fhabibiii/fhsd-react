@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -212,7 +211,7 @@ const MessagesManager = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List */}
         <div className="lg:col-span-1">
-          <div className="max-h-[calc(100vh-320px)] overflow-y-auto space-y-4 pr-2">
+          <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2">
             {filteredMessages.length === 0 ? (
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
@@ -381,7 +380,7 @@ const MessagesManager = () => {
               Hapus
             </AlertDialogAction>
           </AlertDialogFooter>
-        </AlertDialogFooter>
+        </AlertDialogContent>
       </AlertDialog>
     </div>
   );
