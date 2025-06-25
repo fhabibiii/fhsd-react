@@ -1,8 +1,11 @@
 
 import React from 'react';
 import { ArrowRight, Star, Target, Coffee, Heart, Zap } from 'lucide-react';
+import { useBackendData } from '../hooks/useBackendData';
 
 const Hero = () => {
+  const { contactInfo } = useBackendData();
+
   const scrollToServices = () => {
     const element = document.querySelector('#services');
     if (element) {
@@ -11,9 +14,9 @@ const Hero = () => {
   };
 
   const handleConsultationClick = () => {
-    const whatsappNumber = "085156321198";
+    const whatsappUrl = contactInfo?.whatsApp || "https://wa.me/085156321198";
     const message = "Halo! Saya ingin konsultasi dalam pembuatan website. Bisakah kita diskusi lebih lanjut?";
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    const url = `${whatsappUrl}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
 

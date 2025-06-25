@@ -6,19 +6,19 @@ import { useBackendData } from '../hooks/useBackendData';
 
 const Services = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
-  const { services, loading } = useBackendData();
+  const { services, contactInfo, loading } = useBackendData();
 
   const handleConsultationClick = () => {
-    const whatsappNumber = "085156321198";
+    const whatsappUrl = contactInfo?.whatsApp || "https://wa.me/085156321198";
     const message = "Halo! Saya ingin konsultasi dalam memilih paket pembuatan website. Bisakah kita diskusi lebih lanjut?";
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    const url = `${whatsappUrl}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
 
   const handlePackageClick = (packageName: string) => {
-    const whatsappNumber = "085156321198";
+    const whatsappUrl = contactInfo?.whatsApp || "https://wa.me/085156321198";
     const message = `Halo! Saya tertarik dengan paket ${packageName}. Bisakah kita diskusi lebih lanjut mengenai pembuatan website?`;
-    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    const url = `${whatsappUrl}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
 

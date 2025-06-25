@@ -6,12 +6,29 @@ import { useTheme } from './ThemeProvider';
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      
+      // Determine active section based on scroll position
+      const sections = ['home', 'projects', 'services', 'contact'];
+      const scrollPosition = window.scrollY + 100;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const element = document.querySelector(`#${sections[i]}`);
+        if (element) {
+          const offsetTop = element.offsetTop;
+          if (scrollPosition >= offsetTop) {
+            setActiveSection(sections[i]);
+            break;
+          }
+        }
+      }
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -25,10 +42,10 @@ const Navigation = () => {
   };
 
   const navItems = [
-    { label: 'Home', href: '#home' },
-    { label: 'Projects', href: '#projects' },
-    { label: 'Services', href: '#services' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Home', href: '#home', section: 'home' },
+    { label: 'Projects', href: '#projects', section: 'projects' },
+    { label: 'Services', href: '#services', section: 'services' },
+    { label: 'Contact', href: '#contact', section: 'contact' },
   ];
 
   return (
@@ -51,7 +68,9 @@ const Navigation = () => {
                 <button
                   key={item.label}
                   onClick={() => scrollToSection(item.href)}
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium"
+                  className={`text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 ${
+                    activeSection === item.section ? 'font-bold text-primary' : 'font-medium'
+                  }`}
                 >
                   {item.label}
                 </button>
@@ -87,7 +106,9 @@ const Navigation = () => {
                 <button
                   key={item.label}
                   onClick={() => scrollToSection(item.href)}
-                  className="block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium"
+                  className={`block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 ${
+                    activeSection === item.section ? 'font-bold text-primary' : 'font-medium'
+                  }`}
                 >
                   {item.label}
                 </button>

@@ -92,7 +92,7 @@ const Contact = () => {
       icon: Clock,
       title: 'Jam Operasional',
       details: contactInfo?.workHours || 'Senin - Jumat: 09:00 - 21:00',
-      subdescription: 'Sabtu: 09:00 - 15:00 | Minggu: Libur',
+      subdescription: 'Siap melayani konsultasi',
       action: '#',
       color: 'text-purple-500',
       bgColor: 'bg-purple-50 dark:bg-purple-950/20'
@@ -174,7 +174,7 @@ const Contact = () => {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
+            <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                 <Send className="w-7 h-7 text-primary" />
                 Formulir Konsultasi Gratis
@@ -190,7 +190,7 @@ const Contact = () => {
                       placeholder="Masukkan nama lengkap Anda"
                       required
                       disabled={isSubmitting}
-                      className="h-12 rounded-xl border-2 focus:border-primary"
+                      className="h-12 rounded-xl border-2 focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                   </div>
                   <div>
@@ -202,7 +202,7 @@ const Contact = () => {
                       placeholder="email@perusahaan.com"
                       required
                       disabled={isSubmitting}
-                      className="h-12 rounded-xl border-2 focus:border-primary"
+                      className="h-12 rounded-xl border-2 focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                   </div>
                 </div>
@@ -217,7 +217,7 @@ const Contact = () => {
                       placeholder="+62 812-3456-7890"
                       required
                       disabled={isSubmitting}
-                      className="h-12 rounded-xl border-2 focus:border-primary"
+                      className="h-12 rounded-xl border-2 focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     />
                   </div>
                   <div>
@@ -261,7 +261,7 @@ const Contact = () => {
                     rows={6}
                     required
                     disabled={isSubmitting}
-                    className="rounded-xl border-2 focus:border-primary resize-none disabled:opacity-50"
+                    className="rounded-xl border-2 focus:border-primary resize-none disabled:opacity-50 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                   />
                 </div>
 
