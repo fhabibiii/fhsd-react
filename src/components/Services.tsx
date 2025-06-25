@@ -3,7 +3,6 @@ import React from 'react';
 import { Globe, Code, Zap, Rocket, Clock, CheckCircle, Settings } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useBackendData } from '../hooks/useBackendData';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 
 const Services = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
@@ -133,43 +132,15 @@ const Services = () => {
             <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
           </div>
         ) : (
-          <>
-            {/* Desktop/Large Tablet Grid */}
-            <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
-              {services.length === 0 ? (
-                <NoDataCard />
-              ) : (
-                services.map((service, index) => (
-                  <ServiceCard key={service.id} service={service} index={index} />
-                ))
-              )}
-            </div>
-
-            {/* Mobile/Small Tablet Carousel */}
-            <div className="lg:hidden mb-16">
-              {services.length === 0 ? (
-                <NoDataCard />
-              ) : (
-                <Carousel
-                  opts={{
-                    align: "start",
-                    loop: true,
-                  }}
-                  className="w-full"
-                >
-                  <CarouselContent className="-ml-2 md:-ml-4">
-                    {services.map((service, index) => (
-                      <CarouselItem key={service.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3">
-                        <ServiceCard service={service} index={index} />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="hidden sm:flex" />
-                  <CarouselNext className="hidden sm:flex" />
-                </Carousel>
-              )}
-            </div>
-          </>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
+            {services.length === 0 ? (
+              <NoDataCard />
+            ) : (
+              services.map((service, index) => (
+                <ServiceCard key={service.id} service={service} index={index} />
+              ))
+            )}
+          </div>
         )}
 
         {/* CTA Section */}

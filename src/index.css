@@ -69,11 +69,6 @@
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
   }
-  
-  /* Hide scrollbar globally for main page */
-  html {
-    overflow-x: hidden;
-  }
 }
 
 @layer components {
@@ -87,8 +82,6 @@
     scrollbar-width: none;
   }
 }
-
-/* ... keep existing code (keyframes and animation classes) the same ... */
 
 /* Keyframes for custom animations */
 @keyframes accordion-down {

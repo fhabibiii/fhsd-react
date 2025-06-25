@@ -19,7 +19,7 @@ const LoadingSpinner = () => (
 
 const Index = () => {
   return (
-    <div className="min-h-screen scrollbar-hide overflow-x-hidden">
+    <div className="min-h-screen">
       <Navigation />
       <Hero />
       
