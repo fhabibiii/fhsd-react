@@ -256,7 +256,7 @@ const MessagesManager = () => {
   }
 
   return (
-    <div className="p-4 md:p-8 animate-fade-in max-h-screen overflow-hidden">
+    <div className="p-4 md:p-8 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Messages Management</h2>
@@ -309,10 +309,10 @@ const MessagesManager = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-h-[calc(100vh-250px)] overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List */}
         <div className="lg:col-span-1">
-          <div className="max-h-[calc(100vh-250px)] overflow-y-auto space-y-3 pr-2 scrollbar-hide">
+          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto' : ''} space-y-3 pr-2`}>
             {filteredMessages.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
@@ -321,7 +321,7 @@ const MessagesManager = () => {
               filteredMessages.map((message, index) => (
                 <div
                   key={message.id}
-                  className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md ${
+                  className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md transform hover:scale-[1.01] ${
                     !message.isRead
                       ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
                       : 'border-border hover:bg-muted/50'
@@ -366,7 +366,7 @@ const MessagesManager = () => {
               <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
             </div>
           ) : selectedMessage ? (
-            <div className="bg-card rounded-xl shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300 max-h-[calc(100vh-250px)] overflow-y-auto scrollbar-hide">
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
               <MessageDetailContent message={selectedMessage} />
             </div>
           ) : (
@@ -382,7 +382,7 @@ const MessagesManager = () => {
 
       {/* Mobile Detail Modal */}
       <Dialog open={isMobileDetailOpen} onOpenChange={setIsMobileDetailOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden modal-hide-scrollbar">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Detail Pesan</DialogTitle>
           </DialogHeader>

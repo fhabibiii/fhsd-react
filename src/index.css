@@ -81,16 +81,6 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
-  .modal-hide-scrollbar {
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    -webkit-scrollbar {
-      display: none;
-    }
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
 }
 
 /* Keyframes for custom animations */

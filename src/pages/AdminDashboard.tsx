@@ -1,183 +1,302 @@
-
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { 
-  User, 
-  MessageSquare, 
-  Briefcase, 
-  Award, 
-  GraduationCap, 
-  Wrench, 
-  Star, 
-  Phone, 
-  Users,
-  TrendingUp,
-  Mail,
-  Calendar,
-  Settings
-} from 'lucide-react';
-
-// Import managers
-import HeroManager from '../components/admin/HeroManager';
+import React, { useState, useEffect } from 'react';
+import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { usePortfolio } from '../context/PortfolioContext';
+import AdminLogin from '../components/AdminLogin';
 import ProjectsManager from '../components/admin/ProjectsManager';
-import SkillsManager from '../components/admin/SkillsManager';
-import ExperienceManager from '../components/admin/ExperienceManager';
-import EducationManager from '../components/admin/EducationManager';
-import CertificatesManager from '../components/admin/CertificatesManager';
 import ServicesManager from '../components/admin/ServicesManager';
 import ContactManager from '../components/admin/ContactManager';
 import MessagesManager from '../components/admin/MessagesManager';
-import FeaturesList from '../components/admin/FeaturesList';
 import ThemeToggle from '../components/admin/ThemeToggle';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const { isAdmin, logout, isLoading } = usePortfolio();
+  const [activeTab, setActiveTab] = useState('projects');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
+  const { toast } = useToast();
 
-  const stats = [
-    { title: 'Total Messages', value: '156', icon: MessageSquare, trend: '+12%' },
-    { title: 'Projects', value: '24', icon: Briefcase, trend: '+5%' },
-    { title: 'Skills', value: '18', icon: Star, trend: '+2%' },
-    { title: 'Experience', value: '5', icon: Users, trend: 'Stable' },
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      if (window.innerWidth < 768) {
+        setSidebarCollapsed(true);
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.user-dropdown-container')) {
+        setUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  if (!isAdmin) {
+    return <AdminLogin onLogin={() => {
+      setActiveTab('projects');
+    }} />;
+  }
+
+  const handleLogoutClick = () => {
+    setLogoutConfirmOpen(true);
+    setUserDropdownOpen(false);
+  };
+
+  const handleLogoutConfirm = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Logout berhasil",
+        description: "Anda telah keluar dari dashboard admin.",
+        variant: "destructive",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat logout.",
+        variant: "destructive",
+      });
+    } finally {
+      setLogoutConfirmOpen(false);
+    }
+  };
+
+  const menuItems = [
+    { id: 'projects', label: 'Portfolio', icon: FileText },
+    { id: 'services', label: 'Services', icon: Code },
+    { id: 'contact', label: 'Contact', icon: Mail },
+    { id: 'messages', label: 'Messages', icon: MessageSquare }
   ];
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'projects':
+        return <ProjectsManager />;
+      case 'services':
+        return <ServicesManager />;
+      case 'contact':
+        return <ContactManager />;
+      case 'messages':
+        return <MessagesManager />;
+      default:
+        return <ProjectsManager />;
+    }
+  };
+
+  const handleSidebarAreaClick = () => {
+    if (isMobile) {
+      setSidebarMobileOpen(!sidebarMobileOpen);
+    } else {
+      setSidebarCollapsed(!sidebarCollapsed);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-4 md:p-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">FHSD</h1>
-            <p className="text-muted-foreground">Manage your portfolio content and settings</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <Badge variant="outline" className="text-xs">
-              <Calendar className="w-3 h-3 mr-1" />
-              Last updated: {new Date().toLocaleDateString()}
-            </Badge>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden">
+      {/* Loading overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-center gap-3">
+            <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            <span className="text-foreground">Processing...</span>
           </div>
         </div>
+      )}
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-1">
-            <TabsTrigger value="overview" className="flex items-center gap-2 text-xs">
-              <TrendingUp className="w-3 h-3" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="hero" className="flex items-center gap-2 text-xs">
-              <User className="w-3 h-3" />
-              Hero
-            </TabsTrigger>
-            <TabsTrigger value="projects" className="flex items-center gap-2 text-xs">
-              <Briefcase className="w-3 h-3" />
-              Projects
-            </TabsTrigger>
-            <TabsTrigger value="skills" className="flex items-center gap-2 text-xs">
-              <Star className="w-3 h-3" />
-              Skills
-            </TabsTrigger>
-            <TabsTrigger value="experience" className="flex items-center gap-2 text-xs">
-              <Users className="w-3 h-3" />
-              Experience
-            </TabsTrigger>
-            <TabsTrigger value="education" className="flex items-center gap-2 text-xs">
-              <GraduationCap className="w-3 h-3" />
-              Education
-            </TabsTrigger>
-            <TabsTrigger value="certificates" className="flex items-center gap-2 text-xs">
-              <Award className="w-3 h-3" />
-              Certificates
-            </TabsTrigger>
-            <TabsTrigger value="services" className="flex items-center gap-2 text-xs">
-              <Wrench className="w-3 h-3" />
-              Services
-            </TabsTrigger>
-            <TabsTrigger value="contact" className="flex items-center gap-2 text-xs">
-              <Phone className="w-3 h-3" />
-              Contact
-            </TabsTrigger>
-            <TabsTrigger value="messages" className="flex items-center gap-2 text-xs">
-              <Mail className="w-3 h-3" />
-              Messages
-            </TabsTrigger>
-          </TabsList>
+      {/* Mobile Overlay */}
+      {isMobile && sidebarMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40"
+          onClick={() => setSidebarMobileOpen(false)}
+        />
+      )}
 
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, index) => (
-                <Card key={index} className="hover:shadow-lg transition-all duration-300 hover:scale-105">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                    <stat.icon className="h-4 w-4 text-muted-foreground" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{stat.value}</div>
-                    <p className="text-xs text-muted-foreground">
-                      <span className={stat.trend.includes('+') ? 'text-green-600' : 'text-muted-foreground'}>
-                        {stat.trend}
-                      </span> from last month
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
+      {/* Sidebar */}
+      <div className={`${
+        isMobile 
+          ? `fixed left-0 top-0 h-full z-50 transform transition-transform duration-300 ${sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full'} w-64`
+          : `${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-300 fixed h-full z-30`
+      } bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col`}>
+        
+        {/* Sidebar Area - clickable to toggle */}
+        <div 
+          className="flex-1 cursor-pointer" 
+          onClick={handleSidebarAreaClick}
+        >
+          {/* Logo */}
+          <div className="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+            {!sidebarCollapsed || isMobile ? (
+              <div className="flex items-center gap-2">
+                <LayoutDashboard className="w-8 h-8 text-primary" />
+                <span className="text-xl font-bold text-gray-900 dark:text-white">FH Admin</span>
+              </div>
+            ) : (
+              <LayoutDashboard className="w-8 h-8 text-primary" />
+            )}
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 p-4 overflow-y-auto">
+            <div className="space-y-2">
+              {menuItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveTab(item.id);
+                      if (isMobile) setSidebarMobileOpen(false);
+                    }}
+                    className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 rounded-lg text-left transition-all duration-200 ${
+                      activeTab === item.id
+                        ? 'bg-gradient-to-r from-primary to-primary/80 text-white dark:text-gray-900 shadow-lg'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                    title={(sidebarCollapsed && !isMobile) ? item.label : undefined}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    {(!sidebarCollapsed || isMobile) && (
+                      <span className="font-medium">{item.label}</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
+          </nav>
+        </div>
 
-            <Card className="hover:shadow-lg transition-all duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="w-5 h-5" />
-                  Available Features
-                </CardTitle>
-                <CardDescription>
-                  Manage different sections of your portfolio
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <FeaturesList />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="hero">
-            <HeroManager />
-          </TabsContent>
-
-          <TabsContent value="projects">
-            <ProjectsManager />
-          </TabsContent>
-
-          <TabsContent value="skills">
-            <SkillsManager />
-          </TabsContent>
-
-          <TabsContent value="experience">
-            <ExperienceManager />
-          </TabsContent>
-
-          <TabsContent value="education">
-            <EducationManager />
-          </TabsContent>
-
-          <TabsContent value="certificates">
-            <CertificatesManager />
-          </TabsContent>
-
-          <TabsContent value="services">
-            <ServicesManager />
-          </TabsContent>
-
-          <TabsContent value="contact">
-            <ContactManager />
-          </TabsContent>
-
-          <TabsContent value="messages">
-            <MessagesManager />
-          </TabsContent>
-        </Tabs>
+        {/* Logout Button at Bottom */}
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLogoutClick();
+            }}
+            className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200`}
+            title={(sidebarCollapsed && !isMobile) ? 'Logout' : undefined}
+          >
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            {(!sidebarCollapsed || isMobile) && (
+              <span className="font-medium">Logout</span>
+            )}
+          </button>
+        </div>
       </div>
+
+      {/* Sidebar Toggle Button */}
+      {!isMobile && (
+        <button
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 shadow-lg hover:shadow-xl dark:shadow-white/20 dark:hover:shadow-white/40 transition-all duration-200"
+          style={{ 
+            left: sidebarCollapsed ? '48px' : '240px',
+            transition: 'left 0.3s ease'
+          }}
+        >
+          {sidebarCollapsed ? (
+            <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+          ) : (
+            <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+          )}
+        </button>
+      )}
+
+      {/* Main Content */}
+      <div className={`flex-1 flex flex-col ${isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-64')} transition-all duration-300`}>
+        {/* Navbar */}
+        <header className={`h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 fixed right-0 z-20 ${isMobile ? 'left-0' : (sidebarCollapsed ? 'left-16' : 'left-64')} transition-all duration-300`}>
+          <div className="flex items-center gap-4">
+            {isMobile && (
+              <button
+                onClick={() => setSidebarMobileOpen(!sidebarMobileOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              >
+                <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              </button>
+            )}
+            {!isMobile && (
+              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {menuItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
+              </h1>
+            )}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            
+            {/* Admin Greeting with Dropdown */}
+            <div className="relative user-dropdown-container">
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              >
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white dark:text-gray-900" />
+                </div>
+                {!isMobile && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>
+                    <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                )}
+              </button>
+
+              {/* User Dropdown Menu */}
+              {userDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:shadow-white/20 z-50 animate-fade-in">
+                  <button
+                    onClick={handleLogoutClick}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="font-medium">Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <main className="flex-1 pt-16 overflow-x-hidden">
+          {renderContent()}
+        </main>
+      </div>
+
+      {/* Logout Confirmation Modal */}
+      <AlertDialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin keluar dari dashboard admin?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogoutConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Logout
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -264,8 +264,6 @@ const ProjectsManager = () => {
               src={project.image}
               alt={project.title}
               className="w-full h-32 object-cover rounded-lg mb-4 transition-transform duration-300 hover:scale-110"
-              referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
             />
             <h3 className="font-semibold text-foreground mb-2">{project.title}</h3>
             <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{project.description}</p>
@@ -296,118 +294,111 @@ const ProjectsManager = () => {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden modal-hide-scrollbar">
           <DialogHeader>
             <DialogTitle>
               {editingProject ? 'Edit Project' : 'Add New Project'}
             </DialogTitle>
           </DialogHeader>
-          <div className="overflow-y-auto max-h-[70vh] scrollbar-hide">
-            <form onSubmit={handleSubmit} className="space-y-4 p-1">
-              <div>
-                <label className="block text-sm font-medium mb-2 text-foreground">Title *</label>
-                <Input
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  required
-                  className="w-full focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2 text-foreground">Description *</label>
-                <Textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  rows={3}
-                  required
-                  className="w-full focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                />
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto max-h-[70vh] modal-hide-scrollbar">
+            <div>
+              <label className="block text-sm font-medium mb-2 text-foreground">Title *</label>
+              <Input
+                value={formData.title}
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2 text-foreground">Description *</label>
+              <Textarea
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                rows={3}
+                required
+              />
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2 text-foreground">Project Image *</label>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <Input
-                      id="project-image-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="flex-1 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                      required={!editingProject}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        const fileInput = document.getElementById('project-image-upload') as HTMLInputElement;
-                        fileInput?.click();
-                      }}
-                      disabled={isUploading}
-                      className="flex items-center gap-2"
-                    >
-                      {isUploading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Upload className="w-4 h-4" />
-                      )}
-                      {isUploading ? 'Uploading...' : 'Upload'}
-                    </Button>
-                  </div>
-                  {imagePreview && (
-                    <div className="mt-4">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-full h-32 object-cover rounded-lg border"
-                        referrerPolicy="no-referrer"
-                        crossOrigin="anonymous"
-                      />
-                    </div>
-                  )}
+            <div>
+              <label className="block text-sm font-medium mb-2 text-foreground">Project Image *</label>
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Input
+                    id="project-image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="flex-1"
+                    required={!editingProject}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      const fileInput = document.getElementById('project-image-upload') as HTMLInputElement;
+                      fileInput?.click();
+                    }}
+                    disabled={isUploading}
+                    className="flex items-center gap-2"
+                  >
+                    {isUploading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Upload className="w-4 h-4" />
+                    )}
+                    {isUploading ? 'Uploading...' : 'Upload'}
+                  </Button>
                 </div>
+                {imagePreview && (
+                  <div className="mt-4">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-32 object-cover rounded-lg border"
+                    />
+                  </div>
+                )}
               </div>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2 text-foreground">Project Link</label>
-                <Input
-                  value={formData.link}
-                  onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
-                  placeholder="https://github.com/username/project"
-                  className="w-full focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium mb-2 text-foreground">Project Link</label>
+              <Input
+                value={formData.link}
+                onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
+                placeholder="https://github.com/username/project"
+              />
+            </div>
 
-              <div className="flex gap-4 pt-4">
-                <Button type="submit" className="flex-1" disabled={isSaving || isUploading}>
-                  {isSaving ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      {editingProject ? 'Updating...' : 'Adding...'}
-                    </>
-                  ) : (
-                    editingProject ? 'Update Project' : 'Add Project'
-                  )}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1"
-                  disabled={isSaving || isUploading}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </form>
-          </div>
+            <div className="flex gap-4 pt-4">
+              <Button type="submit" className="flex-1" disabled={isSaving || isUploading}>
+                {isSaving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {editingProject ? 'Updating...' : 'Adding...'}
+                  </>
+                ) : (
+                  editingProject ? 'Update Project' : 'Add Project'
+                )}
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setIsModalOpen(false)}
+                className="flex-1"
+                disabled={isSaving || isUploading}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="max-w-md modal-hide-scrollbar">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Project</AlertDialogTitle>
             <AlertDialogDescription>
