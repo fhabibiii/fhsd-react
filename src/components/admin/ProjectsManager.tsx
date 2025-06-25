@@ -257,7 +257,7 @@ const ProjectsManager = () => {
         {projects.map((project, index) => (
           <div
             key={project.id}
-            className="bg-white dark:bg-gray-800 text-card-foreground rounded-lg p-4 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
+            className="bg-gray-50 dark:bg-gray-700 text-card-foreground rounded-lg p-4 border border-gray-200 dark:border-gray-600 hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
             style={{ animationDelay: `${index * 100}ms` }}
           >
             <img
@@ -273,7 +273,7 @@ const ProjectsManager = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleOpenModal(project)}
-                className="flex items-center gap-1 hover:shadow-md transition-all duration-200"
+                className="flex items-center gap-1 hover:shadow-md transition-all duration-200 border-gray-300 dark:border-gray-500"
               >
                 <Edit className="w-3 h-3" />
                 Edit
@@ -294,30 +294,20 @@ const ProjectsManager = () => {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-gray-100">
               {editingProject ? 'Edit Project' : 'Add New Project'}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto max-h-[70vh] scrollbar-hide">
-            <style jsx>{`
-              .scrollbar-hide {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-              }
-              .scrollbar-hide::-webkit-scrollbar {
-                display: none;
-              }
-            `}</style>
-            
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Title *</label>
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 required
-                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
               />
             </div>
             
@@ -328,7 +318,7 @@ const ProjectsManager = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 rows={3}
                 required
-                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
               />
             </div>
 
@@ -341,7 +331,7 @@ const ProjectsManager = () => {
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
-                    className="flex-1 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    className="flex-1 bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
                     required={!editingProject}
                   />
                   <Button
@@ -352,7 +342,7 @@ const ProjectsManager = () => {
                       fileInput?.click();
                     }}
                     disabled={isUploading}
-                    className="flex items-center gap-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    className="flex items-center gap-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
                   >
                     {isUploading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -367,7 +357,7 @@ const ProjectsManager = () => {
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="w-full h-32 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                      className="w-full h-32 object-cover rounded-lg border border-gray-300 dark:border-gray-500"
                     />
                   </div>
                 )}
@@ -380,7 +370,7 @@ const ProjectsManager = () => {
                 value={formData.link}
                 onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
                 placeholder="https://github.com/username/project"
-                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
               />
             </div>
 
@@ -399,7 +389,7 @@ const ProjectsManager = () => {
                 type="button" 
                 variant="outline" 
                 onClick={() => setIsModalOpen(false)}
-                className="flex-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
                 disabled={isSaving || isUploading}
               >
                 Cancel
@@ -411,7 +401,7 @@ const ProjectsManager = () => {
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="max-w-md bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <AlertDialogContent className="max-w-md bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-gray-900 dark:text-gray-100">Hapus Project</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
@@ -419,7 +409,7 @@ const ProjectsManager = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700">Batal</AlertDialogCancel>
+            <AlertDialogCancel className="border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Hapus
             </AlertDialogAction>

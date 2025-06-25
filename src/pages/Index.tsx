@@ -20,23 +20,6 @@ const LoadingSpinner = () => (
 const Index = () => {
   return (
     <div className="min-h-screen overflow-x-hidden">
-      <style jsx global>{`
-        html, body {
-          overflow-x: hidden;
-        }
-        
-        /* Hide scrollbar for webkit browsers */
-        ::-webkit-scrollbar {
-          display: none;
-        }
-        
-        /* Hide scrollbar for IE, Edge and Firefox */
-        body {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
-      
       <Navigation />
       <Hero />
       
