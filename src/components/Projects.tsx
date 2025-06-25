@@ -37,6 +37,18 @@ const Projects = () => {
   const totalPages = Math.ceil(projects.length / itemsPerPage);
   const currentProjects = projects.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
+  // Function to get appropriate grid classes based on number of items
+  const getGridClasses = () => {
+    const count = currentProjects.length;
+    if (count === 1) {
+      return 'flex justify-center';
+    } else if (count === 2) {
+      return 'flex justify-center gap-8';
+    } else {
+      return 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center';
+    }
+  };
+
   const handleNextPage = () => {
     if (currentPage < totalPages - 1) {
       setCurrentPage(currentPage + 1);
@@ -63,7 +75,7 @@ const Projects = () => {
     return (
       <div
         ref={cardRef}
-        className={`group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-white/20 transform flex flex-col ${
+        className={`group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-white/20 transform flex flex-col max-w-sm w-full ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'
@@ -163,7 +175,7 @@ const Projects = () => {
           </div>
         ) : (
           <>
-            <div className={`grid ${itemsPerPage === 3 ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'} gap-8 mb-12`}>
+            <div className={`${getGridClasses()} mb-12`}>
               {projects.length === 0 ? (
                 <NoDataCard />
               ) : (
