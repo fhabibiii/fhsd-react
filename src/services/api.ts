@@ -105,15 +105,6 @@ export interface MessageDetail {
   createdAt: string;
 }
 
-export interface MessageCreateRequest {
-  name: string;
-  email: string;
-  phone: string;
-  type: string;
-  budget: string;
-  detail: string;
-}
-
 export interface Project {
   id: string;
   title: string;
@@ -159,7 +150,7 @@ class ApiService {
     }
   }
 
-  async makeRequest<T>(
+  private async makeRequest<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
@@ -382,13 +373,6 @@ class ApiService {
   async deleteMessage(id: string): Promise<ApiResponse<null>> {
     return this.makeRequest<null>(`/api/messages/${id}`, {
       method: 'DELETE',
-    });
-  }
-
-  async sendMessage(data: MessageCreateRequest): Promise<ApiResponse<MessageDetail>> {
-    return this.makeRequest<MessageDetail>('/api/messages', {
-      method: 'POST',
-      body: JSON.stringify(data),
     });
   }
 

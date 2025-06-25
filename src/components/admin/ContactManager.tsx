@@ -236,23 +236,40 @@ const ContactManager = () => {
           </div>
         </div>
 
-        {/* Google Maps URL Card */}
+        {/* Google Maps Card */}
         <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
               <MapPin className="w-6 h-6 text-orange-600 dark:text-orange-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground">Google Maps Embed URL</h3>
-              <p className="text-sm text-muted-foreground truncate">Map embed URL for website</p>
+              <h3 className="font-semibold text-foreground">Google Maps</h3>
+              <p className="text-sm text-muted-foreground truncate">Map embed URL</p>
             </div>
           </div>
-          <Textarea
-            value={formData.map}
-            onChange={(e) => setFormData(prev => ({ ...prev, map: e.target.value }))}
-            placeholder="Enter Google Maps embed URL"
-            rows={6}
-          />
+          <div className="space-y-4">
+            <Textarea
+              value={formData.map}
+              onChange={(e) => setFormData(prev => ({ ...prev, map: e.target.value }))}
+              placeholder="Enter Google Maps embed URL"
+              rows={3}
+            />
+            {formData.map && (
+              <div className="rounded-lg overflow-hidden border border-border">
+                <iframe
+                  src={formData.map}
+                  width="100%"
+                  height="300"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Google Maps"
+                  className="w-full"
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
