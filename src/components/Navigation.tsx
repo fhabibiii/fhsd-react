@@ -18,7 +18,7 @@ const Navigation = () => {
       const scrollPosition = window.scrollY + 100;
 
       for (let i = sections.length - 1; i >= 0; i--) {
-        const element = document.querySelector(`#${sections[i]}`);
+        const element = document.querySelector(`#${sections[i]}`) as HTMLElement;
         if (element) {
           const offsetTop = element.offsetTop;
           if (scrollPosition >= offsetTop) {
