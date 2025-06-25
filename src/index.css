@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
@@ -68,6 +67,18 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
+    /* Hide scrollbar globally */
+    overflow-x: hidden;
+  }
+  
+  /* Hide scrollbar for main page */
+  html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+  }
+  
+  html::-webkit-scrollbar {
+    display: none; /* WebKit */
   }
 }
 

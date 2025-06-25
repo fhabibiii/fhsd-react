@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
@@ -108,13 +109,13 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-850 flex overflow-hidden">
       {/* Loading overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-center gap-3">
+          <div className="bg-white dark:bg-gray-700 rounded-lg p-6 flex items-center gap-3">
             <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-            <span className="text-foreground">Processing...</span>
+            <span className="text-gray-900 dark:text-white">Processing...</span>
           </div>
         </div>
       )}
@@ -132,7 +133,7 @@ const AdminDashboard = () => {
         isMobile 
           ? `fixed left-0 top-0 h-full z-50 transform transition-transform duration-300 ${sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full'} w-64`
           : `${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-300 fixed h-full z-30`
-      } bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col`}>
+      } bg-white dark:bg-gray-750 border-r border-gray-200 dark:border-gray-600 flex flex-col`}>
         
         {/* Sidebar Area - clickable to toggle */}
         <div 
@@ -140,11 +141,11 @@ const AdminDashboard = () => {
           onClick={handleSidebarAreaClick}
         >
           {/* Logo */}
-          <div className="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+          <div className="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-600 flex-shrink-0">
             {!sidebarCollapsed || isMobile ? (
               <div className="flex items-center gap-2">
                 <LayoutDashboard className="w-8 h-8 text-primary" />
-                <span className="text-xl font-bold text-gray-900 dark:text-white">FHSD</span>
+                <span className="text-xl font-bold text-gray-900 dark:text-white">FHDS</span>
               </div>
             ) : (
               <LayoutDashboard className="w-8 h-8 text-primary" />
@@ -167,7 +168,7 @@ const AdminDashboard = () => {
                     className={`w-full flex items-center ${(sidebarCollapsed && !isMobile) ? 'justify-center px-2' : 'gap-3 px-3'} py-3 rounded-lg text-left transition-all duration-200 ${
                       activeTab === item.id
                         ? 'bg-gradient-to-r from-primary to-primary/80 text-white dark:text-gray-900 shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'
                     }`}
                     title={(sidebarCollapsed && !isMobile) ? item.label : undefined}
                   >
@@ -183,7 +184,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Logout Button at Bottom */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-600 flex-shrink-0">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -204,16 +205,16 @@ const AdminDashboard = () => {
       {!isMobile && (
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 shadow-lg hover:shadow-xl dark:shadow-white/20 dark:hover:shadow-white/40 transition-all duration-200"
+          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full p-2 shadow-lg hover:shadow-xl dark:shadow-white/10 dark:hover:shadow-white/20 transition-all duration-200"
           style={{ 
             left: sidebarCollapsed ? '48px' : '240px',
             transition: 'left 0.3s ease'
           }}
         >
           {sidebarCollapsed ? (
-            <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-300" />
           ) : (
-            <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            <ChevronLeft className="w-4 h-4 text-gray-600 dark:text-gray-300" />
           )}
         </button>
       )}
@@ -221,14 +222,14 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className={`flex-1 flex flex-col ${isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-64')} transition-all duration-300`}>
         {/* Navbar */}
-        <header className={`h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 fixed right-0 z-20 ${isMobile ? 'left-0' : (sidebarCollapsed ? 'left-16' : 'left-64')} transition-all duration-300`}>
+        <header className={`h-16 bg-white dark:bg-gray-750 border-b border-gray-200 dark:border-gray-600 flex items-center justify-between px-4 md:px-6 fixed right-0 z-20 ${isMobile ? 'left-0' : (sidebarCollapsed ? 'left-16' : 'left-64')} transition-all duration-300`}>
           <div className="flex items-center gap-4">
             {isMobile && (
               <button
                 onClick={() => setSidebarMobileOpen(!sidebarMobileOpen)}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
               >
-                <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </button>
             )}
             {!isMobile && (
@@ -245,7 +246,7 @@ const AdminDashboard = () => {
             <div className="relative user-dropdown-container">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                className="flex items-center gap-3 px-4 py-2 bg-gray-100 dark:bg-gray-600 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-500 transition-colors"
               >
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white dark:text-gray-900" />
@@ -253,14 +254,14 @@ const AdminDashboard = () => {
                 {!isMobile && (
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-gray-900 dark:text-white">Welcome, Admin</span>
-                    <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-gray-400 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-gray-300 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
                   </div>
                 )}
               </button>
 
               {/* User Dropdown Menu */}
               {userDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:shadow-white/20 z-50 animate-fade-in">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl dark:shadow-white/10 z-50 animate-fade-in">
                   <button
                     onClick={handleLogoutClick}
                     className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
@@ -275,22 +276,22 @@ const AdminDashboard = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 pt-16 overflow-x-hidden">
+        <main className="flex-1 pt-16 overflow-x-hidden bg-gray-50 dark:bg-gray-850">
           {renderContent()}
         </main>
       </div>
 
       {/* Logout Confirmation Modal */}
       <AlertDialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
           <AlertDialogHeader>
-            <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-gray-900 dark:text-white">Konfirmasi Logout</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
               Apakah Anda yakin ingin keluar dari dashboard admin?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel className="bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-white border-gray-300 dark:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-500">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleLogoutConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Logout
             </AlertDialogAction>
