@@ -17,11 +17,7 @@ const ContactManager = () => {
     email: '',
     phone: '',
     address: '',
-    description: '',
-    map: '',
-    instagram: '',
-    whatsApp: '',
-    workHours: ''
+    description: ''
   });
 
   useEffect(() => {
@@ -38,11 +34,7 @@ const ContactManager = () => {
           email: response.data.email,
           phone: response.data.phone,
           address: response.data.address,
-          description: response.data.description || '',
-          map: response.data.map || '',
-          instagram: response.data.instagram || '',
-          whatsApp: response.data.whatsApp || '',
-          workHours: response.data.workHours || ''
+          description: response.data.description
         });
       } else {
         toast({
@@ -72,11 +64,7 @@ const ContactManager = () => {
         email: contactInfo.email,
         phone: contactInfo.phone,
         address: contactInfo.address,
-        description: contactInfo.description || '',
-        map: contactInfo.map || '',
-        instagram: contactInfo.instagram || '',
-        whatsApp: contactInfo.whatsApp || '',
-        workHours: contactInfo.workHours || ''
+        description: contactInfo.description
       });
     }
     setEditingField(null);
@@ -132,7 +120,7 @@ const ContactManager = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Email Card */}
-        <div className="bg-white dark:bg-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-500 hover:shadow-lg transition-all duration-300">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -145,7 +133,7 @@ const ContactManager = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleEdit('email')}
-                className="hover:bg-gray-100 dark:hover:bg-gray-600"
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -159,7 +147,7 @@ const ContactManager = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                 type="email"
                 placeholder="contoh@email.com"
-                className="bg-gray-50 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white"
+                className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
               <div className="flex gap-2">
                 <Button
@@ -176,7 +164,7 @@ const ContactManager = () => {
                   size="sm"
                   onClick={handleCancel}
                   disabled={isSaving}
-                  className="flex items-center gap-1 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600"
+                  className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   <X className="w-3 h-3" />
                   Batal
@@ -189,7 +177,7 @@ const ContactManager = () => {
         </div>
 
         {/* Phone Card */}
-        <div className="bg-white dark:bg-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-500 hover:shadow-lg transition-all duration-300">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
@@ -202,7 +190,7 @@ const ContactManager = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleEdit('phone')}
-                className="hover:bg-gray-100 dark:hover:bg-gray-600"
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -216,7 +204,7 @@ const ContactManager = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                 type="tel"
                 placeholder="+62 xxx-xxxx-xxxx"
-                className="bg-gray-50 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white"
+                className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
               <div className="flex gap-2">
                 <Button
@@ -233,7 +221,7 @@ const ContactManager = () => {
                   size="sm"
                   onClick={handleCancel}
                   disabled={isSaving}
-                  className="flex items-center gap-1 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600"
+                  className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   <X className="w-3 h-3" />
                   Batal
@@ -246,7 +234,7 @@ const ContactManager = () => {
         </div>
 
         {/* Address Card */}
-        <div className="bg-white dark:bg-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-500 hover:shadow-lg transition-all duration-300 md:col-span-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 md:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
@@ -259,7 +247,7 @@ const ContactManager = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleEdit('address')}
-                className="hover:bg-gray-100 dark:hover:bg-gray-600"
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -273,7 +261,7 @@ const ContactManager = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                 placeholder="Alamat lengkap..."
                 rows={3}
-                className="bg-gray-50 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white"
+                className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
               <div className="flex gap-2">
                 <Button
@@ -290,7 +278,7 @@ const ContactManager = () => {
                   size="sm"
                   onClick={handleCancel}
                   disabled={isSaving}
-                  className="flex items-center gap-1 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600"
+                  className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   <X className="w-3 h-3" />
                   Batal
@@ -303,7 +291,7 @@ const ContactManager = () => {
         </div>
 
         {/* Description Card */}
-        <div className="bg-white dark:bg-gray-700 rounded-xl p-6 border border-gray-200 dark:border-gray-500 hover:shadow-lg transition-all duration-300 md:col-span-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 md:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Description</h3>
             {editingField !== 'description' && (
@@ -311,7 +299,7 @@ const ContactManager = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleEdit('description')}
-                className="hover:bg-gray-100 dark:hover:bg-gray-600"
+                className="hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <Edit className="w-4 h-4" />
               </Button>
@@ -325,7 +313,7 @@ const ContactManager = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Deskripsi singkat tentang Anda atau perusahaan..."
                 rows={4}
-                className="bg-gray-50 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white"
+                className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
               <div className="flex gap-2">
                 <Button
@@ -342,7 +330,7 @@ const ContactManager = () => {
                   size="sm"
                   onClick={handleCancel}
                   disabled={isSaving}
-                  className="flex items-center gap-1 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-600"
+                  className="flex items-center gap-1 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   <X className="w-3 h-3" />
                   Batal
