@@ -34,6 +34,7 @@ export interface ContactInfo {
   instagram: string;
   whatsApp: string;
   workHours: string;
+  description: string;
   updatedAt: string;
 }
 
@@ -45,6 +46,7 @@ export interface ContactUpdateRequest {
   instagram: string;
   whatsApp: string;
   workHours: string;
+  description: string;
 }
 
 export interface ServiceFeature {
