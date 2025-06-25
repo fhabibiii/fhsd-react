@@ -92,7 +92,7 @@ const Contact = () => {
       icon: Clock,
       title: 'Jam Operasional',
       details: contactInfo?.workHours || 'Senin - Jumat: 09:00 - 21:00',
-      subdescription: 'Waktu respon terbaik',
+      subdescription: 'Sabtu: 09:00 - 15:00 | Minggu: Libur',
       action: '#',
       color: 'text-purple-500',
       bgColor: 'bg-purple-50 dark:bg-purple-950/20'

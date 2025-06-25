@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Globe, Code, Zap, Rocket, Clock, CheckCircle, Settings } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
@@ -5,34 +6,20 @@ import { useBackendData } from '../hooks/useBackendData';
 
 const Services = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
-  const { services, loading, contactInfo } = useBackendData();
+  const { services, loading } = useBackendData();
 
   const handleConsultationClick = () => {
-    if (contactInfo?.whatsApp) {
-      const message = "Halo! Saya ingin konsultasi dalam memilih paket pembuatan website. Bisakah kita diskusi lebih lanjut?";
-      const url = `${contactInfo.whatsApp}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    } else {
-      // Fallback to default WhatsApp number
-      const whatsappNumber = "085156321198";
-      const message = "Halo! Saya ingin konsultasi dalam memilih paket pembuatan website. Bisakah kita diskusi lebih lanjut?";
-      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    }
+    const whatsappNumber = "085156321198";
+    const message = "Halo! Saya ingin konsultasi dalam memilih paket pembuatan website. Bisakah kita diskusi lebih lanjut?";
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   };
 
   const handlePackageClick = (packageName: string) => {
-    if (contactInfo?.whatsApp) {
-      const message = `Halo! Saya tertarik dengan paket ${packageName}. Bisakah kita diskusi lebih lanjut mengenai pembuatan website?`;
-      const url = `${contactInfo.whatsApp}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    } else {
-      // Fallback to default WhatsApp number
-      const whatsappNumber = "085156321198";
-      const message = `Halo! Saya tertarik dengan paket ${packageName}. Bisakah kita diskusi lebih lanjut mengenai pembuatan website?`;
-      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    }
+    const whatsappNumber = "085156321198";
+    const message = `Halo! Saya tertarik dengan paket ${packageName}. Bisakah kita diskusi lebih lanjut mengenai pembuatan website?`;
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   };
 
   const getServiceIcon = (title: string) => {

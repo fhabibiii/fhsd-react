@@ -1,10 +1,8 @@
+
 import React from 'react';
 import { ArrowRight, Star, Target, Coffee, Heart, Zap } from 'lucide-react';
-import { useBackendData } from '../hooks/useBackendData';
 
 const Hero = () => {
-  const { contactInfo } = useBackendData();
-
   const scrollToServices = () => {
     const element = document.querySelector('#services');
     if (element) {
@@ -13,17 +11,10 @@ const Hero = () => {
   };
 
   const handleConsultationClick = () => {
-    if (contactInfo?.whatsApp) {
-      const message = "Halo! Saya ingin konsultasi dalam pembuatan website. Bisakah kita diskusi lebih lanjut?";
-      const url = `${contactInfo.whatsApp}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    } else {
-      // Fallback to default WhatsApp number
-      const whatsappNumber = "085156321198";
-      const message = "Halo! Saya ingin konsultasi dalam pembuatan website. Bisakah kita diskusi lebih lanjut?";
-      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
-    }
+    const whatsappNumber = "085156321198";
+    const message = "Halo! Saya ingin konsultasi dalam pembuatan website. Bisakah kita diskusi lebih lanjut?";
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   };
 
   const highlights = [
