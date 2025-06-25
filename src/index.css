@@ -81,6 +81,25 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  
+  /* Modal scrollbar hiding */
+  .modal-hide-scrollbar {
+    -webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Global scrollbar hiding for main page */
+html, body {
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
 }
 
 /* Keyframes for custom animations */

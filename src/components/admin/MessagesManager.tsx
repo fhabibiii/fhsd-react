@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -157,10 +156,10 @@ const MessagesManager = () => {
     <div className="space-y-4">
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="text-xl font-bold text-foreground">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
             {message.name}
           </h3>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
             {formatDate(message.createdAt)}
           </p>
         </div>
@@ -176,40 +175,40 @@ const MessagesManager = () => {
 
       <div className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-muted/50 rounded-lg p-3">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
+            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
               Email
             </label>
-            <p className="text-foreground">{message.email}</p>
+            <p className="text-gray-900 dark:text-gray-100">{message.email}</p>
           </div>
-          <div className="bg-muted/50 rounded-lg p-3">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
+            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
               Phone
             </label>
-            <p className="text-foreground">{message.phone}</p>
+            <p className="text-gray-900 dark:text-gray-100">{message.phone}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-muted/50 rounded-lg p-3">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
+            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
               Jenis Project
             </label>
-            <p className="text-foreground">{message.type}</p>
+            <p className="text-gray-900 dark:text-gray-100">{message.type}</p>
           </div>
-          <div className="bg-muted/50 rounded-lg p-3">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3">
+            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
               Budget
             </label>
-            <p className="text-foreground">{message.budget}</p>
+            <p className="text-gray-900 dark:text-gray-100">{message.budget}</p>
           </div>
         </div>
 
-        <div className="bg-muted/50 rounded-lg p-4">
-          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 block">
+        <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+          <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2 block">
             Detail Project
           </label>
-          <p className="text-foreground leading-relaxed">
+          <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
             {message.detail}
           </p>
         </div>
@@ -229,7 +228,7 @@ const MessagesManager = () => {
           </Button>
           <Button
             variant="outline"
-            className="flex-1 hover:shadow-md transition-all duration-200"
+            className="flex-1 hover:shadow-md transition-all duration-200 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700"
             onClick={() => {
               const subject = `Re: Konsultasi ${message.type}`;
               const body = `Halo ${message.name},\n\nTerima kasih atas minat Anda untuk project ${message.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
@@ -278,7 +277,7 @@ const MessagesManager = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Cari berdasarkan nama atau jenis project..."
-            className="pl-10"
+            className="pl-10 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
           />
         </div>
         <div className="flex gap-2">
@@ -286,7 +285,9 @@ const MessagesManager = () => {
             variant={filterStatus === 'all' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('all')}
             size="sm"
-            className="hover:shadow-md transition-all duration-200"
+            className={`hover:shadow-md transition-all duration-200 ${
+              filterStatus !== 'all' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700' : ''
+            }`}
           >
             Semua
           </Button>
@@ -294,7 +295,9 @@ const MessagesManager = () => {
             variant={filterStatus === 'unread' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('unread')}
             size="sm"
-            className="hover:shadow-md transition-all duration-200"
+            className={`hover:shadow-md transition-all duration-200 ${
+              filterStatus !== 'unread' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700' : ''
+            }`}
           >
             Belum Dibaca
           </Button>
@@ -302,7 +305,9 @@ const MessagesManager = () => {
             variant={filterStatus === 'read' ? 'default' : 'outline'}
             onClick={() => setFilterStatus('read')}
             size="sm"
-            className="hover:shadow-md transition-all duration-200"
+            className={`hover:shadow-md transition-all duration-200 ${
+              filterStatus !== 'read' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700' : ''
+            }`}
           >
             Sudah Dibaca
           </Button>
@@ -312,7 +317,17 @@ const MessagesManager = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List */}
         <div className="lg:col-span-1">
-          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto' : ''} space-y-3 pr-2`}>
+          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto scrollbar-hide' : ''} space-y-3 pr-2`}>
+            <style jsx>{`
+              .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+              }
+              .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+              }
+            `}</style>
+            
             {filteredMessages.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
@@ -321,10 +336,10 @@ const MessagesManager = () => {
               filteredMessages.map((message, index) => (
                 <div
                   key={message.id}
-                  className={`border rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md transform hover:scale-[1.01] ${
+                  className={`border rounded-xl p-4 cursor-pointer transition-colors duration-200 ${
                     !message.isRead
                       ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
-                      : 'border-border hover:bg-muted/50'
+                      : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                   } ${
                     selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
                   }`}
@@ -333,22 +348,22 @@ const MessagesManager = () => {
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-foreground'}`}>
+                      <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-gray-100'}`}>
                         {message.name}
                       </h3>
                       {!message.isRead && (
                         <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
                       )}
                     </div>
-                    <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
+                    <span className="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0 ml-2">
                       {formatDate(message.createdAt)}
                     </span>
                   </div>
                   
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-gray-600 dark:text-gray-400">
                     <div className="flex items-center justify-between">
                       <span className="truncate">{message.type}</span>
-                      <span className="text-xs bg-muted px-2 py-1 rounded flex-shrink-0 ml-2">
+                      <span className="text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 px-2 py-1 rounded flex-shrink-0 ml-2">
                         {message.budget}
                       </span>
                     </div>
@@ -362,15 +377,15 @@ const MessagesManager = () => {
         {/* Message Detail - Desktop */}
         <div className="lg:col-span-2 hidden lg:block">
           {isLoadingDetail ? (
-            <div className="flex items-center justify-center h-64 bg-card rounded-xl border border-border">
+            <div className="flex items-center justify-center h-64 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
               <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
             </div>
           ) : selectedMessage ? (
-            <div className="bg-card rounded-xl shadow-sm border border-border p-6 hover:shadow-lg transition-all duration-300">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all duration-300">
               <MessageDetailContent message={selectedMessage} />
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64 text-muted-foreground bg-card rounded-xl border border-border">
+            <div className="flex items-center justify-center h-64 text-muted-foreground bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
               <div className="text-center">
                 <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Pilih pesan untuk melihat detail</p>
@@ -382,11 +397,20 @@ const MessagesManager = () => {
 
       {/* Mobile Detail Modal */}
       <Dialog open={isMobileDetailOpen} onOpenChange={setIsMobileDetailOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <DialogHeader>
-            <DialogTitle>Detail Pesan</DialogTitle>
+            <DialogTitle className="text-gray-900 dark:text-gray-100">Detail Pesan</DialogTitle>
           </DialogHeader>
           <div className="overflow-y-auto max-h-[70vh] scrollbar-hide">
+            <style jsx>{`
+              .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+              }
+              .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+              }
+            `}</style>
             {selectedMessage && <MessageDetailContent message={selectedMessage} />}
           </div>
         </DialogContent>
@@ -394,15 +418,15 @@ const MessagesManager = () => {
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="max-w-md bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <AlertDialogHeader>
-            <AlertDialogTitle>Hapus Pesan</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-gray-900 dark:text-gray-100">Hapus Pesan</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
               Apakah Anda yakin ingin menghapus pesan ini? Tindakan ini tidak dapat dibatalkan.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Hapus
             </AlertDialogAction>

@@ -1,4 +1,6 @@
-const BASE_URL = 'https://b9a7-2404-c0-9aa0-00-3cc2-1d1b.ngrok-free.app';
+import { config } from '../config/env';
+
+const BASE_URL = config.apiBaseUrl;
 
 export interface ApiResponse<T = any> {
   success: boolean;
