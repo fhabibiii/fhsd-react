@@ -310,7 +310,7 @@ const ProjectsManager = () => {
                   value={formData.title}
                   onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   required
-                  className="w-full"
+                  className="w-full focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                 />
               </div>
               
@@ -321,7 +321,7 @@ const ProjectsManager = () => {
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   rows={3}
                   required
-                  className="w-full"
+                  className="w-full focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                 />
               </div>
 
@@ -334,7 +334,7 @@ const ProjectsManager = () => {
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
-                      className="flex-1"
+                      className="flex-1 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                       required={!editingProject}
                     />
                     <Button
@@ -375,7 +375,7 @@ const ProjectsManager = () => {
                   value={formData.link}
                   onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
                   placeholder="https://github.com/username/project"
-                  className="w-full"
+                  className="w-full focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                 />
               </div>
 
@@ -421,7 +421,7 @@ const ProjectsManager = () => {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </Alert>
+      </AlertDialog>
     </div>
   );
 };
