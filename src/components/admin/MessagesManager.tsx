@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -256,24 +257,12 @@ const MessagesManager = () => {
 
   return (
     <div className="p-4 md:p-8 animate-fade-in">
-      <style>
-        {`
-          .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-          .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-          }
-        `}
-      </style>
-
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Messages Management</h2>
           <p className="text-muted-foreground mt-1">
             {unreadCount > 0 && (
-              <span className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-1 rounded-full text-xs font-medium">
+              <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-full text-xs font-medium">
                 {unreadCount} pesan belum dibaca
               </span>
             )}
@@ -289,7 +278,7 @@ const MessagesManager = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Cari berdasarkan nama atau jenis project..."
-            className="pl-10 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+            className="pl-10 bg-gray-50 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
           />
         </div>
         <div className="flex gap-2">
@@ -298,7 +287,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('all')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'all' ? 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
+              filterStatus !== 'all' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
             }`}
           >
             Semua
@@ -308,7 +297,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('unread')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'unread' ? 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
+              filterStatus !== 'unread' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
             }`}
           >
             Belum Dibaca
@@ -318,7 +307,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('read')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'read' ? 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
+              filterStatus !== 'read' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
             }`}
           >
             Sudah Dibaca
@@ -341,7 +330,7 @@ const MessagesManager = () => {
                   className={`border rounded-xl p-4 cursor-pointer transition-colors duration-200 ${
                     !message.isRead
                       ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
-                      : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600/50'
                   } ${
                     selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
                   }`}
@@ -379,15 +368,15 @@ const MessagesManager = () => {
         {/* Message Detail - Desktop */}
         <div className="lg:col-span-2 hidden lg:block">
           {isLoadingDetail ? (
-            <div className="flex items-center justify-center h-64 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
               <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
             </div>
           ) : selectedMessage ? (
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 p-6 hover:shadow-lg transition-all duration-300">
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 p-6 hover:shadow-lg transition-all duration-300">
               <MessageDetailContent message={selectedMessage} />
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64 text-muted-foreground bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div className="flex items-center justify-center h-64 text-muted-foreground bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
               <div className="text-center">
                 <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Pilih pesan untuk melihat detail</p>
@@ -399,7 +388,7 @@ const MessagesManager = () => {
 
       {/* Mobile Detail Modal */}
       <Dialog open={isMobileDetailOpen} onOpenChange={setIsMobileDetailOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-gray-100">Detail Pesan</DialogTitle>
           </DialogHeader>
@@ -411,7 +400,7 @@ const MessagesManager = () => {
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="max-w-md bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+        <AlertDialogContent className="max-w-md bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-gray-900 dark:text-gray-100">Hapus Pesan</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
@@ -419,7 +408,7 @@ const MessagesManager = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700">Batal</AlertDialogCancel>
+            <AlertDialogCancel className="border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Hapus
             </AlertDialogAction>
