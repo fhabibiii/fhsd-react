@@ -77,7 +77,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
                 className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan username"
                 disabled={isLoading}
-                autoComplete="username"
                 required
               />
             </div>
@@ -96,7 +95,6 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
                 className="w-full pl-10 pr-12 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan password"
                 disabled={isLoading}
-                autoComplete="current-password"
                 required
               />
               <button
