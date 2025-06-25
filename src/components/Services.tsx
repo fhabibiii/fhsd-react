@@ -1,9 +1,8 @@
 
 import React from 'react';
-import { Globe, Code, Zap, Rocket, Clock, CheckCircle, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Globe, Code, Zap, Rocket, Clock, CheckCircle, Settings } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useBackendData } from '../hooks/useBackendData';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const Services = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
@@ -38,7 +37,7 @@ const Services = () => {
     return (
       <div
         ref={cardRef}
-        className={`group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-white/20 transform flex flex-col h-full ${
+        className={`group relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-700 hover:scale-[1.02] hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-900/10 dark:hover:shadow-white/20 transform flex flex-col ${
           cardVisible 
             ? 'translate-y-0 opacity-100' 
             : 'translate-y-8 opacity-0'
@@ -133,39 +132,13 @@ const Services = () => {
             <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
           </div>
         ) : (
-          <div className="mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
             {services.length === 0 ? (
               <NoDataCard />
             ) : (
-              <>
-                {/* Desktop: Regular Grid */}
-                <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {services.map((service, index) => (
-                    <ServiceCard key={service.id} service={service} index={index} />
-                  ))}
-                </div>
-
-                {/* Mobile/Tablet: Carousel */}
-                <div className="lg:hidden">
-                  <Carousel
-                    opts={{
-                      align: "start",
-                      loop: true,
-                    }}
-                    className="w-full"
-                  >
-                    <CarouselContent className="-ml-2 md:-ml-4">
-                      {services.map((service, index) => (
-                        <CarouselItem key={service.id} className="pl-2 md:pl-4 basis-4/5 sm:basis-1/2 md:basis-1/3">
-                          <ServiceCard service={service} index={index} />
-                        </CarouselItem>
-                      ))}
-                    </CarouselContent>
-                    <CarouselPrevious className="hidden sm:flex" />
-                    <CarouselNext className="hidden sm:flex" />
-                  </Carousel>
-                </div>
-              </>
+              services.map((service, index) => (
+                <ServiceCard key={service.id} service={service} index={index} />
+              ))
             )}
           </div>
         )}
