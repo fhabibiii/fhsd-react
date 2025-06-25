@@ -1,4 +1,4 @@
-const BASE_URL = 'https://344c-2001-448a-4040-9470-4ced-ae75-7340-4c94.ngrok-free.app';
+const BASE_URL = 'https://b9a7-2404-c0-9aa0-00-3cc2-1d1b.ngrok-free.app';
 
 export interface ApiResponse<T = any> {
   success: boolean;
