@@ -294,13 +294,13 @@ const ProjectsManager = () => {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden modal-hide-scrollbar">
           <DialogHeader>
             <DialogTitle>
               {editingProject ? 'Edit Project' : 'Add New Project'}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto max-h-[70vh] scrollbar-hide">
+          <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto max-h-[70vh] modal-hide-scrollbar">
             <div>
               <label className="block text-sm font-medium mb-2 text-foreground">Title *</label>
               <Input
@@ -398,7 +398,7 @@ const ProjectsManager = () => {
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent className="max-w-md modal-hide-scrollbar">
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Project</AlertDialogTitle>
             <AlertDialogDescription>
@@ -412,7 +412,7 @@ const ProjectsManager = () => {
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </Dialog>
+      </AlertDialog>
     </div>
   );
 };
