@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Clock, Save, Loader2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Save, Loader2, Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,6 +17,7 @@ const ContactManager = () => {
     email: '',
     address: '',
     map: '',
+    instagram: '',
     whatsApp: '',
     workHours: '',
   });
@@ -36,6 +37,7 @@ const ContactManager = () => {
           email: response.data.email,
           address: response.data.address,
           map: response.data.map,
+          instagram: response.data.instagram,
           whatsApp: response.data.whatsApp,
           workHours: response.data.workHours,
         });
@@ -125,12 +127,12 @@ const ContactManager = () => {
             {/* Phone Card */}
             <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Phone className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-foreground">Phone</h3>
-                  <p className="text-sm text-muted-foreground">Contact number</p>
+                  <p className="text-sm text-muted-foreground truncate">Contact number</p>
                 </div>
               </div>
               <Input
@@ -143,12 +145,12 @@ const ContactManager = () => {
             {/* Email Card */}
             <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Mail className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-foreground">Email</h3>
-                  <p className="text-sm text-muted-foreground">Email address</p>
+                  <p className="text-sm text-muted-foreground truncate">Email address</p>
                 </div>
               </div>
               <Input
@@ -162,12 +164,12 @@ const ContactManager = () => {
             {/* WhatsApp Card */}
             <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Phone className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-foreground">WhatsApp</h3>
-                  <p className="text-sm text-muted-foreground">WhatsApp number</p>
+                  <p className="text-sm text-muted-foreground truncate">WhatsApp number</p>
                 </div>
               </div>
               <Input
@@ -177,15 +179,33 @@ const ContactManager = () => {
               />
             </div>
 
-            {/* Work Hours Card */}
+            {/* Instagram Card */}
             <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <Instagram className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-foreground">Instagram</h3>
+                  <p className="text-sm text-muted-foreground truncate">Instagram profile</p>
+                </div>
+              </div>
+              <Input
+                value={formData.instagram}
+                onChange={(e) => setFormData(prev => ({ ...prev, instagram: e.target.value }))}
+                placeholder="Enter Instagram URL"
+              />
+            </div>
+
+            {/* Work Hours Card */}
+            <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in md:col-span-2">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Clock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-foreground">Work Hours</h3>
-                  <p className="text-sm text-muted-foreground">Business hours</p>
+                  <p className="text-sm text-muted-foreground truncate">Business hours</p>
                 </div>
               </div>
               <Input
@@ -199,12 +219,12 @@ const ContactManager = () => {
           {/* Address Card */}
           <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                 <MapPin className="w-6 h-6 text-red-600 dark:text-red-400" />
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-foreground">Address</h3>
-                <p className="text-sm text-muted-foreground">Business address</p>
+                <p className="text-sm text-muted-foreground truncate">Business address</p>
               </div>
             </div>
             <Textarea
@@ -219,12 +239,12 @@ const ContactManager = () => {
         {/* Google Maps Card */}
         <div className="bg-card rounded-xl p-6 border border-border hover:shadow-lg transition-all duration-300 animate-fade-in">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
               <MapPin className="w-6 h-6 text-orange-600 dark:text-orange-400" />
             </div>
-            <div>
+            <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-foreground">Google Maps</h3>
-              <p className="text-sm text-muted-foreground">Map embed URL</p>
+              <p className="text-sm text-muted-foreground truncate">Map embed URL</p>
             </div>
           </div>
           <div className="space-y-4">
