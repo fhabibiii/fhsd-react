@@ -35,6 +35,16 @@ import ThemeToggle from '../components/admin/ThemeToggle';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [availableFeatures, setAvailableFeatures] = useState([
+    'Hero Section',
+    'Projects Portfolio',
+    'Skills & Technologies',
+    'Work Experience',
+    'Education',
+    'Certificates',
+    'Services Offered',
+    'Contact Information'
+  ]);
 
   const stats = [
     { title: 'Total Messages', value: '156', icon: MessageSquare, trend: '+12%' },
@@ -136,7 +146,10 @@ const AdminDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <FeaturesList />
+                <FeaturesList 
+                  features={availableFeatures}
+                  onChange={setAvailableFeatures}
+                />
               </CardContent>
             </Card>
           </TabsContent>
