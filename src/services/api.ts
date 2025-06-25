@@ -1,4 +1,3 @@
-
 const BASE_URL = 'https://344c-2001-448a-4040-9470-4ced-ae75-7340-4c94.ngrok-free.app';
 
 export interface ApiResponse<T = any> {
@@ -103,6 +102,15 @@ export interface MessageDetail {
   detail: string;
   isRead: boolean;
   createdAt: string;
+}
+
+export interface MessageSendRequest {
+  name: string;
+  email: string;
+  phone: string;
+  type: string;
+  budget: string;
+  detail: string;
 }
 
 export interface Project {
@@ -431,6 +439,13 @@ class ApiService {
   async deleteProject(id: string): Promise<ApiResponse<null>> {
     return this.makeRequest<null>(`/api/projects/${id}`, {
       method: 'DELETE',
+    });
+  }
+
+  async sendMessage(data: MessageSendRequest): Promise<ApiResponse<MessageDetail>> {
+    return this.makeRequest<MessageDetail>('/api/messages', {
+      method: 'POST',
+      body: JSON.stringify(data),
     });
   }
 

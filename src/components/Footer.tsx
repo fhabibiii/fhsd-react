@@ -1,27 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Github, Linkedin, Mail, Phone, MapPin, Globe, Facebook, Instagram } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
-import { apiService, ContactInfo } from '../services/api';
+import { useBackendData } from '../hooks/useBackendData';
 
 const Footer = () => {
   const [footerRef, footerVisible] = useScrollAnimation();
-  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
-
-  useEffect(() => {
-    fetchContactInfo();
-  }, []);
-
-  const fetchContactInfo = async () => {
-    try {
-      const response = await apiService.getContactInfo();
-      if (response.success && response.data) {
-        setContactInfo(response.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch contact info:', error);
-    }
-  };
+  const { contactInfo } = useBackendData();
 
   const services = [
     'Basic Website',

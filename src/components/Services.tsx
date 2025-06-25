@@ -1,10 +1,12 @@
 
 import React from 'react';
-import { Globe, Code, Zap, Rocket, Clock, CheckCircle } from 'lucide-react';
+import { Globe, Code, Zap, Rocket, Clock, CheckCircle, Settings } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { useBackendData } from '../hooks/useBackendData';
 
 const Services = () => {
   const [titleRef, titleVisible] = useScrollAnimation();
+  const { services, loading } = useBackendData();
 
   const handleConsultationClick = () => {
     const whatsappNumber = "085156321198";
@@ -20,47 +22,17 @@ const Services = () => {
     window.open(url, '_blank');
   };
 
-  const services = [
-    {
-      id: 'basic-website',
-      icon: Globe,
-      title: 'Basic Website',
-      duration: '5–7 hari',
-      description: 'Landing page interaktif dengan kontak dan animasi ringan yang sempurna untuk memperkenalkan bisnis Anda.',
-      features: ['Landing page interaktif', 'Form kontak terintegrasi', 'Animasi ringan & smooth', 'Responsive design', 'SEO friendly'],
-      price: 'Rp 2.500.000'
-    },
-    {
-      id: 'web-app-basic',
-      icon: Code,
-      title: 'Web App Dasar',
-      duration: '10–15 hari',
-      description: 'Aplikasi web dengan fitur login, dashboard user, dan manajemen data dasar untuk kebutuhan bisnis kecil.',
-      features: ['Sistem login & registrasi', 'Dashboard user',  'Input data (CRUD)', 'Validasi form', 'Pagination data'],
-      price: 'Rp 7.000.000'
-    },
-    {
-      id: 'web-app-medium',
-      icon: Zap,
-      title: 'Web App Menengah',
-      duration: '20–30 hari',
-      description: 'Solusi lengkap dengan admin panel, multi-role user, dan fitur advanced untuk bisnis yang berkembang.',
-      features: ['Admin panel lengkap', 'Multi-role management', 'Upload & manajemen file', 'Grafik & analisis data', 'Notifikasi email otomatis'],
-      price: 'Rp 15.000.000'
-    },
-    {
-      id: 'web-app-complex',
-      icon: Rocket,
-      title: 'Web App Kompleks',
-      duration: '30–60 hari',
-      description: 'Sistem besar dan kompleks dengan integrasi API, keamanan tinggi untuk enterprise dan skala besar.',
-      features: ['Sistem enterprise-grade', 'E-commerce & afiliasi', 'Integrasi API eksternal', 'Keamanan tingkat tinggi', 'Arsitektur scalable'],
-      price: 'Rp 30.000.000'
-    }
-  ];
+  const getServiceIcon = (title: string) => {
+    if (title.toLowerCase().includes('basic') || title.toLowerCase().includes('website')) return Globe;
+    if (title.toLowerCase().includes('dasar')) return Code;
+    if (title.toLowerCase().includes('menengah')) return Zap;
+    if (title.toLowerCase().includes('kompleks')) return Rocket;
+    return Settings;
+  };
 
   const ServiceCard = ({ service, index }: { service: any; index: number }) => {
     const [cardRef, cardVisible] = useScrollAnimation();
+    const IconComponent = getServiceIcon(service.title);
 
     return (
       <div
@@ -78,7 +50,7 @@ const Services = () => {
         <div className="p-6 flex flex-col flex-1">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-primary/10">
-              <service.icon className="w-5 h-5 text-primary" />
+              <IconComponent className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -96,10 +68,10 @@ const Services = () => {
           </p>
 
           <div className="space-y-2 mb-6 flex-1">
-            {service.features.map((feature: string, featureIndex: number) => (
+            {service.features.map((featureObj: any, featureIndex: number) => (
               <div key={featureIndex} className="flex items-center gap-2">
                 <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                <span className="text-gray-700 dark:text-gray-300 text-xs">{feature}</span>
+                <span className="text-gray-700 dark:text-gray-300 text-xs">{featureObj.feature}</span>
               </div>
             ))}
           </div>
@@ -115,6 +87,22 @@ const Services = () => {
       </div>
     );
   };
+
+  const NoDataCard = () => (
+    <div className="col-span-full flex flex-col items-center justify-center py-16">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-12 text-center max-w-md mx-auto">
+        <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Settings className="w-8 h-8 text-primary" />
+        </div>
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+          Layanan Sedang Dipersiapkan
+        </h3>
+        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+          Paket layanan kami sedang dalam tahap finalisasi. Silakan hubungi kami untuk konsultasi dan penawaran khusus.
+        </p>
+      </div>
+    </div>
+  );
 
   return (
     <section id="services" className="py-24 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
@@ -139,11 +127,21 @@ const Services = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
-          {services.map((service, index) => (
-            <ServiceCard key={service.id} service={service} index={index} />
-          ))}
-        </div>
+        {loading.services ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
+            {services.length === 0 ? (
+              <NoDataCard />
+            ) : (
+              services.map((service, index) => (
+                <ServiceCard key={service.id} service={service} index={index} />
+              ))
+            )}
+          </div>
+        )}
 
         {/* CTA Section */}
         <div className="text-center">
