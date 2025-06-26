@@ -273,7 +273,7 @@ const ProjectsManager = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleOpenModal(project)}
-                className="flex items-center gap-1 hover:shadow-md transition-all duration-200 border-gray-300 dark:border-gray-500"
+                className="flex items-center gap-1 hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
               >
                 <Edit className="w-3 h-3" />
                 Edit
@@ -294,7 +294,7 @@ const ProjectsManager = () => {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-gray-100">
               {editingProject ? 'Edit Project' : 'Add New Project'}
@@ -342,7 +342,7 @@ const ProjectsManager = () => {
                       fileInput?.click();
                     }}
                     disabled={isUploading}
-                    className="flex items-center gap-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    className="flex items-center gap-2 bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
                   >
                     {isUploading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -389,7 +389,7 @@ const ProjectsManager = () => {
                 type="button" 
                 variant="outline" 
                 onClick={() => setIsModalOpen(false)}
-                className="flex-1 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="flex-1 bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
                 disabled={isSaving || isUploading}
               >
                 Cancel
