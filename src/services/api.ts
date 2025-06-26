@@ -1,3 +1,4 @@
+
 import { config } from '../config/env';
 
 const BASE_URL = config.apiBaseUrl;
@@ -205,9 +206,19 @@ class ApiService {
         }
       }
 
+      // Handle response - even for error status codes, parse JSON normally
       const result = await response.json();
       return result;
     } catch (error) {
+      // Handle network errors or JSON parsing errors
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        // Network error
+        return {
+          success: false,
+          message: 'Network error occurred',
+          data: null
+        };
+      }
       throw error;
     }
   }
