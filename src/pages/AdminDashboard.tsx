@@ -20,6 +20,7 @@ const AdminDashboard = () => {
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
   const { toast } = useToast();
 
+  // Check if mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -33,6 +34,7 @@ const AdminDashboard = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -112,6 +114,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden">
+      {/* Loading overlay */}
       {isLoading && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-center gap-3">
@@ -121,6 +124,7 @@ const AdminDashboard = () => {
         </div>
       )}
 
+      {/* Mobile Overlay */}
       {isMobile && sidebarMobileOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-40"
@@ -128,16 +132,19 @@ const AdminDashboard = () => {
         />
       )}
 
+      {/* Sidebar */}
       <div className={`${
         isMobile 
           ? `fixed left-0 top-0 h-full z-50 transform transition-transform duration-300 ${sidebarMobileOpen ? 'translate-x-0' : '-translate-x-full'} w-64`
           : `${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-300 fixed h-full z-30`
       } bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col`}>
         
+        {/* Sidebar Area - clickable to toggle */}
         <div 
           className="flex-1 cursor-pointer" 
           onClick={handleSidebarAreaClick}
         >
+          {/* Logo */}
           <div className="h-16 flex items-center justify-center border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
             {!sidebarCollapsed || isMobile ? (
               <div className="flex items-center gap-2">
@@ -149,6 +156,7 @@ const AdminDashboard = () => {
             )}
           </div>
 
+          {/* Navigation */}
           <nav className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-2">
               {menuItems.map((item) => {
@@ -179,6 +187,7 @@ const AdminDashboard = () => {
           </nav>
         </div>
 
+        {/* Logout Button at Bottom */}
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex-shrink-0">
           <button
             onClick={(e) => {
@@ -196,10 +205,11 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      {/* Sidebar Toggle Button */}
       {!isMobile && (
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 shadow-lg hover:shadow-xl dark:shadow-white/20 dark:hover:shadow-white/40 transition-all duration-200"
           style={{ 
             left: sidebarCollapsed ? '48px' : '240px',
             transition: 'left 0.3s ease'
@@ -213,7 +223,9 @@ const AdminDashboard = () => {
         </button>
       )}
 
+      {/* Main Content */}
       <div className={`flex-1 flex flex-col ${isMobile ? 'ml-0' : (sidebarCollapsed ? 'ml-16' : 'ml-64')} transition-all duration-300`}>
+        {/* Navbar */}
         <header className={`h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 fixed right-0 z-20 ${isMobile ? 'left-0' : (sidebarCollapsed ? 'left-16' : 'left-64')} transition-all duration-300`}>
           <div className="flex items-center gap-4">
             {isMobile && (
@@ -232,10 +244,9 @@ const AdminDashboard = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-1">
-              <ThemeToggle />
-            </div>
+            <ThemeToggle />
             
+            {/* Admin Greeting with Dropdown */}
             <div className="relative user-dropdown-container">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
@@ -252,6 +263,7 @@ const AdminDashboard = () => {
                 )}
               </button>
 
+              {/* User Dropdown Menu */}
               {userDropdownOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:shadow-white/20 z-50 animate-fade-in overflow-hidden">
                   <button
@@ -274,13 +286,15 @@ const AdminDashboard = () => {
           </div>
         </header>
 
+        {/* Page Content */}
         <main className="flex-1 pt-16 overflow-x-hidden">
           {renderContent()}
         </main>
       </div>
 
+      {/* Logout Confirmation Modal */}
       <AlertDialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
-        <AlertDialogContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+        <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-gray-900 dark:text-white">Konfirmasi Logout</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
@@ -288,7 +302,7 @@ const AdminDashboard = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600">Batal</AlertDialogCancel>
+            <AlertDialogCancel className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleLogoutConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Logout
             </AlertDialogAction>

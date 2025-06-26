@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { GripVertical, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -75,18 +76,18 @@ const FeaturesList: React.FC<FeaturesListProps> = ({ features, onChange }) => {
           onDragOver={handleDragOver}
           onDrop={(e) => handleDrop(e, index)}
           onDragEnd={handleDragEnd}
-          className={`flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-600 rounded-lg border border-gray-200 dark:border-gray-500 transition-all duration-200 ${
+          className={`flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-200 ${
             draggedIndex === index ? 'opacity-50' : 'hover:shadow-md'
           }`}
         >
           <div className="cursor-grab active:cursor-grabbing">
-            <GripVertical className="w-4 h-4 text-gray-400 dark:text-gray-300" />
+            <GripVertical className="w-4 h-4 text-gray-400" />
           </div>
           <Input
             value={feature}
             onChange={(e) => updateFeature(index, e.target.value)}
             placeholder={`Fitur ${index + 1}`}
-            className="flex-1 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+            className="flex-1"
           />
           <Button
             type="button"
@@ -104,7 +105,7 @@ const FeaturesList: React.FC<FeaturesListProps> = ({ features, onChange }) => {
         type="button"
         variant="outline"
         onClick={addFeature}
-        className="w-full border-dashed border-2 hover:border-primary hover:bg-primary/5 bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
+        className="w-full border-dashed border-2 hover:border-primary hover:bg-primary/5"
       >
         <Plus className="w-4 h-4 mr-2" />
         Tambah Fitur
