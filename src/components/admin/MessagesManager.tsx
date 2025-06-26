@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -229,7 +230,7 @@ const MessagesManager = () => {
           </Button>
           <Button
             variant="outline"
-            className="flex-1 hover:shadow-md transition-all duration-200 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
+            className="flex-1 hover:shadow-md transition-all duration-200 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800"
             onClick={() => {
               const subject = `Re: Konsultasi ${message.type}`;
               const body = `Halo ${message.name},\n\nTerima kasih atas minat Anda untuk project ${message.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
@@ -287,7 +288,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('all')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'all' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
+              filterStatus !== 'all' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800' : ''
             }`}
           >
             Semua
@@ -297,7 +298,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('unread')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'unread' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
+              filterStatus !== 'unread' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800' : ''
             }`}
           >
             Belum Dibaca
@@ -307,7 +308,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('read')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'read' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
+              filterStatus !== 'read' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800' : ''
             }`}
           >
             Sudah Dibaca
@@ -408,7 +409,7 @@ const MessagesManager = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Batal</AlertDialogCancel>
+            <AlertDialogCancel className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Hapus
             </AlertDialogAction>
