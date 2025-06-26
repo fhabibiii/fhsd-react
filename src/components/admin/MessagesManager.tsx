@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter, X } from 'lucide-react';
+import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -18,7 +18,8 @@ const MessagesManager = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
-  const [visibleMessagesCount, setVisibleMessagesCount] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
+  const messagesPerPage = 5;
 
   useEffect(() => {
     fetchMessages();
@@ -97,8 +98,10 @@ const MessagesManager = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const visibleMessages = filteredMessages.slice(0, visibleMessagesCount);
-  const hasMoreMessages = filteredMessages.length > visibleMessagesCount;
+  const totalPages = Math.ceil(filteredMessages.length / messagesPerPage);
+  const startIndex = (currentPage - 1) * messagesPerPage;
+  const endIndex = startIndex + messagesPerPage;
+  const currentMessages = filteredMessages.slice(startIndex, endIndex);
 
   const handleDeleteClick = (id: string) => {
     setDeletingMessageId(id);
@@ -143,8 +146,8 @@ const MessagesManager = () => {
     fetchMessageDetail(message.id);
   };
 
-  const handleLoadMore = () => {
-    setVisibleMessagesCount(prev => Math.min(prev + 5, filteredMessages.length));
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const formatDate = (dateString: string) => {
@@ -326,13 +329,13 @@ const MessagesManager = () => {
         {/* Messages List */}
         <div className="lg:col-span-1">
           <div className="space-y-3 p-1">
-            {visibleMessages.length === 0 ? (
+            {currentMessages.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
               </div>
             ) : (
               <>
-                {visibleMessages.map((message, index) => (
+                {currentMessages.map((message, index) => (
                   <div
                     key={message.id}
                     className={`border-2 rounded-xl p-4 cursor-pointer transition-colors duration-200 ${
@@ -370,14 +373,31 @@ const MessagesManager = () => {
                   </div>
                 ))}
                 
-                {hasMoreMessages && (
-                  <div className="text-center pt-4">
+                {/* Pagination Controls */}
+                {filteredMessages.length > messagesPerPage && (
+                  <div className="flex items-center justify-center gap-2 pt-4">
                     <Button
                       variant="outline"
-                      onClick={handleLoadMore}
-                      className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500 disabled:opacity-50"
                     >
-                      Muat Lebih Banyak ({filteredMessages.length - visibleMessagesCount} lagi)
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    
+                    <span className="text-sm text-gray-600 dark:text-gray-400 px-3">
+                      {currentPage} / {totalPages}
+                    </span>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500 disabled:opacity-50"
+                    >
+                      <ChevronRight className="w-4 h-4" />
                     </Button>
                   </div>
                 )}
@@ -389,7 +409,7 @@ const MessagesManager = () => {
         {/* Message Detail - Desktop */}
         <div className="lg:col-span-2 hidden lg:block">
           {isLoadingDetail ? (
-            <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div className="flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600" style={{ height: '520px' }}>
               <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
             </div>
           ) : selectedMessage ? (
@@ -397,7 +417,7 @@ const MessagesManager = () => {
               <MessageDetailContent message={selectedMessage} />
             </div>
           ) : (
-            <div className="flex items-center justify-center h-64 text-muted-foreground bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
+            <div className="flex items-center justify-center text-muted-foreground bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600" style={{ height: '520px' }}>
               <div className="text-center">
                 <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>Pilih pesan untuk melihat detail</p>
