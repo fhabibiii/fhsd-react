@@ -18,6 +18,7 @@ const MessagesManager = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
+  const [visibleMessagesCount, setVisibleMessagesCount] = useState(5);
 
   useEffect(() => {
     fetchMessages();
@@ -96,6 +97,9 @@ const MessagesManager = () => {
     return matchesSearch && matchesFilter;
   });
 
+  const visibleMessages = filteredMessages.slice(0, visibleMessagesCount);
+  const hasMoreMessages = filteredMessages.length > visibleMessagesCount;
+
   const handleDeleteClick = (id: string) => {
     setDeletingMessageId(id);
     setDeleteConfirmOpen(true);
@@ -137,6 +141,10 @@ const MessagesManager = () => {
 
   const handleViewMessage = (message: Message) => {
     fetchMessageDetail(message.id);
+  };
+
+  const handleLoadMore = () => {
+    setVisibleMessagesCount(prev => Math.min(prev + 5, filteredMessages.length));
   };
 
   const formatDate = (dateString: string) => {
@@ -261,7 +269,7 @@ const MessagesManager = () => {
           <h2 className="text-2xl font-bold text-foreground">Messages Management</h2>
           <p className="text-muted-foreground mt-1">
             {unreadCount > 0 && (
-              <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-full text-xs font-medium">
+              <span className="bg-destructive/10 text-destructive dark:text-red-400 px-2 py-1 rounded-full text-xs font-medium">
                 {unreadCount} pesan belum dibaca
               </span>
             )}
@@ -317,49 +325,63 @@ const MessagesManager = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List */}
         <div className="lg:col-span-1">
-          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto scrollbar-hide' : ''} space-y-3 p-1`}>
-            {filteredMessages.length === 0 ? (
+          <div className="space-y-3 p-1">
+            {visibleMessages.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
               </div>
             ) : (
-              filteredMessages.map((message, index) => (
-                <div
-                  key={message.id}
-                  className={`border-2 rounded-xl p-4 cursor-pointer transition-colors duration-200 ${
-                    !message.isRead
-                      ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
-                      : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600/50'
-                  } ${
-                    selectedMessage?.id === message.id ? 'ring-2 ring-primary ring-offset-2' : ''
-                  }`}
-                  onClick={() => handleViewMessage(message)}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-gray-100'}`}>
-                        {message.name}
-                      </h3>
-                      {!message.isRead && (
-                        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
-                      )}
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0 ml-2">
-                      {formatDate(message.createdAt)}
-                    </span>
-                  </div>
-                  
-                  <div className="text-xs text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center justify-between">
-                      <span className="truncate">{message.type}</span>
-                      <span className="text-xs bg-gray-200 dark:bg-gray-500 text-gray-700 dark:text-gray-300 px-2 py-1 rounded flex-shrink-0 ml-2">
-                        {message.budget}
+              <>
+                {visibleMessages.map((message, index) => (
+                  <div
+                    key={message.id}
+                    className={`border-2 rounded-xl p-4 cursor-pointer transition-colors duration-200 ${
+                      !message.isRead
+                        ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
+                        : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600/50'
+                    } ${
+                      selectedMessage?.id === message.id ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-gray-800' : ''
+                    }`}
+                    onClick={() => handleViewMessage(message)}
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-gray-100'}`}>
+                          {message.name}
+                        </h3>
+                        {!message.isRead && (
+                          <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
+                        )}
+                      </div>
+                      <span className="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0 ml-2">
+                        {formatDate(message.createdAt)}
                       </span>
                     </div>
+                    
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      <div className="flex items-center justify-between">
+                        <span className="truncate">{message.type}</span>
+                        <span className="text-xs bg-gray-200 dark:bg-gray-500 text-gray-700 dark:text-gray-300 px-2 py-1 rounded flex-shrink-0 ml-2">
+                          {message.budget}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))}
+                
+                {hasMoreMessages && (
+                  <div className="text-center pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={handleLoadMore}
+                      className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
+                    >
+                      Muat Lebih Banyak ({filteredMessages.length - visibleMessagesCount} lagi)
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
