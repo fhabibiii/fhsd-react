@@ -4,13 +4,19 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-// Set default theme to light mode
-if (!localStorage.getItem('vite-ui-theme')) {
-  localStorage.setItem('vite-ui-theme', 'light');
+// Set default theme to dark mode for better UX
+if (!localStorage.getItem('portfolio-theme')) {
+  localStorage.setItem('portfolio-theme', 'dark');
 }
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+// Optimized root rendering
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  createRoot(rootElement).render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  );
+} else {
+  console.error("Root element not found");
+}
