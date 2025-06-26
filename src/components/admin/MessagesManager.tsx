@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -230,7 +228,7 @@ const MessagesManager = () => {
           </Button>
           <Button
             variant="outline"
-            className="flex-1 hover:shadow-md transition-all duration-200 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800"
+            className="flex-1 hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
             onClick={() => {
               const subject = `Re: Konsultasi ${message.type}`;
               const body = `Halo ${message.name},\n\nTerima kasih atas minat Anda untuk project ${message.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
@@ -288,7 +286,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('all')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'all' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800' : ''
+              filterStatus !== 'all' ? 'bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500' : ''
             }`}
           >
             Semua
@@ -298,7 +296,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('unread')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'unread' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800' : ''
+              filterStatus !== 'unread' ? 'bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500' : ''
             }`}
           >
             Belum Dibaca
@@ -308,7 +306,7 @@ const MessagesManager = () => {
             onClick={() => setFilterStatus('read')}
             size="sm"
             className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'read' ? 'border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800' : ''
+              filterStatus !== 'read' ? 'bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500' : ''
             }`}
           >
             Sudah Dibaca
@@ -319,7 +317,7 @@ const MessagesManager = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Messages List */}
         <div className="lg:col-span-1">
-          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto scrollbar-hide' : ''} space-y-3 pr-2`}>
+          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto scrollbar-hide' : ''} space-y-3 p-1`}>
             {filteredMessages.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
@@ -328,12 +326,12 @@ const MessagesManager = () => {
               filteredMessages.map((message, index) => (
                 <div
                   key={message.id}
-                  className={`border rounded-xl p-4 cursor-pointer transition-colors duration-200 ${
+                  className={`border-2 rounded-xl p-4 cursor-pointer transition-colors duration-200 ${
                     !message.isRead
                       ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
                       : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600/50'
                   } ${
-                    selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
+                    selectedMessage?.id === message.id ? 'ring-2 ring-primary ring-offset-2' : ''
                   }`}
                   onClick={() => handleViewMessage(message)}
                   style={{ animationDelay: `${index * 50}ms` }}
@@ -409,7 +407,7 @@ const MessagesManager = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800">Batal</AlertDialogCancel>
+            <AlertDialogCancel className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Hapus
             </AlertDialogAction>

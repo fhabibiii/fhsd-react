@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Upload, Loader2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -300,14 +299,14 @@ const ProjectsManager = () => {
               {editingProject ? 'Edit Project' : 'Add New Project'}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6 overflow-y-auto max-h-[70vh] scrollbar-hide p-1">
+          <form onSubmit={handleSubmit} className="space-y-6 overflow-y-auto max-h-[70vh] scrollbar-hide p-2">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-900 dark:text-gray-100">Title *</label>
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 required
-                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary"
+                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary focus:ring-0"
               />
             </div>
             
@@ -318,7 +317,7 @@ const ProjectsManager = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 rows={3}
                 required
-                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary"
+                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary focus:ring-0"
               />
             </div>
 
@@ -331,7 +330,7 @@ const ProjectsManager = () => {
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
-                    className="flex-1 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary"
+                    className="flex-1 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary focus:ring-0"
                     required={!editingProject}
                   />
                   <Button
@@ -370,7 +369,7 @@ const ProjectsManager = () => {
                 value={formData.link}
                 onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
                 placeholder="https://github.com/username/project"
-                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary"
+                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary focus:ring-0"
               />
             </div>
 
@@ -409,7 +408,7 @@ const ProjectsManager = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Batal</AlertDialogCancel>
+            <AlertDialogCancel className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Hapus
             </AlertDialogAction>

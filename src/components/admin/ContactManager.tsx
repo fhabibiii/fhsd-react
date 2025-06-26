@@ -218,7 +218,7 @@ const ContactManager = () => {
             />
           </div>
 
-          {/* Google Maps Card */}
+          {/* Google Maps Card - Same height as Instagram */}
           <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300 animate-fade-in">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -229,11 +229,10 @@ const ContactManager = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-300 truncate">Map embed URL</p>
               </div>
             </div>
-            <Textarea
+            <Input
               value={formData.map}
               onChange={(e) => setFormData(prev => ({ ...prev, map: e.target.value }))}
               placeholder="Enter Google Maps embed URL"
-              rows={3}
               className="bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
             />
           </div>
