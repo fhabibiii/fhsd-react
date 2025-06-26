@@ -65,24 +65,37 @@
   * {
     @apply border-border;
   }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Performance optimizations */
+  img {
+    content-visibility: auto;
+  }
+  
+  .will-change-transform {
+    will-change: transform;
   }
 }
 
 @layer components {
   .scrollbar-hide {
-    /* Hide scrollbar for Chrome, Safari and Opera */
     -webkit-scrollbar {
       display: none;
     }
-    /* Hide scrollbar for IE, Edge and Firefox */
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
   
-  /* Modal scrollbar hiding */
   .modal-hide-scrollbar {
     -webkit-scrollbar {
       display: none;
@@ -91,7 +104,6 @@
     scrollbar-width: none;
   }
 
-  /* Toast styling for dark mode */
   .dark [data-sonner-toast] {
     background: hsl(var(--card)) !important;
     border: 1px solid hsl(var(--border)) !important;
@@ -111,7 +123,6 @@
   }
 }
 
-/* Global scrollbar hiding for main page */
 html, body {
   overflow-x: hidden;
 }
@@ -121,9 +132,7 @@ html, body {
   background: transparent;
 }
 
-/* ... keep existing code (all keyframes and animations) */
-
-/* Keyframes for custom animations */
+/* Animation keyframes */
 @keyframes accordion-down {
   from {
     height: 0;
@@ -208,6 +217,7 @@ html, body {
   }
 }
 
+/* Animation classes */
 .animate-accordion-down {
   animation: accordion-down 0.2s ease-out;
 }
@@ -248,7 +258,7 @@ html, body {
   animation: fade-out 0.3s ease-out, scale-out 0.2s ease-out;
 }
 
-/* Underline Animation */
+/* Interactive elements */
 .story-link {
   position: relative;
   display: inline-block;
@@ -272,7 +282,6 @@ html, body {
   transform-origin: bottom left;
 }
 
-/* Hover Scale Animation */
 .hover-scale {
   transition: transform 0.2s ease-out;
 }
@@ -281,7 +290,6 @@ html, body {
   transform: scale(1.05);
 }
 
-/* Pulse Animation */
 .pulse {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

@@ -20,7 +20,6 @@ const WhatsAppButton = () => {
         setWhatsappUrl(response.data.whatsApp);
       }
     } catch (error) {
-      console.error('Failed to fetch contact info:', error);
       // Fallback to default WhatsApp number
       setWhatsappUrl('https://wa.me/6281225510099');
     }
