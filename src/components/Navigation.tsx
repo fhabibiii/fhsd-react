@@ -29,22 +29,9 @@ const Navigation = () => {
       }
     };
 
-    const throttledHandleScroll = throttle(handleScroll, 100);
-    window.addEventListener('scroll', throttledHandleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', throttledHandleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Throttle function for performance
-  const throttle = (func: Function, limit: number) => {
-    let inThrottle: boolean;
-    return function(this: any, ...args: any[]) {
-      if (!inThrottle) {
-        func.apply(this, args);
-        inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
-      }
-    }
-  };
 
   const scrollToSection = (id: string) => {
     const element = document.querySelector(id);
@@ -62,8 +49,8 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 will-change-transform ${
-      scrolled ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg nav-scrolled' : 'bg-transparent'
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg' : 'bg-transparent'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -84,7 +71,6 @@ const Navigation = () => {
                   className={`text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 ${
                     activeSection === item.section ? 'font-bold text-primary' : 'font-medium'
                   }`}
-                  aria-current={activeSection === item.section ? 'page' : undefined}
                 >
                   {item.label}
                 </button>
@@ -108,7 +94,6 @@ const Navigation = () => {
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
               aria-label="Toggle menu"
-              aria-expanded={isOpen}
             >
               {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -126,7 +111,6 @@ const Navigation = () => {
                   className={`block w-full text-left px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200 ${
                     activeSection === item.section ? 'font-bold text-primary' : 'font-medium'
                   }`}
-                  aria-current={activeSection === item.section ? 'page' : undefined}
                 >
                   {item.label}
                 </button>

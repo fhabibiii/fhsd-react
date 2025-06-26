@@ -4,24 +4,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>FH Solusi Digital</title>
+    <title>FH Solusi Digital - Jasa Pembuatan Website Profesional Yogyakarta | Web Development</title>
     <meta name="description" content="FH Solusi Digital (FHSD) menyediakan jasa pembuatan website profesional di Yogyakarta. Solusi digital terpercaya untuk bisnis Anda dengan harga terjangkau dan kualitas terbaik." />
     <meta name="keywords" content="jasa website yogyakarta, pembuatan website jogja, web development yogyakarta, website murah jogja, FH Solusi Digital, FHSD, jasa web design yogyakarta" />
     <meta name="author" content="FH Solusi Digital" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://fhsolusidigital.id" />
-
-    <!-- Critical CSS inline -->
-    <style>
-      html{scroll-behavior:smooth}
-      body{font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;margin:0;padding:0}
-      .hero-bg{background:linear-gradient(135deg,#fff 0%,#f8fafc 50%,#dbeafe 100%)}
-      .dark .hero-bg{background:linear-gradient(135deg,#111827 0%,#1f2937 50%,#111827 100%)}
-      nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:all 0.3s}
-      .nav-scrolled{backdrop-filter:blur(12px);box-shadow:0 4px 6px -1px rgba(0,0,0,0.1)}
-      .btn-primary{background:linear-gradient(135deg,#1f2937 0%,rgba(31,41,55,0.8) 100%);color:#fff;border-radius:0.75rem;transition:all 0.3s}
-      .btn-primary:hover{transform:scale(1.05);box-shadow:0 10px 25px rgba(0,0,0,0.2)}
-    </style>
 
     <!-- Geo Location -->
     <meta name="geo.region" content="ID-YO" />
@@ -51,11 +39,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Font with font-display: swap -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
-
-    <!-- Structured Data with Operating Hours -->
+    <!-- Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -84,20 +68,6 @@
         "contactType": "Customer Service",
         "availableLanguage": "Indonesian"
       },
-      "openingHoursSpecification": [
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": [
-            "Monday",
-            "Tuesday", 
-            "Wednesday",
-            "Thursday",
-            "Friday"
-          ],
-          "opens": "09:00",
-          "closes": "21:00"
-        }
-      ],
       "sameAs": [
         "https://www.instagram.com/fhds.id"
       ],
@@ -143,60 +113,11 @@
     }
     </script>
 
-    <!-- Breadcrumb Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://fhsolusidigital.id"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Services",
-          "item": "https://fhsolusidigital.id#services"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Projects",
-          "item": "https://fhsolusidigital.id#projects"
-        },
-        {
-          "@type": "ListItem",
-          "position": 4,
-          "name": "Contact",
-          "item": "https://fhsolusidigital.id#contact"
-        }
-      ]
-    }
-    </script>
-
     <link rel="icon" href="/favicon.ico" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- Register Service Worker -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-              console.log('SW registered: ', registration);
-            })
-            .catch((registrationError) => {
-              console.log('SW registration failed: ', registrationError);
-            });
-        });
-      }
-    </script>
   </body>
 </html>
