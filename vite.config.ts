@@ -27,12 +27,26 @@ export default defineConfig(({ mode }) => ({
           vendor: ['react', 'react-dom'],
           router: ['react-router-dom'],
           ui: ['@radix-ui/react-dialog', '@radix-ui/react-toast', 'lucide-react'],
+          query: ['@tanstack/react-query'],
         },
       },
     },
     chunkSizeWarningLimit: 1000,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: mode === 'production',
+        drop_debugger: true,
+      },
+    },
+    cssCodeSplit: true,
+    reportCompressedSize: false,
+    sourcemap: mode === 'development',
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
+    include: ['react', 'react-dom', 'react-router-dom', '@tanstack/react-query'],
+  },
+  css: {
+    devSourcemap: mode === 'development',
   },
 }));
