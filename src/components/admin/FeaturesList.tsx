@@ -76,25 +76,25 @@ const FeaturesList: React.FC<FeaturesListProps> = ({ features, onChange }) => {
           onDragOver={handleDragOver}
           onDrop={(e) => handleDrop(e, index)}
           onDragEnd={handleDragEnd}
-          className={`flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-200 ${
+          className={`flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 transition-all duration-200 ${
             draggedIndex === index ? 'opacity-50' : 'hover:shadow-md'
           }`}
         >
           <div className="cursor-grab active:cursor-grabbing">
-            <GripVertical className="w-4 h-4 text-gray-400" />
+            <GripVertical className="w-4 h-4 text-gray-400 dark:text-gray-500" />
           </div>
           <Input
             value={feature}
             onChange={(e) => updateFeature(index, e.target.value)}
             placeholder={`Fitur ${index + 1}`}
-            className="flex-1"
+            className="flex-1 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
           />
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={() => removeFeature(index)}
-            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+            className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 dark:text-red-400 dark:hover:text-red-300"
           >
             <X className="w-4 h-4" />
           </Button>
@@ -105,7 +105,7 @@ const FeaturesList: React.FC<FeaturesListProps> = ({ features, onChange }) => {
         type="button"
         variant="outline"
         onClick={addFeature}
-        className="w-full border-dashed border-2 hover:border-primary hover:bg-primary/5"
+        className="w-full border-dashed border-2 hover:border-primary hover:bg-primary/5 dark:border-gray-600 dark:hover:border-primary dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-primary/10"
       >
         <Plus className="w-4 h-4 mr-2" />
         Tambah Fitur

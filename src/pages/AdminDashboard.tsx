@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown, Home } from 'lucide-react';
+import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown, Home, Sun, Moon } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
+import { useTheme } from '../components/ThemeProvider';
 import AdminLogin from '../components/AdminLogin';
 import ProjectsManager from '../components/admin/ProjectsManager';
 import ServicesManager from '../components/admin/ServicesManager';
 import ContactManager from '../components/admin/ContactManager';
 import MessagesManager from '../components/admin/MessagesManager';
-import ThemeToggle from '../components/admin/ThemeToggle';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
   const { isAdmin, logout, isLoading } = usePortfolio();
+  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('projects');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarMobileOpen, setSidebarMobileOpen] = useState(false);
@@ -209,7 +210,7 @@ const AdminDashboard = () => {
       {!isMobile && (
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 shadow-lg hover:shadow-xl dark:shadow-white/20 dark:hover:shadow-white/40 transition-all duration-200"
+          className="fixed top-1/2 transform -translate-y-1/2 z-40 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
           style={{ 
             left: sidebarCollapsed ? '48px' : '240px',
             transition: 'left 0.3s ease'
@@ -244,7 +245,17 @@ const AdminDashboard = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <ThemeToggle />
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-5 h-5 text-yellow-500" />
+              ) : (
+                <Moon className="w-5 h-5 text-blue-600" />
+              )}
+            </button>
             
             {/* Admin Greeting with Dropdown */}
             <div className="relative user-dropdown-container">
@@ -294,7 +305,7 @@ const AdminDashboard = () => {
 
       {/* Logout Confirmation Modal */}
       <AlertDialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
-        <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+        <AlertDialogContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-gray-900 dark:text-white">Konfirmasi Logout</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
@@ -302,7 +313,7 @@ const AdminDashboard = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600">Batal</AlertDialogCancel>
+            <AlertDialogCancel className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleLogoutConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Logout
             </AlertDialogAction>

@@ -283,7 +283,7 @@ const ServicesManager = () => {
 
       {/* Service Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-white">
               {editingService ? 'Edit Service' : 'Tambah Service Baru'}
@@ -299,7 +299,7 @@ const ServicesManager = () => {
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 placeholder="Contoh: Website Development"
-                className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                className="w-full bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>
 
@@ -312,7 +312,7 @@ const ServicesManager = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Deskripsi lengkap tentang service ini..."
                 rows={4}
-                className="w-full resize-none bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                className="w-full resize-none bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>
 
@@ -325,7 +325,7 @@ const ServicesManager = () => {
                   value={formData.price}
                   onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
                   placeholder="Contoh: Rp 5.000.000"
-                  className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                  className="w-full bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
                 />
               </div>
               <div>
@@ -336,7 +336,7 @@ const ServicesManager = () => {
                   value={formData.duration}
                   onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
                   placeholder="Contoh: 2-3 minggu"
-                  className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                  className="w-full bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
                 />
               </div>
             </div>
@@ -353,7 +353,12 @@ const ServicesManager = () => {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={handleCancel} disabled={isSaving}>
+            <Button 
+              variant="outline" 
+              onClick={handleCancel} 
+              disabled={isSaving}
+              className="bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
+            >
               Batal
             </Button>
             <Button onClick={handleSave} disabled={isSaving}>
@@ -365,7 +370,7 @@ const ServicesManager = () => {
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+        <AlertDialogContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-gray-900 dark:text-white">Hapus Service</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
@@ -373,7 +378,7 @@ const ServicesManager = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600">Batal</AlertDialogCancel>
+            <AlertDialogCancel className="bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Hapus
             </AlertDialogAction>
