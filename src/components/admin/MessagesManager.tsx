@@ -1,24 +1,19 @@
 
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, Calendar, Trash2, Eye, Search, Filter, X } from 'lucide-react';
+import { Mail, MessageSquare, Clock, Search, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { apiService, Message, MessageDetail } from '../../services/api';
+import { apiService, Message } from '../../services/api';
 
 const MessagesManager = () => {
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [selectedMessage, setSelectedMessage] = useState<MessageDetail | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'read' | 'unread'>('all');
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
-  const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
 
   useEffect(() => {
     fetchMessages();
@@ -48,202 +43,53 @@ const MessagesManager = () => {
     }
   };
 
-  const fetchMessageDetail = async (id: string) => {
-    setIsLoadingDetail(true);
+  const markAsRead = async (messageId: string) => {
     try {
-      const response = await apiService.getMessageById(id);
-      if (response.success && response.data) {
-        setSelectedMessage(response.data);
-        
-        // Open mobile modal on small screens
-        if (window.innerWidth < 1024) {
-          setIsMobileDetailOpen(true);
-        }
-        
-        // Mark as read if it's unread
-        if (!response.data.isRead) {
-          await apiService.markMessageAsRead(id);
-          // Update local messages state
-          setMessages(prev => prev.map(msg => 
-            msg.id === id ? { ...msg, isRead: true } : msg
-          ));
-        }
-      } else {
+      const response = await apiService.markMessageAsRead(messageId);
+      if (response.success) {
+        await fetchMessages();
         toast({
-          title: "Error",
-          description: response.message || "Failed to fetch message details",
+          title: "Berhasil!",
+          description: "Pesan ditandai sebagai telah dibaca.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to mark message as read",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteMessage = async (messageId: string) => {
+    try {
+      const response = await apiService.deleteMessage(messageId);
+      if (response.success) {
+        await fetchMessages();
+        toast({
+          title: "Berhasil!",
+          description: "Pesan berhasil dihapus.",
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to fetch message details",
+        description: "Failed to delete message",
         variant: "destructive",
       });
-    } finally {
-      setIsLoadingDetail(false);
     }
   };
 
-  const filteredMessages = messages.filter(message => {
-    const matchesSearch = message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         message.type.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesFilter = filterStatus === 'all' || 
-                         (filterStatus === 'read' && message.isRead) ||
-                         (filterStatus === 'unread' && !message.isRead);
-    
-    return matchesSearch && matchesFilter;
-  });
-
-  const handleDeleteClick = (id: string) => {
-    setDeletingMessageId(id);
-    setDeleteConfirmOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (deletingMessageId) {
-      try {
-        const response = await apiService.deleteMessage(deletingMessageId);
-        if (response.success) {
-          setMessages(prev => prev.filter(msg => msg.id !== deletingMessageId));
-          if (selectedMessage?.id === deletingMessageId) {
-            setSelectedMessage(null);
-            setIsMobileDetailOpen(false);
-          }
-          toast({
-            title: "Pesan berhasil dihapus!",
-            description: "Pesan telah dihapus dari inbox.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error",
-            description: response.message || "Failed to delete message",
-            variant: "destructive",
-          });
-        }
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to delete message",
-          variant: "destructive",
-        });
-      }
-    }
-    setDeleteConfirmOpen(false);
-    setDeletingMessageId(null);
-  };
-
-  const handleViewMessage = (message: Message) => {
-    fetchMessageDetail(message.id);
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('id-ID', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
+  const filteredMessages = messages.filter(message =>
+    message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    message.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    message.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    message.message.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const unreadCount = messages.filter(msg => !msg.isRead).length;
-
-  const MessageDetailContent = ({ message }: { message: MessageDetail }) => (
-    <div className="space-y-4">
-      <div className="flex items-start justify-between">
-        <div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-            {message.name}
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 text-sm">
-            {formatDate(message.createdAt)}
-          </p>
-        </div>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => handleDeleteClick(message.id)}
-          className="hover:shadow-md transition-all duration-200"
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
-
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gray-100 dark:bg-gray-600 rounded-lg p-3">
-            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-              Email
-            </label>
-            <p className="text-gray-900 dark:text-gray-100">{message.email}</p>
-          </div>
-          <div className="bg-gray-100 dark:bg-gray-600 rounded-lg p-3">
-            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-              Phone
-            </label>
-            <p className="text-gray-900 dark:text-gray-100">{message.phone}</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gray-100 dark:bg-gray-600 rounded-lg p-3">
-            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-              Jenis Project
-            </label>
-            <p className="text-gray-900 dark:text-gray-100">{message.type}</p>
-          </div>
-          <div className="bg-gray-100 dark:bg-gray-600 rounded-lg p-3">
-            <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
-              Budget
-            </label>
-            <p className="text-gray-900 dark:text-gray-100">{message.budget}</p>
-          </div>
-        </div>
-
-        <div className="bg-gray-100 dark:bg-gray-600 rounded-lg p-4">
-          <label className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2 block">
-            Detail Project
-          </label>
-          <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
-            {message.detail}
-          </p>
-        </div>
-
-        <div className="flex gap-3 pt-4">
-          <Button
-            className="flex-1 hover:shadow-md transition-all duration-200"
-            onClick={() => {
-              const phoneNumber = message.phone.replace(/\D/g, '');
-              const msg = `Halo ${message.name}, terima kasih atas minat Anda untuk project ${message.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.`;
-              const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(msg)}`;
-              window.open(url, '_blank');
-            }}
-          >
-            <Phone className="w-4 h-4 mr-2" />
-            WhatsApp
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 hover:shadow-md transition-all duration-200 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600"
-            onClick={() => {
-              const subject = `Re: Konsultasi ${message.type}`;
-              const body = `Halo ${message.name},\n\nTerima kasih atas minat Anda untuk project ${message.type}. Tim kami akan segera menghubungi Anda untuk diskusi lebih lanjut.\n\nSalam,\nFH Digital Team`;
-              const url = `mailto:${message.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-              window.open(url);
-            }}
-          >
-            <Mail className="w-4 h-4 mr-2" />
-            Email
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
 
   if (isLoading) {
     return (
@@ -258,163 +104,168 @@ const MessagesManager = () => {
   return (
     <div className="p-4 md:p-8 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">Messages Management</h2>
-          <p className="text-muted-foreground mt-1">
-            {unreadCount > 0 && (
-              <span className="bg-destructive/10 text-destructive px-2 py-1 rounded-full text-xs font-medium">
-                {unreadCount} pesan belum dibaca
-              </span>
-            )}
-          </p>
+        <div className="flex items-center gap-3">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Messages Management</h2>
+          {unreadCount > 0 && (
+            <Badge className="bg-red-500 text-white dark:text-white px-2 py-1">
+              {unreadCount} pesan belum dibaca
+            </Badge>
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <Input
+              placeholder="Cari pesan..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-64"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Search and Filter */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="flex-1 relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Cari berdasarkan nama atau jenis project..."
-            className="pl-10 bg-gray-50 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
-          />
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant={filterStatus === 'all' ? 'default' : 'outline'}
-            onClick={() => setFilterStatus('all')}
-            size="sm"
-            className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'all' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
-            }`}
-          >
-            Semua
-          </Button>
-          <Button
-            variant={filterStatus === 'unread' ? 'default' : 'outline'}
-            onClick={() => setFilterStatus('unread')}
-            size="sm"
-            className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'unread' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
-            }`}
-          >
-            Belum Dibaca
-          </Button>
-          <Button
-            variant={filterStatus === 'read' ? 'default' : 'outline'}
-            onClick={() => setFilterStatus('read')}
-            size="sm"
-            className={`hover:shadow-md transition-all duration-200 ${
-              filterStatus !== 'read' ? 'border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600' : ''
-            }`}
-          >
-            Sudah Dibaca
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Messages List */}
-        <div className="lg:col-span-1">
-          <div className={`${filteredMessages.length > 6 ? 'max-h-[600px] overflow-y-auto scrollbar-hide' : ''} space-y-3 pr-2`}>
-            {filteredMessages.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                {searchTerm || filterStatus !== 'all' ? 'Tidak ada pesan yang sesuai filter.' : 'Belum ada pesan masuk.'}
-              </div>
-            ) : (
-              filteredMessages.map((message, index) => (
-                <div
-                  key={message.id}
-                  className={`border rounded-xl p-4 cursor-pointer transition-colors duration-200 ${
-                    !message.isRead
-                      ? 'border-primary/30 bg-primary/5 hover:bg-primary/10'
-                      : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600/50'
-                  } ${
-                    selectedMessage?.id === message.id ? 'ring-2 ring-primary' : ''
-                  }`}
-                  onClick={() => handleViewMessage(message)}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <h3 className={`font-semibold text-sm truncate ${!message.isRead ? 'text-primary' : 'text-gray-900 dark:text-gray-100'}`}>
-                        {message.name}
-                      </h3>
-                      {!message.isRead && (
-                        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
-                      )}
-                    </div>
-                    <span className="text-xs text-gray-600 dark:text-gray-400 flex-shrink-0 ml-2">
-                      {formatDate(message.createdAt)}
-                    </span>
+      {/* Messages Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {filteredMessages.length === 0 ? (
+          <div className="col-span-full text-center py-12">
+            <div className="text-gray-500 dark:text-gray-400">
+              <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>Belum ada pesan yang masuk.</p>
+            </div>
+          </div>
+        ) : (
+          filteredMessages.map((message, index) => (
+            <Card
+              key={message.id}
+              className={`cursor-pointer transition-all duration-300 hover:shadow-lg animate-fade-in ${
+                !message.isRead 
+                  ? 'border-primary bg-primary/5 dark:bg-primary/10' 
+                  : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+              }`}
+              style={{ animationDelay: `${index * 100}ms` }}
+              onClick={() => setSelectedMessage(message)}
+            >
+              <CardHeader className="pb-2">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-1">
+                      {message.subject}
+                    </CardTitle>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                      {message.name} • {message.email}
+                    </p>
                   </div>
-                  
-                  <div className="text-xs text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center justify-between">
-                      <span className="truncate">{message.type}</span>
-                      <span className="text-xs bg-gray-200 dark:bg-gray-500 text-gray-700 dark:text-gray-300 px-2 py-1 rounded flex-shrink-0 ml-2">
-                        {message.budget}
-                      </span>
+                  <div className="flex items-center gap-2 ml-2">
+                    {!message.isRead && (
+                      <Badge className="bg-red-500 text-white text-xs">Baru</Badge>
+                    )}
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          markAsRead(message.id);
+                        }}
+                        className="hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                      >
+                        {message.isRead ? (
+                          <EyeOff className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        ) : (
+                          <Eye className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteMessage(message.id);
+                        }}
+                        className="hover:bg-red-50 dark:hover:bg-red-900/20"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
+                      </Button>
                     </div>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Message Detail - Desktop */}
-        <div className="lg:col-span-2 hidden lg:block">
-          {isLoadingDetail ? (
-            <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
-              <div className="w-6 h-6 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-            </div>
-          ) : selectedMessage ? (
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 p-6 hover:shadow-lg transition-all duration-300">
-              <MessageDetailContent message={selectedMessage} />
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-64 text-muted-foreground bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
-              <div className="text-center">
-                <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Pilih pesan untuk melihat detail</p>
-              </div>
-            </div>
-          )}
-        </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-3">
+                  {message.message}
+                </p>
+                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                  <Clock className="w-3 h-3" />
+                  <span>{new Date(message.createdAt).toLocaleString('id-ID')}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
 
-      {/* Mobile Detail Modal */}
-      <Dialog open={isMobileDetailOpen} onOpenChange={setIsMobileDetailOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
-          <DialogHeader>
-            <DialogTitle className="text-gray-900 dark:text-gray-100">Detail Pesan</DialogTitle>
-          </DialogHeader>
-          <div className="overflow-y-auto max-h-[70vh] scrollbar-hide">
-            {selectedMessage && <MessageDetailContent message={selectedMessage} />}
+      {/* Message Detail Modal */}
+      {selectedMessage && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    {selectedMessage.subject}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                    Dari: {selectedMessage.name} ({selectedMessage.email})
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    {new Date(selectedMessage.createdAt).toLocaleString('id-ID')}
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  onClick={() => setSelectedMessage(null)}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  ✕
+                </Button>
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="prose prose-sm max-w-none dark:prose-invert">
+                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                  {selectedMessage.message}
+                </p>
+              </div>
+            </div>
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+              <Button
+                onClick={() => {
+                  const mailtoLink = `mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.subject}`;
+                  window.open(mailtoLink, '_blank');
+                }}
+                className="flex items-center gap-2"
+              >
+                <Mail className="w-4 h-4" />
+                Balas via Email
+              </Button>
+              {!selectedMessage.isRead && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    markAsRead(selectedMessage.id);
+                    setSelectedMessage(null);
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Eye className="w-4 h-4" />
+                  Tandai Dibaca
+                </Button>
+              )}
+            </div>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Modal */}
-      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="max-w-md bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-gray-900 dark:text-gray-100">Hapus Pesan</AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
-              Apakah Anda yakin ingin menghapus pesan ini? Tindakan ini tidak dapat dibatalkan.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-600">Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Hapus
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        </div>
+      )}
     </div>
   );
 };
