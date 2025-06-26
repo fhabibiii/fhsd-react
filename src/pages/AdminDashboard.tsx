@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, FileText, LogOut, Mail, Menu, User, Code, MessageSquare, ChevronLeft, ChevronRight, ChevronDown, Home } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import AdminLogin from '../components/AdminLogin';
 import ProjectsManager from '../components/admin/ProjectsManager';
@@ -75,6 +75,11 @@ const AdminDashboard = () => {
     } finally {
       setLogoutConfirmOpen(false);
     }
+  };
+
+  const handleGoToMainPage = () => {
+    window.open('/', '_blank');
+    setUserDropdownOpen(false);
   };
 
   const menuItems = [
@@ -260,10 +265,17 @@ const AdminDashboard = () => {
 
               {/* User Dropdown Menu */}
               {userDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:shadow-white/20 z-50 animate-fade-in">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl dark:shadow-white/20 z-50 animate-fade-in overflow-hidden">
+                  <button
+                    onClick={handleGoToMainPage}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <Home className="w-4 h-4" />
+                    <span className="font-medium">Halaman Utama</span>
+                  </button>
                   <button
                     onClick={handleLogoutClick}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
                     <span className="font-medium">Logout</span>
@@ -282,15 +294,15 @@ const AdminDashboard = () => {
 
       {/* Logout Confirmation Modal */}
       <AlertDialog open={logoutConfirmOpen} onOpenChange={setLogoutConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
           <AlertDialogHeader>
-            <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-gray-900 dark:text-white">Konfirmasi Logout</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
               Apakah Anda yakin ingin keluar dari dashboard admin?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleLogoutConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Logout
             </AlertDialogAction>

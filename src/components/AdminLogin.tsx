@@ -53,7 +53,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:bg-gray-900 flex items-center justify-center px-4">
       <div className="bg-white dark:bg-gray-800 backdrop-blur-sm rounded-2xl p-8 w-full max-w-md border border-gray-200 dark:border-gray-700 animate-scale-in hover:shadow-2xl dark:hover:shadow-white/10 transition-all duration-300 hover:-translate-y-1">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">

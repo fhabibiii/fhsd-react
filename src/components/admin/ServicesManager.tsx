@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Eye, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -284,28 +283,28 @@ const ServicesManager = () => {
 
       {/* Service Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-gray-900 dark:text-white">
               {editingService ? 'Edit Service' : 'Tambah Service Baru'}
             </DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                 Nama Service *
               </label>
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 placeholder="Contoh: Website Development"
-                className="w-full"
+                className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                 Deskripsi Service *
               </label>
               <Textarea
@@ -313,37 +312,37 @@ const ServicesManager = () => {
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Deskripsi lengkap tentang service ini..."
                 rows={4}
-                className="w-full resize-none"
+                className="w-full resize-none bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                   Harga *
                 </label>
                 <Input
                   value={formData.price}
                   onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
                   placeholder="Contoh: Rp 5.000.000"
-                  className="w-full"
+                  className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                   Durasi *
                 </label>
                 <Input
                   value={formData.duration}
                   onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
                   placeholder="Contoh: 2-3 minggu"
-                  className="w-full"
+                  className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                 Fitur-fitur Service
               </label>
               <FeaturesList
@@ -366,15 +365,15 @@ const ServicesManager = () => {
 
       {/* Delete Confirmation Modal */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
           <AlertDialogHeader>
-            <AlertDialogTitle>Hapus Service</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-gray-900 dark:text-white">Hapus Service</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
               Apakah Anda yakin ingin menghapus service ini? Tindakan ini tidak dapat dibatalkan.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogCancel className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600">Batal</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
               Hapus
             </AlertDialogAction>
