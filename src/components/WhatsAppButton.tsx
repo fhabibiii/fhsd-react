@@ -7,7 +7,7 @@ const WhatsAppButton = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [whatsappUrl, setWhatsappUrl] = useState('');
   
-  const defaultMessage = "Halo! Saya tertarik dengan layanan FH Digital Solutions. Bisakah kita diskusi lebih lanjut?";
+  const defaultMessage = "Halo! Saya tertarik dengan layanan FH Solusi Digital. Bisakah kita diskusi lebih lanjut?";
   
   useEffect(() => {
     fetchContactInfo();
@@ -41,6 +41,7 @@ const WhatsAppButton = () => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className="group relative bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
+        aria-label="Chat WhatsApp dengan FH Solusi Digital"
       >
         <MessageCircle className="w-6 h-6" />
         

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight, Star, Target, Coffee, Heart, Zap } from 'lucide-react';
 import { useBackendData } from '../hooks/useBackendData';
@@ -14,7 +13,7 @@ const Hero = () => {
   };
 
   const handleConsultationClick = () => {
-    const whatsappUrl = contactInfo?.whatsApp || "https://wa.me/085156321198";
+    const whatsappUrl = contactInfo?.whatsApp || "https://wa.me/6281225510099";
     const message = "Halo! Saya ingin konsultasi dalam pembuatan website. Bisakah kita diskusi lebih lanjut?";
     const url = `${whatsappUrl}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
