@@ -1,4 +1,3 @@
-
 import { config } from '../config/env';
 
 const BASE_URL = config.apiBaseUrl;
@@ -184,11 +183,6 @@ class ApiService {
       };
     }
 
-    // Only log errors and important requests in production
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Making request to:', url);
-    }
-
     try {
       const response = await fetch(url, config);
       
@@ -212,15 +206,12 @@ class ApiService {
       }
 
       const result = await response.json();
-      
-      // Only log errors
-      if (!result.success && process.env.NODE_ENV === 'development') {
-        console.error('API Error:', result);
-      }
-      
       return result;
     } catch (error) {
-      console.error('Request failed:', error);
+      // Only log critical errors and only in development
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Critical API Error:', error);
+      }
       throw error;
     }
   }
@@ -272,7 +263,10 @@ class ApiService {
     setInterval(() => {
       if (this.refreshToken) {
         this.handleTokenRefresh().catch((error) => {
-          console.error('Auto token refresh failed:', error);
+          // Silent fail in production
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Auto token refresh failed:', error);
+          }
           this.logout();
         });
       }
@@ -318,7 +312,7 @@ class ApiService {
         });
       }
     } catch (error) {
-      console.error('Logout API call failed:', error);
+      // Silent fail for logout
     } finally {
       this.clearTokens();
     }
@@ -425,7 +419,10 @@ class ApiService {
       const result = await response.json();
       return result;
     } catch (error) {
-      console.error('Upload failed:', error);
+      // Only log in development
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Upload failed:', error);
+      }
       throw error;
     }
   }
