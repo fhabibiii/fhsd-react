@@ -110,7 +110,6 @@ const Hero = () => {
                   <Icon 
                     className={`w-6 h-6 ${color} mb-2`} 
                     aria-hidden="true"
-                    alt={`Ikon ${title} - FH Solusi Digital`}
                   />
                   <div className="text-base font-bold text-gray-900 dark:text-white mb-1">{title}</div>
                   <div className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">{description}</div>
