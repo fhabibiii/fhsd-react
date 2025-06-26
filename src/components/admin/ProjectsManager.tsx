@@ -294,36 +294,36 @@ const ProjectsManager = () => {
 
       {/* Add/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600">
           <DialogHeader>
             <DialogTitle className="text-gray-900 dark:text-gray-100">
               {editingProject ? 'Edit Project' : 'Add New Project'}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto max-h-[70vh] scrollbar-hide">
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Title *</label>
+          <form onSubmit={handleSubmit} className="space-y-6 overflow-y-auto max-h-[70vh] scrollbar-hide p-1">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100">Title *</label>
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 required
-                className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
+                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary"
               />
             </div>
             
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Description *</label>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100">Description *</label>
               <Textarea
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 rows={3}
                 required
-                className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
+                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Project Image *</label>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100">Project Image *</label>
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <Input
@@ -331,7 +331,7 @@ const ProjectsManager = () => {
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
-                    className="flex-1 bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
+                    className="flex-1 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary"
                     required={!editingProject}
                   />
                   <Button
@@ -342,7 +342,7 @@ const ProjectsManager = () => {
                       fileInput?.click();
                     }}
                     disabled={isUploading}
-                    className="flex items-center gap-2 bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
+                    className="flex items-center gap-2 bg-white dark:bg-gray-600 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
                   >
                     {isUploading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -357,20 +357,20 @@ const ProjectsManager = () => {
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="w-full h-32 object-cover rounded-lg border border-gray-300 dark:border-gray-500"
+                      className="w-full h-32 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-500"
                     />
                   </div>
                 )}
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-100">Project Link</label>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100">Project Link</label>
               <Input
                 value={formData.link}
                 onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
                 placeholder="https://github.com/username/project"
-                className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100"
+                className="w-full bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 focus:border-primary dark:focus:border-primary"
               />
             </div>
 
@@ -389,7 +389,7 @@ const ProjectsManager = () => {
                 type="button" 
                 variant="outline" 
                 onClick={() => setIsModalOpen(false)}
-                className="flex-1 bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
+                className="flex-1 bg-white dark:bg-gray-600 border-2 border-gray-300 dark:border-gray-500 text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500"
                 disabled={isSaving || isUploading}
               >
                 Cancel
