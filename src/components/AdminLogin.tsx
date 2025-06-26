@@ -76,6 +76,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
                 onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
                 className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan username"
+                autoComplete="username"
                 disabled={isLoading}
                 required
               />
@@ -94,6 +95,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
                 onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
                 className="w-full pl-10 pr-12 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
                 placeholder="Masukkan password"
+                autoComplete="current-password"
                 disabled={isLoading}
                 required
               />

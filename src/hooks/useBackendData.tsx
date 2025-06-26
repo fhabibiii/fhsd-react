@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { apiService } from '../services/api';
 
 export interface BackendProject {
@@ -41,6 +41,20 @@ export interface BackendContactInfo {
   updatedAt: string;
 }
 
+// Simple cache to prevent multiple API calls
+const cache = {
+  projects: null as BackendProject[] | null,
+  services: null as BackendService[] | null,
+  contactInfo: null as BackendContactInfo | null,
+  timestamps: {
+    projects: 0,
+    services: 0,
+    contactInfo: 0,
+  }
+};
+
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 export const useBackendData = () => {
   const [projects, setProjects] = useState<BackendProject[]>([]);
   const [services, setServices] = useState<BackendService[]>([]);
@@ -51,16 +65,22 @@ export const useBackendData = () => {
     contact: true
   });
 
-  useEffect(() => {
-    fetchProjects();
-    fetchServices();
-    fetchContactInfo();
+  const isCacheValid = useCallback((key: keyof typeof cache.timestamps) => {
+    return Date.now() - cache.timestamps[key] < CACHE_DURATION;
   }, []);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
+    if (cache.projects && isCacheValid('projects')) {
+      setProjects(cache.projects);
+      setLoading(prev => ({ ...prev, projects: false }));
+      return;
+    }
+
     try {
       const response = await apiService.getAllProjects();
       if (response.success && response.data) {
+        cache.projects = response.data;
+        cache.timestamps.projects = Date.now();
         setProjects(response.data);
       }
     } catch (error) {
@@ -68,12 +88,20 @@ export const useBackendData = () => {
     } finally {
       setLoading(prev => ({ ...prev, projects: false }));
     }
-  };
+  }, [isCacheValid]);
 
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
+    if (cache.services && isCacheValid('services')) {
+      setServices(cache.services);
+      setLoading(prev => ({ ...prev, services: false }));
+      return;
+    }
+
     try {
       const response = await apiService.getAllServices();
       if (response.success && response.data) {
+        cache.services = response.data;
+        cache.timestamps.services = Date.now();
         setServices(response.data);
       }
     } catch (error) {
@@ -81,12 +109,20 @@ export const useBackendData = () => {
     } finally {
       setLoading(prev => ({ ...prev, services: false }));
     }
-  };
+  }, [isCacheValid]);
 
-  const fetchContactInfo = async () => {
+  const fetchContactInfo = useCallback(async () => {
+    if (cache.contactInfo && isCacheValid('contactInfo')) {
+      setContactInfo(cache.contactInfo);
+      setLoading(prev => ({ ...prev, contact: false }));
+      return;
+    }
+
     try {
       const response = await apiService.getContactInfo();
       if (response.success && response.data) {
+        cache.contactInfo = response.data;
+        cache.timestamps.contactInfo = Date.now();
         setContactInfo(response.data);
       }
     } catch (error) {
@@ -94,9 +130,15 @@ export const useBackendData = () => {
     } finally {
       setLoading(prev => ({ ...prev, contact: false }));
     }
-  };
+  }, [isCacheValid]);
 
-  const sendMessage = async (messageData: {
+  useEffect(() => {
+    fetchProjects();
+    fetchServices();
+    fetchContactInfo();
+  }, [fetchProjects, fetchServices, fetchContactInfo]);
+
+  const sendMessage = useCallback(async (messageData: {
     name: string;
     email: string;
     phone: string;
@@ -111,13 +153,16 @@ export const useBackendData = () => {
       console.error('Failed to send message:', error);
       throw error;
     }
-  };
+  }, []);
 
-  return {
+  // Memoize return value to prevent unnecessary re-renders
+  const returnValue = useMemo(() => ({
     projects,
     services,
     contactInfo,
     loading,
     sendMessage
-  };
+  }), [projects, services, contactInfo, loading, sendMessage]);
+
+  return returnValue;
 };

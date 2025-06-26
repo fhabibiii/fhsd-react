@@ -1,3 +1,4 @@
+
 import { config } from '../config/env';
 
 const BASE_URL = config.apiBaseUrl;
@@ -183,8 +184,10 @@ class ApiService {
       };
     }
 
-    console.log('Making request to:', url);
-    console.log('Request config:', config);
+    // Only log errors and important requests in production
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Making request to:', url);
+    }
 
     try {
       const response = await fetch(url, config);
@@ -200,7 +203,6 @@ class ApiService {
           };
           const retryResponse = await fetch(url, config);
           const result = await retryResponse.json();
-          console.log('Retry response:', result);
           return result;
         } catch (error) {
           // If refresh fails, logout
@@ -210,7 +212,12 @@ class ApiService {
       }
 
       const result = await response.json();
-      console.log('API Response:', result);
+      
+      // Only log errors
+      if (!result.success && process.env.NODE_ENV === 'development') {
+        console.error('API Error:', result);
+      }
+      
       return result;
     } catch (error) {
       console.error('Request failed:', error);
@@ -416,7 +423,6 @@ class ApiService {
     try {
       const response = await fetch(url, config);
       const result = await response.json();
-      console.log('Upload response:', result);
       return result;
     } catch (error) {
       console.error('Upload failed:', error);
