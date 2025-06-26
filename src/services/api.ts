@@ -208,10 +208,6 @@ class ApiService {
       const result = await response.json();
       return result;
     } catch (error) {
-      // Only log critical errors and only in development
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Critical API Error:', error);
-      }
       throw error;
     }
   }
@@ -263,10 +259,6 @@ class ApiService {
     setInterval(() => {
       if (this.refreshToken) {
         this.handleTokenRefresh().catch((error) => {
-          // Silent fail in production
-          if (process.env.NODE_ENV === 'development') {
-            console.error('Auto token refresh failed:', error);
-          }
           this.logout();
         });
       }
@@ -419,10 +411,6 @@ class ApiService {
       const result = await response.json();
       return result;
     } catch (error) {
-      // Only log in development
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Upload failed:', error);
-      }
       throw error;
     }
   }
